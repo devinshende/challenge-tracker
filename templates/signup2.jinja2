@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>signup</title>
+</head>
+<body>
+		<style type="text/css">
+			div{
+				margin:20px 0;
+			}
+		</style>	
+
+	<form method = "POST">
+		<div>
+			<label name = "username">Username:</label>
+			<input type = "text" name = "username" required>
+		</div>
+		<div>
+			<label name = "password">Password:</label>
+			<input type = "password" name = "password" required>
+		</div>
+		<div>
+			<label name = "confirm_password">Confirm Password:</label>
+			<input type = "password" name = "confirm_password" required>
+		</div>
+		<div>
+			<label for = "security_question">Security Question (pick one):</label>
+			<select name="security_question" required>
+			    {% for choice in security_questions%}
+			    <option value="{{choice}}" required>{{choice}}</option>
+			    {% endfor %}
+			</select>
+			<br>
+			<label name="answer">Answer:</label>
+			<input type="text" name="answer" required>
+		</div>
+
+		<div>
+			<input type="submit">
+		</div>
+	</form>
+</body>
+</html>
