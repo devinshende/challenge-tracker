@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ninja Challenge Tracker</title>
+	<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/home.css') }}"> -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<style type="text/css">
+	a.btn {
+		font-family: sans-serif;
+		text-decoration: none;
+		
+		font-size: 30px;
+		width: 200px;
+		height: 100%;
+		
+		padding: 10px;
+		margin: 20px auto;
+
+		text-align: center;
+		display: block;
+		
+		color: white;
+		background-color: #1d8ece;
+		/*border: 5px red solid;*/
+		border-radius: 15px;
+	}
+	a.btn:hover {
+		background:#27aee3;
+	}
+
+	.container{
+		height: 100%;
+		width: 40%;
+
+		margin: 0 auto;
+		/*padding-top: 20px;	*/
+
+		border-radius: 50px;
+	}
+
+	</style>
+
+	<div class = "container">
+		<a class="btn" href="/signup">Sign Up</a>
+		<a class="btn" href="/login">Sign In</a>
+		<a class="btn" href="/leaderboard">Leaderboard</a>
+	</div>
+
+</body>
+</html>
