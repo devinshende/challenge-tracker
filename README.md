@@ -5,6 +5,8 @@ Website to track challenge times for obstacles at nwninjapark in springfield, OR
 ```
 git clone <this repo>
 cd challenge-tracker
+pip install virtualenv
+pip install Flask
 virtualenv venv
 source venv/bin/activate
 python app.py
