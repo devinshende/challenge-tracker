@@ -9,7 +9,7 @@
 				margin:20px 0;
 			}
 		</style>	
-
+	<h1>Sign Up</h1>
 	<form method = "POST">
 		<div>
 			<label name = "username">Username:</label>
@@ -17,11 +17,21 @@
 		</div>
 		<div>
 			<label name = "password">Password:</label>
-			<input type = "password" name = "password" required>
+			<input type = "password" name = "password" id="password" required="required">
 		</div>
 		<div>
 			<label name = "confirm_password">Confirm Password:</label>
-			<input type = "password" name = "confirm_password" required>
+			<input type = "password" name = "confirm_password" required="required" oninput="check(this)" >
+			<script language='javascript' type='text/javascript'>
+			    function check(input) {
+			        if (input.value != document.getElementById('password').value) {
+			            input.setCustomValidity('Password Must Match');
+			        } else {
+			            // input is valid -- reset the error message
+			            input.setCustomValidity('');
+			        }
+			    }
+			</script>
 		</div>
 		<div>
 			<label for = "security_question">Security Question (pick one):</label>
