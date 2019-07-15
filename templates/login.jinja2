@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+</head>
+<body>
+	<style type="text/css">
+		*{
+			font-family: "Raleway";
+		}
+		form.div{
+			margin:20px 0;
+		}
+		#error {
+			background: #e86f6f;
+			font-size: 20px;
+			padding: 10px;
+			width: 80%;
+			display: block;
+			text-align:center;
+			margin: 0 auto;
+			border-radius: 20px;
+		}
+	</style>	
+	{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+				<div id="error"><strong>{{message}}</strong></div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	<h1>Login</h1>
+	<form method = "POST">
+	<div>
+		<label for="username">Username:</label>
+		<input type="text" name="username" required value="{{username}}">
+	</div>
+	<div>
+		<label for="password">Password:</label>
+		<input type="password" name="password" required>
+	</div>
+
+	<div>
+		<input type="submit">
+	</div>
+	</form>
+	<a href="/">Home</a>
+</body>
+</html>
