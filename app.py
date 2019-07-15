@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
+from challenges import entry, challenges, challenge_list
 from pprint import pprint
+import datetime
 import ast
 import os
+import datetime
 
 #UNFINISHED BUSINESS FOR SIGNUPS
 '''
@@ -22,8 +25,6 @@ def read(file_name):
 def write(file_name, data):
 	with open(os.path.join('database',file_name), 'w') as file:
 		file.write(str(data))
-
-
 
 app = Flask(__name__)
 app.static_folder = 'static'
@@ -113,5 +114,16 @@ def login():
 @app.route('/leaderboard')
 def leaderboard():
 	return 'Riley Cvitanich wins'
+
+@app.route('/records',methods=['GET','POST'])
+def records():
+	# entry(11.98,datetime.datetime.today(),'hand over hand')
+	if request.method == "POST":
+		time = float(request.form.get('time'))
+		date = datetime.datetime.today()
+		comment = request.form.get('comment')
+		en = entry(time, date, comment)
+		return render_template('personal_records.jinja2',entry=en,challenges=challenge_list)
+	return render_template('personal_records.jinja2',challenges=challenge_list)
 
 app.run()

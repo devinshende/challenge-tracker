@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ninja Challenge Tracker</title>
+	<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/landing_page.css') }}"> -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<style type="text/css">
+	* {
+		font-family: "Raleway";
+	}
+
+	#top {
+		display: block;
+		padding: 20px;
+		background-color: black;
+		margin-bottom: 10px;
+	}
+
+	h1 {
+		/*margin-left: 30%;
+		margin-right: 30%;*/
+		margin: 0 auto;
+		text-align: center;
+		width: 40%;
+		color: white;
+	}
+
+	img {
+		margin: 0 auto;
+		height: 200px;
+		display: flex;
+	}
+
+	a.btn {
+		text-decoration: none;
+		
+		font-size: 30px;
+		width: 200px;
+		height: 100%;
+		
+		padding: 10px;
+		margin: 20px auto;
+
+		text-align: center;
+		display: block;
+		
+		color: white;
+		background-color: black;
+		/*background-color: #1d8ece;*/
+		border-radius: 15px;
+	}
+	.btn:hover {
+		/*background:#27aee3;*/
+		background-color: #646669;
+	}
+
+	.container{
+		height: 100%;
+		width: 40%;
+
+		margin: 0 auto;
+		/*padding-top: 20px;	*/
+
+		border-radius: 50px;
+	}
+
+	td, th {
+		padding:10px;
+		font-size: 15px
+	}
+	td:nth-of-type(even){
+		background-color: #ddd;
+		color:black;
+	}
+	td:nth-of-type(odd){
+		background-color: #333;
+		color: white;
+	}
+	</style>
+
+	<div id="top"><h1>Personal Records</h1></div>
+	<img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg">
+	<div class = "container">
+		<br>
+		<h1 style="color:black">Records</h1>
+		<br>
+		{% if entry %}
+			<table border="1">
+				<thead>
+				    <tr>
+						<th>Score</th>
+						<th>Date</th>
+						<th>Comment</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>{{entry.score}}</td>
+					<td>{{entry.date_str}}</td>
+					<td>{{entry.comment}}</td>
+				</tr>
+				</tbody>
+			</table>
+		{% endif %}
+		<form method="POST">
+			<br>
+			<div>
+				<label for="challenge">Challenge: </label>
+				<select name="challenge" required>
+				    {% for challenge in challenges%}
+				    <option value="{{challenge}}" required>{{challenge}}</option>
+				    {% endfor %}
+				</select>
+			</div>
+			<div>
+				<label for="time">Time: </label>
+				<input type="text" name="time">
+			</div>
+			<div>
+				<label for="comment">Comments: </label>
+				<input type="text" name="comment">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+		<h2>{{entry}}</h2>
+	</div>
+
+</body>
+</html>
