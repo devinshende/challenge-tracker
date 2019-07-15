@@ -25,6 +25,14 @@ challenge_list = [
 	'Rings - Laps',
 	'Warped Wall - repetitions in 1 minute',
 	'Campus Board hopping - speed',
-	'Floating Steps - laps in one minute'
+	'Floating Steps - laps in one minute',
+	'Campus Board - Laps',
 ]
-challenges = {}
+
+challenges = {
+	0:{},
+	1:{},
+	2:{},
+	3:{},
+	4:{}
+}

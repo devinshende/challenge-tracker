@@ -13,7 +13,11 @@ import datetime
 feedback to show that user was successfully added
 styles to make it look not awful
 '''
-
+# UNFINISHED BUSINESS FOR PERSONAL RECORDS
+'''
+styling of table and layout
+handle bad input from users for the score field in form
+'''
 def read(file_name):
 	with open(os.path.join('database',file_name), 'r') as file:
 		x = file.read()
@@ -80,6 +84,7 @@ def signup2():
 		user_mapping = read('user_mapping.txt')
 		user_mapping[username] = user_id
 		write('user_mapping.txt',user_mapping)
+		challenges[user_id] = {}
 		# pprint(users)
 		# pprint(user_mapping)
 		return redirect('/')
@@ -115,14 +120,25 @@ def login():
 def leaderboard():
 	return 'Riley Cvitanich wins'
 
-@app.route('/records',methods=['GET','POST'])
-def records():
+@app.route('/<username>/records',methods=['GET','POST'])
+def records(username):
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
+		challenge = request.form.get('challenge')
 		time = float(request.form.get('time'))
 		date = datetime.datetime.today()
 		comment = request.form.get('comment')
 		en = entry(time, date, comment)
+		print('username is',username)
+		user_mapping = read('user_mapping.txt')
+		user_id = user_mapping[username]
+		try:
+			# there is already an entry for the challenge. append the entry to the list
+			challenges[user_id][challenge].append(en)
+		except KeyError:
+			# there is no entry for that challenge yet. Create a list for it and add the entry
+			challenges[user_id][challenge] = [en]
+		pprint(challenges)
 		return render_template('personal_records.jinja2',entry=en,challenges=challenge_list)
 	return render_template('personal_records.jinja2',challenges=challenge_list)
 

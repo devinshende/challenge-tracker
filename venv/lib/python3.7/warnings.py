@@ -1,1 +1,1 @@
-/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/warnings.py
+/anaconda3/lib/python3.7/warnings.py
