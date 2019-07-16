@@ -13,7 +13,7 @@
 
 	#top {
 		display: block;
-		padding: 20px;
+		padding: 30px;
 		background-color: black;
 		margin-bottom: 10px;
 	}
@@ -78,14 +78,40 @@
 		background-color: #333;
 		color: white;
 	}
+
+	.container {
+		border-radius: 20px;
+		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	}
+
+	table {
+		margin: 10px auto;
+	}
+
+	.container div {
+		display:block;
+		margin: 0 auto;
+
+	}
+
+	#submit {
+		display:block;
+	}
+	#spacing {
+		color: red;
+		height:150px;
+		margin-top:30px;
+	}
+
 	</style>
 
 	<div id="top"><h1>Personal Records</h1></div>
-	<img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg">
-	<div class = "container">
-		<br>
+	<a href="/home"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+	<br>
+	<br>
 		<h1 style="color:black">Records</h1>
-		<br>
+		<!-- <br> -->
 		{% if entry %}
 			<table border="1">
 				<thead>
@@ -104,6 +130,7 @@
 				</tbody>
 			</table>
 		{% endif %}
+	<div class = "container">
 		<form method="POST">
 			<br>
 			<div>
@@ -123,11 +150,10 @@
 				<input type="text" name="comment">
 			</div>
 			<div>
-				<input type="submit">
+				<input type="submit" id="submit">
 			</div>
 		</form>
-		<h2>{{entry}}</h2>
 	</div>
-
+	<br id='spacing'>
 </body>
 </html>

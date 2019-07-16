@@ -85,7 +85,7 @@ def signup2():
 		return redirect('/')
 	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
-
+USER = 0
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == "POST":
@@ -98,11 +98,12 @@ def login():
 		except KeyError:
 			flash('Invalid Username')
 			return render_template('login.jinja2')
+		USER = user_id
 		password = decode(users[user_id]['password'])
 
 		
 		if entered_password == password:
-			return render_template('home.jinja2', user=users[user_id])
+			return redirect('/home')
 		if entered_password != password and entered_password:
 			flash('Invalid Password')
 			return render_template('login.jinja2',username=username)
@@ -110,6 +111,12 @@ def login():
 		# return f'welcome, {users[user_id]['first_name']}'
 
 	return render_template('login.jinja2')
+
+@app.route('/home')
+def home():
+	user_id = USER
+	users = read('users.txt')
+	return render_template('home.jinja2', user=users[user_id])
 
 @app.route('/leaderboard')
 def leaderboard():
@@ -119,10 +126,12 @@ def leaderboard():
 def records():
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
+		challenge = request.form.get('challenges')
 		time = float(request.form.get('time'))
 		date = datetime.datetime.today()
 		comment = request.form.get('comment')
 		en = entry(time, date, comment)
+		print(challenge)
 		return render_template('personal_records.jinja2',entry=en,challenges=challenge_list)
 	return render_template('personal_records.jinja2',challenges=challenge_list)
 
