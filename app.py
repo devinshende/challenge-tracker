@@ -90,7 +90,7 @@ def signup2():
 		return redirect('/')
 	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
-USER = 0
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == "POST":
@@ -125,19 +125,23 @@ def home(username):
 def leaderboard():
 	return 'Riley Cvitanich wins'
 
+
+COMMENT = ""
 @app.route('/<username>/records',methods=['GET','POST'])
 def records(username):
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
 		time = request.form.get('time')
+		comment = request.form.get('comment')
+		COMMENT = comment
 		try:
 			time = float(time)
 		except ValueError:
 			flash('please enter a number for score')
 			return redirect('/'+username+'/records')
 		date = datetime.datetime.today()
-		comment = request.form.get('comment')
+		
 		en = Entry(time, date, comment)
 		print(challenge)
 
@@ -154,7 +158,8 @@ def records(username):
 		return render_template('personal_records.jinja2', 
 			challenge_list=challenge_list,
 			ch=challenges[user_id],
-			username=username)
+			username=username,
+			comment=COMMENT)
 	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username)
 
 app.run()

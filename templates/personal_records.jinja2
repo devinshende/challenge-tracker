@@ -69,15 +69,7 @@
 		background-color: #646669;
 	}
 
-	.container{
-		height: 100%;
-		width: 40%;
 
-		margin: 0 auto;
-		/*padding-top: 20px;	*/
-
-		border-radius: 50px;
-	}
 	#head-td {
 		background-color: white; 
 		color:black;
@@ -100,6 +92,22 @@
 		border-radius: 20px;
 		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	height: 100%;
+		width: 40%;
+		margin: 0 auto;
+		/*background-color: lightgrey;*/
+		/*align-items:center;
+		justify-content: center;*/
+	}
+
+	.field {
+		width: 50%;
+		background-color: lightgrey;
+		align-content:center;
+	}
+
+	.field input {
+		align-content:right;
 	}
 
 	#table-container {
@@ -112,13 +120,14 @@
 
 	}
 
-	#submit {
-		display:block;
-	}
 	#spacing {
 		color: red;
 		height:150px;
 		margin-top:30px;
+	}
+
+	#above_img {
+		line-height:100px;
 	}
 
 	</style>
@@ -128,10 +137,11 @@
 				{% for message in messages %}
 				<div id="error"><strong>{{message}}</strong></div>
 				{% endfor %}
+				<br id="above_img">
 			{% endif %}
 		{% endwith %}
 	<a href="/{{username}}/"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
-	<br>
+	<!-- <br> -->
 	<br>
 	<div id='table-container'>
 		{% if ch%}
@@ -160,7 +170,7 @@
 	<div class = "container">
 		<form method="POST">
 			<br>
-			<div>
+			<div class="field">
 				<label for="challenge">Challenge: </label>
 				<select name="challenge" required>
 				    {% for challenge in challenge_list%}
@@ -168,16 +178,16 @@
 				    {% endfor %}
 				</select>
 			</div>
-			<div>
+			<div class="field">
 				<label for="time">Time: </label>
-				<input type="text" name="time">
+				<input type="text" name="time" id="time" required="required">
 			</div>
-			<div>
+			<div class="field">
 				<label for="comment">Comments: </label>
-				<input type="text" name="comment">
+				<input type="text" name="comment" id="comment" value="{{comment}}">
 			</div>
-			<div>
-				<input type="submit" id="submit">
+			<div class="field">
+				<input type="submit" id="submit" class="" id="submit">
 				<br>
 			</div>
 		</form>
