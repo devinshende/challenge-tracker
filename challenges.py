@@ -1,5 +1,5 @@
 
-class entry(object):
+class Entry(object):
 	"""class to store data about a user's time entry on a certain obstacle"""
 	def __init__(self, score, date, comment):
 		if type(score) != float:
@@ -18,13 +18,21 @@ class entry(object):
 
 	def __repr__(self):
 		date = self.date.strftime("%A, %B %dth, %Y")
-		return f'{self.score} seconds/laps on {date} -- {self.comment}'
+		return f'Entry(score:{self.score} date:{date} comment: {self.comment})'
 
 challenge_list = [
 	'Devil Steps - Speed',
 	'Rings - Laps',
 	'Warped Wall - repetitions in 1 minute',
 	'Campus Board hopping - speed',
-	'Floating Steps - laps in one minute'
+	'Floating Steps - laps in one minute',
+	'Campus Board - Laps',
 ]
-challenges = {}
+
+challenges = {
+	0:{},
+	1:{},
+	2:{},
+	3:{},
+	4:{}
+}

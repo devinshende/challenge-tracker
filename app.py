@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import entry, challenges, challenge_list
+from challenges import Entry, challenges, challenge_list
 from pprint import pprint
 import datetime
 import ast
@@ -13,7 +13,11 @@ import datetime
 feedback to show that user was successfully added
 styles to make it look not awful
 '''
-
+# UNFINISHED BUSINESS FOR PERSONAL RECORDS
+'''
+styling of table and layout
+handle bad input from users for the score field in form
+'''
 def read(file_name):
 	with open(os.path.join('database',file_name), 'r') as file:
 		x = file.read()
@@ -38,8 +42,8 @@ def landing_page():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
-		first_name = request.form.get('firstName')
-		last_name = request.form.get('lastName')
+		first_name = request.form.get('first_name')
+		last_name = request.form.get('last_name')
 		age = request.form.get('age')
 		gender = request.form.get('gender')
 		users = read('users.txt')
@@ -80,6 +84,7 @@ def signup2():
 		user_mapping = read('user_mapping.txt')
 		user_mapping[username] = user_id
 		write('user_mapping.txt',user_mapping)
+		challenges[user_id] = {}
 		# pprint(users)
 		# pprint(user_mapping)
 		return redirect('/')
@@ -98,41 +103,57 @@ def login():
 		except KeyError:
 			flash('Invalid Username')
 			return render_template('login.jinja2')
-		USER = user_id
 		password = decode(users[user_id]['password'])
-
-		
+		user_id = user_mapping[username]
+		first_name = users[user_id]['first_name']
 		if entered_password == password:
-			return redirect('/home')
+			return redirect('/'+username)
 		if entered_password != password and entered_password:
 			flash('Invalid Password')
-			return render_template('login.jinja2',username=username)
-		
-		# return f'welcome, {users[user_id]['first_name']}'
-
+			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
 
-@app.route('/home')
-def home():
-	user_id = USER
+@app.route('/<username>/')
+def home(username):
 	users = read('users.txt')
-	return render_template('home.jinja2', user=users[user_id])
+	user_mapping = read('user_mapping.txt')
+	user_id = user_mapping[username]
+	name = users[user_id]['first_name']
+	return render_template('home.jinja2', username=username, users=users, name=name)
 
 @app.route('/leaderboard')
 def leaderboard():
 	return 'Riley Cvitanich wins'
 
-@app.route('/records',methods=['GET','POST'])
-def records():
+@app.route('/<username>/records',methods=['GET','POST'])
+def records(username):
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
-		challenge = request.form.get('challenges')
-		time = float(request.form.get('time'))
+		challenge = request.form.get('challenge')
+		time = request.form.get('time')
+		try:
+			time = float(time)
+		except ValueError:
+			flash('please enter a number for score')
+			return redirect('/'+username+'/records')
 		date = datetime.datetime.today()
 		comment = request.form.get('comment')
-		en = entry(time, date, comment)
+		en = Entry(time, date, comment)
 		print(challenge)
-		return render_template('personal_records.jinja2',entry=en,challenges=challenge_list)
-	return render_template('personal_records.jinja2',challenges=challenge_list)
+
+		print('username is',username)
+		user_mapping = read('user_mapping.txt')
+		user_id = user_mapping[username]
+		try:
+			# there is already an entry for the challenge. append the entry to the list
+			challenges[user_id][challenge].append(en)
+		except KeyError:
+			# there is no entry for that challenge yet. Create a list for it and add the entry
+			challenges[user_id][challenge] = [en]
+		pprint(challenges)
+		return render_template('personal_records.jinja2', 
+			challenge_list=challenge_list,
+			ch=challenges[user_id])
+	return render_template('personal_records.jinja2',challenge_list=challenge_list)
 
 app.run()

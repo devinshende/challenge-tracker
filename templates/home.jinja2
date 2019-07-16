@@ -9,8 +9,6 @@
 			font-family: "Raleway";
 		}
 
-
-
 		#top {
 			display: block;
 			padding: 20px;
@@ -69,10 +67,10 @@
 	</style>
 
 
-	<div id="top"><h1>Welcome, {{user['first_name']}}</h1></div>
+	<div id="top"><h1>Welcome, {{name}}</h1></div>
 	<img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg">
 	<div class = "container">
-		<a href="/records" class="btn">Personal Records</a>
+		<a href="/{{username}}/records" class="btn">Personal Records</a>
 		<a href="/leaderboard" class="btn">Leaderboard</a>
 	</div>
 </body>

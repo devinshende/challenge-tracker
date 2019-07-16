@@ -11,6 +11,19 @@
 		font-family: "Raleway";
 	}
 
+	#error {
+		background: #e86f6f;
+		font-size: 20px;
+		padding: 10px;
+		width: 80%;
+		display: block;
+		text-align:center;
+		margin: 0 auto;
+		border-radius: 20px;
+		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	}
+
 	#top {
 		display: block;
 		padding: 30px;
@@ -66,9 +79,9 @@
 		border-radius: 50px;
 	}
 
-	td, th {
-		padding:10px;
-		font-size: 15px
+	td {
+		padding:20px;
+		font-size: 25px
 	}
 	td:nth-of-type(even){
 		background-color: #ddd;
@@ -85,7 +98,7 @@
 	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 	}
 
-	table {
+	#table-container {
 		margin: 10px auto;
 	}
 
@@ -105,38 +118,49 @@
 	}
 
 	</style>
-
 	<div id="top"><h1>Personal Records</h1></div>
+	{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+				<div id="error"><strong>{{message}}</strong></div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
 	<a href="/home"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
 	<br>
 	<br>
-		<h1 style="color:black">Records</h1>
-		<!-- <br> -->
-		{% if entry %}
-			<table border="1">
-				<thead>
-				    <tr>
-						<th>Score</th>
-						<th>Date</th>
-						<th>Comment</th>
-					</tr>
-				</thead>
-				<tbody>
+	<div id='table-container'>
+		{% if ch%}
+			<table border="1" style="margin: 0 auto;">
+			<thead>
 				<tr>
-					<td>{{entry.score}}</td>
-					<td>{{entry.date_str}}</td>
-					<td>{{entry.comment}}</td>
+					<td style="background-color: white; color:black;">Challenge</td>
+					<td style="background-color: white; color:black;">Score</td>
+					<td style="background-color: white; color:black;">Date</td>
+					<td style="background-color: white; color:black;">Comment</td>
 				</tr>
-				</tbody>
+			</thead>
+			<tbody>
+			{% for challenge in ch.keys()%}
+				<!-- make expandable -->
+				<tr>
+					<td>{{challenge}}</td>
+					<td>{{ch[challenge][0].score}}</td>
+					<td>{{ch[challenge][0].date_str}}</td>
+					<td>{{ch[challenge][0].comment}}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
 			</table>
 		{% endif %}
+	</div>
 	<div class = "container">
 		<form method="POST">
 			<br>
 			<div>
 				<label for="challenge">Challenge: </label>
 				<select name="challenge" required>
-				    {% for challenge in challenges%}
+				    {% for challenge in challenge_list%}
 				    <option value="{{challenge}}" required>{{challenge}}</option>
 				    {% endfor %}
 				</select>
@@ -151,9 +175,10 @@
 			</div>
 			<div>
 				<input type="submit" id="submit">
+				<br>
 			</div>
 		</form>
 	</div>
-	<br id='spacing'>
+	<br>
 </body>
 </html>
