@@ -78,6 +78,10 @@
 
 		border-radius: 50px;
 	}
+	#head-td {
+		background-color: white; 
+		color:black;
+	}
 
 	td {
 		padding:20px;
@@ -126,7 +130,7 @@
 				{% endfor %}
 			{% endif %}
 		{% endwith %}
-	<a href="/home"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+	<a href="/{{username}}/"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
 	<br>
 	<br>
 	<div id='table-container'>
@@ -134,10 +138,10 @@
 			<table border="1" style="margin: 0 auto;">
 			<thead>
 				<tr>
-					<td style="background-color: white; color:black;">Challenge</td>
-					<td style="background-color: white; color:black;">Score</td>
-					<td style="background-color: white; color:black;">Date</td>
-					<td style="background-color: white; color:black;">Comment</td>
+					<td id="head-td">Challenge</td>
+					<td id="head-td">Score</td>
+					<td id="head-td">Date</td>
+					<td id="head-td">Comment</td>
 				</tr>
 			</thead>
 			<tbody>

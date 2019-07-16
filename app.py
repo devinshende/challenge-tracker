@@ -153,7 +153,8 @@ def records(username):
 		pprint(challenges)
 		return render_template('personal_records.jinja2', 
 			challenge_list=challenge_list,
-			ch=challenges[user_id])
-	return render_template('personal_records.jinja2',challenge_list=challenge_list)
+			ch=challenges[user_id],
+			username=username)
+	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username)
 
 app.run()
