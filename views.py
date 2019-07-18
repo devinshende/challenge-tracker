@@ -6,6 +6,7 @@ from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
 from challenges import Entry, challenges, challenge_list
 from pprint import pprint
 import datetime
+COMMENT = ''
 
 @app.route('/')
 def landing_page():
@@ -98,10 +99,9 @@ def home(username):
 def leaderboard():
 	return 'Riley Cvitanich wins'
 
-
-COMMENT = ""
 @app.route('/<username>/records',methods=['GET','POST'])
 def records(username):
+	global COMMENT
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
@@ -114,11 +114,7 @@ def records(username):
 			flash('please enter a number for score')
 			return redirect('/'+username+'/records')
 		date = datetime.datetime.today()
-		
 		en = Entry(time, date, comment)
-		print(challenge)
-
-		print('username is',username)
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
 		try:
@@ -127,10 +123,20 @@ def records(username):
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
 			challenges[user_id][challenge] = [en]
-		pprint(challenges)
+		# pprint(challenges)
+		print(COMMENT)
+		COMMENT = ''
+		print()
 		return render_template('personal_records.jinja2', 
 			challenge_list=challenge_list,
 			ch=challenges[user_id],
 			username=username,
 			comment=COMMENT)
-	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username)
+	print('COMMENT: ',COMMENT)
+	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username,comment=COMMENT)
+
+
+
+
+
+
