@@ -5,50 +5,221 @@
 	<link rel="stylesheet" type="text/css" href="static/styles.css">
 </head>
 <body>
-		<style type="text/css">
+	<style type="text/css">
+		#top {
+			display: block;
+			padding: 20px;
+			background-color: black;
+			margin: 0 0 10px 0;
+		}
+
+			div {
+				margin:20px 0;
+			}
+						*{
+				font-family: "Raleway";
+			}
 			div{
 				margin:20px 0;
 			}
-		</style>	
-	<h1>Sign Up</h1>
-	<form method = "POST">
-		<div>
-			<label name = "username">Username:</label>
-			<input type = "text" name = "username" required>
-		</div>
-		<div>
-			<label name = "password">Password:</label>
-			<input type = "password" name = "password" id="password" required="required">
-		</div>
-		<div>
-			<label name = "confirm_password">Confirm Password:</label>
-			<input type = "password" name = "confirm_password" required="required" oninput="check(this)" >
-			<script language='javascript' type='text/javascript'>
-			    function check(input) {
-			        if (input.value != document.getElementById('password').value) {
-			            input.setCustomValidity('Password Must Match');
-			        } else {
-			            // input is valid -- reset the error message
-			            input.setCustomValidity('');
-			        }
-			    }
-			</script>
-		</div>
-		<div>
-			<label for = "security_question">Security Question (pick one):</label>
+
+		h1 {
+			/*margin-left: 30%;
+			margin-right: 30%;*/
+			margin: 0 auto;
+			text-align: center;
+			width: 40%;
+			color: white;
+		}
+
+		#error {
+			background: #e86f6f;
+			font-size: 20px;
+			padding: 10px;
+			width: 80%;
+			display: block;
+			text-align:center;
+			margin: 0 auto;
+			border-radius: 20px;
+			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		}
+
+		/* BASIC */
+
+		html {
+		  /*background-color: #565656;*/
+		}
+
+		body {
+		  font-family: "Poppins", sans-serif;
+		  height: 130%;
+		}
+
+		a {
+		  color: #92badd;
+		  display:inline-block;
+		  text-decoration: none;
+		  font-weight: 400;
+		}
+
+		h2 {
+		  text-align: center;
+		  font-size: 16px;
+		  font-weight: 600;
+		  text-transform: uppercase;
+		  display:inline-block;
+		  margin: 40px 8px 10px 8px; 
+		  color: #cccccc;
+		}
+
+
+
+		/* STRUCTURE */
+
+		.wrapper {
+		  display: flex;
+		  align-items: center;
+		  flex-direction: column; 
+		  justify-content: center;
+		  width: 100%;
+		  min-height: 100%;
+		  padding: 20px;
+		}
+
+		#formContent {
+		  -webkit-border-radius: 10px 10px 10px 10px;
+		  border-radius: 10px 10px 10px 10px;
+		  background: #fff;
+		  padding: 30px;
+		  width: 90%;
+		  max-width: 450px;
+		  position: relative;
+		  padding: 0px;
+		  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		  text-align: center;
+		}
+
+		#formFooter {
+		  background-color: #f6f6f6;
+		  border-top: 1px solid #dce8f1;
+		  padding: 25px;
+		  text-align: center;
+		  -webkit-border-radius: 0 0 10px 10px;
+		  border-radius: 0 0 10px 10px;
+		}
+
+
+
+		/* TABS */
+
+		h2.inactive {
+		  color: #cccccc;
+		}
+
+		h2.active {
+		  color: #0d0d0d;
+		  border-bottom: 2px solid #5fbae9;
+		}
+
+
+
+		/* FORM TYPOGRAPHY*/
+
+		input[type=button], input[type=submit], input[type=reset]  {
+		  background-color: black;
+		  border: none;
+		  color: white;
+		  padding: 15px 80px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  text-transform: uppercase;
+		  font-size: 13px;
+		  -webkit-box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+		  box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+		  -webkit-border-radius: 5px 5px 5px 5px;
+		  border-radius: 5px 5px 5px 5px;
+		  margin: 5px 20px 40px 20px;
+		  -webkit-transition: all 0.3s ease-in-out;
+		  -moz-transition: all 0.3s ease-in-out;
+		  -ms-transition: all 0.3s ease-in-out;
+		  -o-transition: all 0.3s ease-in-out;
+		  transition: all 0.3s ease-in-out;
+		}
+
+		input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+		  background-color: #646669;
+		}
+
+		input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+		  -moz-transform: scale(0.95);
+		  -webkit-transform: scale(0.95);
+		  -o-transform: scale(0.95);
+		  -ms-transform: scale(0.95);
+		  transform: scale(0.95);
+		}
+
+		input[type=text], input[type=password] {
+		  background-color: #f6f6f6;
+		  border: none;
+		  color: #0d0d0d;
+		  padding: 15px 32px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 16px;
+		  margin: 5px;
+		  width: 85%;
+		  border: 2px solid #f6f6f6;
+		  -webkit-transition: all 0.5s ease-in-out;
+		  -moz-transition: all 0.5s ease-in-out;
+		  -ms-transition: all 0.5s ease-in-out;
+		  -o-transition: all 0.5s ease-in-out;
+		  transition: all 0.5s ease-in-out;
+		  -webkit-border-radius: 5px 5px 5px 5px;
+		  border-radius: 5px 5px 5px 5px;
+		}
+
+		input[type=text]:focus {
+		  background-color: #fff;
+		  border-bottom: 2px solid #5fbae9;
+		}
+
+		input[type=text]:placeholder {
+		  color: #cccccc;
+		}
+		</style>
+	<div id="top"><h1>Signup</h1></div>	
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+		<form method = "POST">
+			<input type="text" id="username" name="username" placeholder="Username" required>
+			<input type="password" name="password" id="password" placeholder="Password" required>
+			<input type="password" name="confirm_password" placeholder="Confirm Password"  oninput="check(this)" >
+				<script language='javascript' type='text/javascript'>
+				    function check(input) {
+				        if (input.value != document.getElementById('password').value) {
+				            input.setCustomValidity('Password Must Match');
+				        } else {
+				            // input is valid -- reset the error message
+				            input.setCustomValidity('');
+				        }
+				    }
+				</script>
+			<label for="security_question">Security Question (pick one):</label>
 			<select name="security_question" required>
-			    {% for choice in security_questions%}
-			    <option value="{{choice}}" required>{{choice}}</option>
-			    {% endfor %}
+				{% for choice in security_questions%}
+				<option value="{{choice}}" required>{{choice}}</option>
+				{% endfor %}
 			</select>
 			<br>
-			<label name="answer">Answer:</label>
-			<input type="text" name="answer" required>
-		</div>
+			<input type="text" name="answer" placeholder="Answer" required>
 
-		<div>
 			<input type="submit">
+			</div>
 		</div>
-	</form>
+		</form>
 </body>
 </html>

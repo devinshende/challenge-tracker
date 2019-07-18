@@ -59,6 +59,8 @@ def signup2():
 		user_mapping[username] = user_id
 		write('user_mapping.txt',user_mapping)
 		challenges[user_id] = {}
+		print('new user added')
+		print(username)
 		# pprint(users)
 		# pprint(user_mapping)
 		return redirect('/')

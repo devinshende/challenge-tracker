@@ -37,4 +37,5 @@ app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 from views import *
 
 if __name__ == "__main__":
+	COMMENT = ''
 	app.run()
