@@ -1,79 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>signup</title>
-	<link rel="stylesheet" type="text/css" href="static/styles.css">
+	<title>Login</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" type="text/css" href="static/styles.css">
+	<!-- My attempt at using a stylesheet failed -->
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='new.css') }}">
 </head>
 <body>
 	<style type="text/css">
-	#top {
+		* {
+			font-family: "Raleway";
+		}	
+
+		img {
+			margin: 0 auto;
+			height: 200px;
+			display: flex;
+		}
+		#top {
 			display: block;
 			padding: 20px;
 			background-color: black;
 			margin: 0 0 10px 0;
 		}
-
-			*{
-				font-family: "Raleway";
-			}
-			div{
-				margin:20px 0;
-			}
-
 		h1 {
-			/*margin-left: 30%;
-			margin-right: 30%;*/
 			margin: 0 auto;
 			text-align: center;
 			width: 40%;
 			color: white;
 		}
+	a.btn {
+		text-decoration: none;
+		
+		font-size: 30px;
+		width: 200px;
+		height: 100%;
+		
+		padding: 10px;
+		margin: 20px auto;
 
-		#error {
-			background: #e86f6f;
-			font-size: 20px;
-			padding: 10px;
-			width: 80%;
-			display: block;
-			text-align:center;
-			margin: 0 auto;
-			border-radius: 20px;
-			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		}
-
-		/* BASIC */
-
-		html {
-		  /*background-color: #565656;*/
-		}
-
-		body {
-		  font-family: "Poppins", sans-serif;
-		  height: 130%;
-		}
-
-		a {
-		  color: #92badd;
-		  display:inline-block;
-		  text-decoration: none;
-		  font-weight: 400;
-		}
-
-		h2 {
-		  text-align: center;
-		  font-size: 16px;
-		  font-weight: 600;
-		  text-transform: uppercase;
-		  display:inline-block;
-		  margin: 40px 8px 10px 8px; 
-		  color: #cccccc;
-		}
+		text-align: center;
+		display: block;
+		
+		color: white;
+		background-color: black;
+		/*background-color: #1d8ece;*/
+		border-radius: 15px;
+	}
+	.btn:hover {
+		/*background:#27aee3;*/
+		background-color: #646669;
+	}
 
 
+	#head-td {
+		background-color: white; 
+		color:black;
+	}
 
-		/* STRUCTURE */
+	td {
+		padding:20px;
+		font-size: 25px
+	}
+	td:nth-of-type(even){
+		background-color: #ddd;
+		color:black;
+	}
+	td:nth-of-type(odd){
+		background-color: #333;
+		color: white;
+	}
+
+	.container {
+		border-radius: 20px;
+		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	height: 100%;
+		width: 40%;
+		margin: 0 auto;
+		/*background-color: lightgrey;*/
+		/*align-items:center;
+		justify-content: center;*/
+	}
+
+	.field {
+		width: 50%;
+		align-content:center;
+	}
+
+	.field input {
+		align-content:right;
+	}
+
+	#table-container {
+		margin: 10px auto;
+	}
+
+	.container div {
+		display:block;
+		margin: 0 auto;
+
+	}
+
+	#spacing {
+		color: red;
+		height:150px;
+		margin-top:30px;
+	}
+
+	#above_img {
+		line-height:100px;
+	}
 
 		.wrapper {
 		  display: flex;
@@ -188,54 +226,28 @@
 		input[type=text]:placeholder {
 		  color: #cccccc;
 		}
-		</style>	
-		
-		<div id="top"><h1>Signup</h1></div>	
-		<div class="wrapper fadeInDown">
-		  <div id="formContent">
-		 	<!-- Tabs Titles -->
-		    <br>
-		    <!-- Login Form -->
-		    <form method="POST">
-		      <input type="text" id="login" class="fadeIn second" name="first_name" placeholder="First Name" required>
-		      <input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Last Name" required>
-		      <input type="number" id="age" class="fadeIn third" name="age" placeholder="Age" required>
-		      <br>
-				<label name = "gender">Gender:</label>
-				<input type="radio" name="gender" value="male" required> Male
-				<input type="radio" name="gender" value="female" required> Female
-			  <br>
-		      <input type="submit" class="fadeIn fourth" value="Continue">
-		    </form>
+	</style>
 
-		    <!-- Remind Passowrd -->
 
-		  </div>
-		</div>
-		<!-- <h1>Sign Up</h1>
-		<form method = "POST">
-			<div>
-				<label name = "firstName" >First Name:</label>
-				<input type = "text" name = "firstName" required>
-			</div>
-			<div>
-				<label name = "lastName">Last Name:</label>
-				<input type = "text" name = "lastName" required>
-			</div>
-			<div>
-				<label name = "age">Age:</label>
-				<input type = "number" name = "age" required>
-			</div>
-			<div>
-				<label name = "gender">Gender:</label>
-				<input type="radio" name="gender" value="male" required> Male
-				<input type="radio" name="gender" value="female" required> Female
-			</div>
-
-			<div>
-				<input type="submit">
-			</div>
-	</form> -->
-	<!-- <a href="/">Home</a> -->
+	<div id="top"><h1>Suggest a new Challenge</h1></div>
+	<a href="/{{username}}/"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+	 		<!-- Tabs Titles -->
+	    	<br>
+	    	<!-- Login Form -->
+	    	<form method="POST">
+	    		<label name="type">Challenge Type: </label>
+	    		<select name="type" required>
+	    			<option disabled selected value="">Please Select One</option>
+	    			<option>Time</option>
+	    			<option>Laps</option>
+	    			<option>Repetitions</option>
+	    		</select>
+	      		<input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Name of Challenge" required>
+	      		<input type="submit" class="fadeIn fourth" value="Submit">
+	    	</form>
+	  	</div>
+	</div>
 </body>
 </html>
