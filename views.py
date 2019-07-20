@@ -1,12 +1,17 @@
 from app import app, read, write
-
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
 from challenges import Entry, challenges, challenge_list
 from pprint import pprint
 import datetime
 COMMENT = ''
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def landing_page():
@@ -137,8 +142,6 @@ def records(username):
 	print('COMMENT: ',COMMENT)
 	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username,comment=COMMENT)
 
-
-
-
-
-
+@app.route('/<username>/suggest-challenge',methods=['GET','POST'])
+def suggest_challenge(username):	
+	return render_template('new_challenge.jinja2',username=username)
