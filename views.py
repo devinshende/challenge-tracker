@@ -145,3 +145,4 @@ def records(username):
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):	
 	return render_template('new_challenge.jinja2',username=username)
+

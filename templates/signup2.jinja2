@@ -127,7 +127,7 @@
 
 		/* FORM TYPOGRAPHY*/
 
-		input[type=button], input[type=submit], input[type=reset]  {
+		input[type=button], input[type=submit], input[type=reset], .button {
 		  background-color: black;
 		  border: none;
 		  color: white;
@@ -149,11 +149,23 @@
 		  transition: all 0.3s ease-in-out;
 		}
 
+		input[type="submit"], .button {
+			margin: 5px auto;
+		}
+		.button {
+			padding: 5px;
+			display:block;
+			width: max-content;
+			margin-top:0;
+			margin-bottom:40px;
+			text-transform: capitalize;
+		}
+
 		input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
 		  background-color: #646669;
 		}
 
-		input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+		input[type=button]:active, input[type=submit]:active, input[type=reset]:active {
 		  -moz-transform: scale(0.95);
 		  -webkit-transform: scale(0.95);
 		  -o-transform: scale(0.95);
@@ -216,10 +228,11 @@
 			</select>
 			<br>
 			<input type="text" name="answer" placeholder="Answer" required>
-
 			<input type="submit">
-			</div>
-		</div>
+			<a href="/" class="button">cancel</a>
 		</form>
+		</div>
+	</div>
+		
 </body>
 </html>

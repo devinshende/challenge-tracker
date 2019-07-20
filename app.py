@@ -35,7 +35,6 @@ app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 # this import must be after initialization of Flask(__name__)
 from views import *
-
 if __name__ == "__main__":
 	COMMENT = ''
 	app.run()
