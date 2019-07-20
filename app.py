@@ -1,18 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges, challenge_list
+from challenges import Entry, challenges, challenge_dict
 from pprint import pprint
 import datetime
 import ast
 import os
-import datetime
 
-#UNFINISHED BUSINESS FOR SIGNUPS
-'''
-feedback to show that user was successfully added
-styles to make it look not awful
-'''
+
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
 styling of table and layout

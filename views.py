@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges, challenge_list
+from challenges import Entry, challenges, challenge_dict
 from pprint import pprint
 import datetime
 COMMENT = ''
@@ -68,7 +68,7 @@ def signup2():
 		print(username)
 		# pprint(users)
 		# pprint(user_mapping)
-		return redirect('/')
+		return redirect('/'+ username)
 	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
 
@@ -88,7 +88,7 @@ def login():
 		user_id = user_mapping[username]
 		first_name = users[user_id]['first_name']
 		if entered_password == password:
-			return redirect('/'+username)
+			return redirect('/'+ username)
 		if entered_password != password and entered_password:
 			flash('Invalid Password')
 			return render_template('login.jinja2', username=username)
@@ -130,17 +130,17 @@ def records(username):
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
 			challenges[user_id][challenge] = [en]
-		# pprint(challenges)
+		pprint(challenges)
 		print(COMMENT)
 		COMMENT = ''
 		print()
 		return render_template('personal_records.jinja2', 
-			challenge_list=challenge_list,
+			challenge_dict=challenge_dict,
 			ch=challenges[user_id],
 			username=username,
 			comment=COMMENT)
 	print('COMMENT: ',COMMENT)
-	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username,comment=COMMENT)
+	return render_template('personal_records.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):	

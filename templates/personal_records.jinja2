@@ -28,16 +28,11 @@
 
 	#top {
 		display: block;
-		padding: 30px;
+		padding: 30px 0;
 		background-color: black;
 		margin-bottom: 10px;
 	}
 
-	a img {
-		margin: 0 auto;
-		height: 200px;
-		display: flex;
-	}
 
 	h1 {
 		/*margin-left: 30%;
@@ -48,10 +43,12 @@
 		color: white;
 	}
 
-	img {
-		margin: 0 auto;
-		height: 200px;
-		display: flex;
+	#img {
+		margin-left: 25%;
+		margin-right: 25%;
+		width: 50%;
+		border:2px solid black;
+		display: block;
 	}
 
 	a.btn {
@@ -317,7 +314,7 @@
 				<br id="above_img">
 			{% endif %}
 		{% endwith %}
-	<a href="/{{username}}/"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+	<a href="/{{username}}/"><img id="img" src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
 	<!-- <br> -->
 	<br>
 	<div id='table-container'>
@@ -351,13 +348,24 @@
 				<label for="challenge">Challenge: </label>
 				<select name="challenge" required="required" class="fadeIn second">
 					<option value="" disabled selected>Select Challenge</option>
-				    {% for challenge in challenge_list%}
-				    <option value="{{challenge}}" required>{{challenge}}</option>
+				    {% for key, value in challenge_dict.items()%}
+				    <!-- onclick="changePlaceholder({{value}}})"  -->
+				    <option value="{{key}}" required>{{key}}</option>
 				    {% endfor %}
 				</select>
 
-				<input type="text" name="time" class="fadeIn third" id="time" placeholder="Time" required>
+			<!-- 	<script type="text/javascript">
+					function changePlaceholder(value){
+						var score = document.getElementById('time')
+						score.placeholder = `${score}`
+						return `${score}`
+					}
 
+
+				</script> -->
+
+				<input type="text" name="time" class="fadeIn third" id="time" placeholder="score">
+				
 				<input type="text" name="comment" id="comment" value="{{comment}}" placeholder="Comments">
 
 				<input type="submit" class="fadeIn fourth" value="Submit" id="submit">

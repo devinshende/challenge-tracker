@@ -20,14 +20,14 @@ class Entry(object):
 		date = self.date.strftime("%A, %B %dth, %Y")
 		return f'Entry(score:{self.score} date:{date} comment: {self.comment})'
 
-challenge_list = [
-	'Devil Steps - Speed',
-	'Rings - Laps',
-	'Warped Wall - repetitions in 1 minute',
-	'Campus Board hopping - speed',
-	'Floating Steps - laps in one minute',
-	'Campus Board - Laps',
-]
+challenge_dict = {
+	'Devil Steps - Speed': "time",
+	'Rings - Laps': "laps",
+	'Warped Wall - repetitions in 1 minute': "reps",
+	'Campus Board hopping - speed': "time",
+	'Floating Steps - laps in one minute': "laps",
+	'Campus Board - Laps': "laps",
+}
 
 challenges = {
 	0:{},
