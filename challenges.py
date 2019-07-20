@@ -20,6 +20,7 @@ class Entry(object):
 		date = self.date.strftime("%A, %B %dth, %Y")
 		return f'Entry(score:{self.score} date:{date} comment: {self.comment})'
 
+
 challenge_list = [
 	'Devil Steps - Speed',
 	'Rings - Laps',

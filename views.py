@@ -2,6 +2,7 @@ from app import app, read, write
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
+from mylib.mail import send_email_to_somebody
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
 from challenges import Entry, challenges, challenge_list
 from pprint import pprint
@@ -143,6 +144,16 @@ def records(username):
 	return render_template('personal_records.jinja2',challenge_list=challenge_list,username=username,comment=COMMENT)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
-def suggest_challenge(username):	
+def suggest_challenge(username):
+	if request.method == "POST":
+		challenge_type = request.form.get('type')
+		challenge_name = request.form.get('challenge')
+		challenge_submission = {
+			'type':challenge_type,
+			'name':challenge_name,
+			'username':username
+		}
+		send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
+		send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')
 	return render_template('new_challenge.jinja2',username=username)
 
