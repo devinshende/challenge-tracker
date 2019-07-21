@@ -21,13 +21,25 @@ class Entry(object):
 		return f'Entry(score:{self.score} date:{date} comment: {self.comment})'
 
 challenge_dict = {
-	'Devil Steps - Speed': "time",
-	'Rings - Laps': "laps",
-	'Warped Wall - repetitions in 1 minute': "reps",
-	'Campus Board hopping - speed': "time",
-	'Floating Steps - laps in one minute': "laps",
-	'Campus Board - Laps': "laps",
+	'time':[
+		'Devil Steps',
+		'Campus Board (up and down)',
+		'Floating Doors to Cliffhanger',
+		'Rope Climb'
+	], 
+
+	'laps':[
+		'Rings',
+		'Campus Board',
+		'Balance Beam Slack Line'
+	],
+
+	'reps':[
+		'Warped Wall',
+		'Quintuple Steps'
+	]
 }
+
 
 
 challenges = {
