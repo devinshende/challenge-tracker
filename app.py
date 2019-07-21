@@ -34,9 +34,12 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	# if user types --email at the end of python3 app.py, then it will be set to true
 	# if user doesn't say --email, it will be set to false
-	parser.add_argument('--email',action='store_true')
+	parser.add_argument('-e','--email',action='store_true')
+	parser.add_argument('-v','--verbose',action='store_true')
 	COMMENT = ''
 	args = parser.parse_args()
-	write('args.txt',args.email)
-	print('Send emails:',args.email)
+	write('args.txt',{'email':args.email,'verbose':args.verbose})
+	if args.verbose:
+		print('Send emails:',args.email)
+		print('Verbose: True')
 	app.run()

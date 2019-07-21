@@ -1,15 +1,18 @@
-{% extends "base.html" %}
+{% extends "error_base.html" %}
 {% block title %} Login {% endblock %}
 {% block top %} Login {% endblock %}
 {% block imghref %}/{% endblock %}
-{% block content %}
+{% block error %}
 	{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				{% for message in messages %}
-				<div id="error"><strong>{{message}}</strong></div>
-				{% endfor %}
-			{% endif %}
-		{% endwith %}
+		{% if messages %}
+			{% for message in messages %}
+			<div id="error"><strong>{{message}}</strong></div>
+			{% endfor %}
+			<br id="above_img">
+		{% endif %}
+	{% endwith %}
+{% endblock %}
+{% block content %}
 	<br>
 
 	<div class="wrapper fadeInDown">
