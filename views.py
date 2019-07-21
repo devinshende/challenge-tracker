@@ -50,7 +50,6 @@ def signup():
 		return redirect('/signup2')
 	return render_template('signup.jinja2')
 
-
 @app.route('/signup2', methods=['GET','POST'])
 def signup2():
 	users = read('users.txt')
@@ -114,6 +113,7 @@ def login():
 			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
 
+
 @app.route('/<username>/')
 def home(username):
 	users = read('users.txt')
@@ -124,7 +124,7 @@ def home(username):
 
 @app.route('/leaderboard')
 def leaderboard():
-	return 'Riley Cvitanich wins'
+	return render_template('leaderboard.jinja2')
 
 @app.route('/<username>/records',methods=['GET','POST'])
 def records(username):
