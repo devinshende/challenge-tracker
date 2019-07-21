@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges, challenge_dict
+from challenges import Entry, challenges
 from pprint import pprint
 import datetime
 import ast

@@ -344,23 +344,54 @@
 	<div class="wrapper fadeInDown">
 		<div id="formContent">
 		<br>
+
+<!-- 		<script type="text/javascript">
+			function newAtt(input){
+				var att = document.createAttribute("python_value")
+				att.value = input
+			}
+		</script> -->
+
 		<form method="POST">
 				<label for="challenge">Challenge: </label>
-				<select name="challenge" required="required" class="fadeIn second">
+				<select name="challenge" required="required" class="fadeIn second" id="select">
 					<option value="" disabled selected>Select Challenge</option>
-				    {% for key, value in challenge_dict.items()%}
-				    <!-- onclick="changePlaceholder({{value}}})"  -->
-				    <option value="{{key}}" required>{{key}}</option>
+
+					<optgroup label="Time (seconds)">
+				    {% for item in challenge_dict['time'] %}
+				    	<option value="{{ item }}" required="required">{{item}}</option>
 				    {% endfor %}
+					</optgroup>
+
+				    <optgroup label="Laps">
+				    {% for item in challenge_dict['laps'] %}
+				    	<option value="{{ item }}" required="required">{{item}}</option>
+				    {% endfor %}
+					</optgroup>
+
+				    <optgroup label="Reps (in one minute)">
+				    {% for item in challenge_dict['reps'] %}
+				    	<option value="{{ item }}" required="required">{{item}}</option>
+				    {% endfor %}
+				    </optgroup>
+
 				</select>
 
-			<!-- 	<script type="text/javascript">
-					function changePlaceholder(value){
-						var score = document.getElementById('time')
-						score.placeholder = `${score}`
-						return `${score}`
-					}
+				<!-- <script type="text/javascript">
+					//function changePlaceholder(value){
+					//	var score = document.getElementById('time')
+					//	score.placeholder = `${score}`
+					//	return `${score}`
+					//}
 
+					function changePlaceholder(){
+						var score_input = document.getElementById('time')
+						var select = document.getElementById('select')
+						var selected_opt = select[select.selectedIndex]
+						console.log("selected option is: " + selected_opt.getAttribute('value'))
+						var scoreType = selected_opt.getAttribute('class')
+						score_input.setAttribute("placeholder", scoreType)
+					}
 
 				</script> -->
 
