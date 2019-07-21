@@ -27,7 +27,6 @@
 	}
 
 
-
 	#top {
 		display: block;
 		padding: 30px 0;
@@ -52,6 +51,12 @@
 	img {
 		margin: 0 auto;
 		height: 200px;
+	}
+
+	select {
+		background: #f6f6f6;
+		padding: 15px;
+
 	}
 
 	a.btn {
@@ -161,13 +166,9 @@
 
 	/* BASIC */
 
-	html {
-	  /*background-color: #565656;*/
-	}
-
 	body {
-	  font-family: "Poppins", sans-serif;
-	  height: 130%;
+	  font-family: "Raleway"
+	  margin:0;
 	}
 
 	a {
@@ -357,6 +358,7 @@
 
 		<form method="POST">
 				<label for="challenge">Challenge: </label>
+
 				<select name="challenge" required="required" class="fadeIn second" id="select">
 					<option value="" hidden>Select Challenge</option>
 
@@ -377,31 +379,11 @@
 				    	<option value="{{ item }}" required="required">{{item}}</option>
 				    {% endfor %}
 				    </optgroup>
-
 				</select>
 
-				<!-- <script type="text/javascript">
-					//function changePlaceholder(value){
-					//	var score = document.getElementById('time')
-					//	score.placeholder = `${score}`
-					//	return `${score}`
-					//}
 
-					function changePlaceholder(){
-						var score_input = document.getElementById('time')
-						var select = document.getElementById('select')
-						var selected_opt = select[select.selectedIndex]
-						console.log("selected option is: " + selected_opt.getAttribute('value'))
-						var scoreType = selected_opt.getAttribute('class')
-						score_input.setAttribute("placeholder", scoreType)
-					}
-
-				</script> -->
-
-				<input type="text" name="time" class="fadeIn third" id="time" placeholder="score">
-				
+				<input type="text" name="time" class="fadeIn third" id="time" placeholder="score">				
 				<input type="text" name="comment" id="comment" value="{{comment}}" placeholder="Comments">
-
 				<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
 				<!-- <button onclick="/{{username}}">back</button> -->
 		</div>
