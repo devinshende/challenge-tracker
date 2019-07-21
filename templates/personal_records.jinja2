@@ -26,6 +26,8 @@
 	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 	}
 
+
+
 	#top {
 		display: block;
 		padding: 30px 0;
@@ -43,12 +45,13 @@
 		color: white;
 	}
 
-	#img {
-		margin-left: 25%;
-		margin-right: 25%;
-		width: 50%;
-		border:2px solid black;
-		display: block;
+	#imglink {
+		display: flex;
+	}
+
+	img {
+		margin: 0 auto;
+		height: 200px;
 	}
 
 	a.btn {
@@ -314,7 +317,7 @@
 				<br id="above_img">
 			{% endif %}
 		{% endwith %}
-	<a href="/{{username}}/"><img id="img" src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+	<a href="/{{username}}/" id="imglink"><img id="img" src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
 	<!-- <br> -->
 	<br>
 	<div id='table-container'>
