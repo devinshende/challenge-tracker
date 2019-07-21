@@ -355,7 +355,7 @@
 		<form method="POST">
 				<label for="challenge">Challenge: </label>
 				<select name="challenge" required="required" class="fadeIn second" id="select">
-					<option value="" disabled selected>Select Challenge</option>
+					<option value="" hidden>Select Challenge</option>
 
 					<optgroup label="Time (seconds)">
 				    {% for item in challenge_dict['time'] %}
