@@ -1,81 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Login</title>
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<link rel="stylesheet" type="text/css" href="static/styles.css">
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
-<body>
-	<style type="text/css">
-		* {
-			font-family: "Raleway";
-		}
-
-		#top {
-			display: block;
-			padding: 20px;
-			margin: 0;
-			background-color: black;
-			margin-bottom: 10px;
-		}
-
-		h1 {
-			/*margin-left: 30%;
-			margin-right: 30%;*/
-			margin: 0 auto;
-			text-align: center;
-			width: 40%;
-			color: white;
-		}
-
-		img {
-			margin: 0 auto;
-			height: 200px;
-			display: flex;
-		}
-
-		a.btn {
-			text-decoration: none;
-			
-			font-size: 30px;
-			width: 200px;
-			height: 100%;
-			
-			padding: 10px;
-			margin: 20px auto;
-
-			text-align: center;
-			display: block;
-			
-			color: white;
-			background-color: black;
-			/*background-color: #1d8ece;*/
-			border-radius: 15px;
-		}
-		.btn:hover {
-			/*background:#27aee3;*/
-			background-color: #646669;
-		}
-
-		.container{
-			height: 100%;
-			width: 40%;
-
-			margin: 0 auto;
-			/*padding-top: 20px;	*/
-
-			border-radius: 50px;
-		}
-	</style>
-
-
-	<div id="top"><h1>Welcome, {{name}}</h1></div>
-	<img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg">
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block top %}Welcome, {{name}}{% endblock %}
+{% block content %}
 	<div class = "container">
 		<a href="/{{username}}/records" class="btn">Personal Records</a>
 		<a href="/{{username}}/suggest-challenge" class="btn">Suggest a New Challenge</a>
 		<a href="/leaderboard" class="btn">Leaderboard</a>
 	</div>
-</body>
-</html>
+{% endblock %}
