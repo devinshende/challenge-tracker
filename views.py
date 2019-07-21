@@ -187,12 +187,3 @@ def suggest_challenge(username):
 		return render_template('home.jinja2', username=username, users=users, name=name)
 	return render_template('new_challenge.jinja2',username=username)
 
-@app.route('/test')
-def test():
-	return render_template('test.jinja2')
-
-
-
-
-
-
