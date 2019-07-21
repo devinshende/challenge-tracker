@@ -1,235 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>signup</title>
-	<link rel="stylesheet" type="text/css" href="static/styles.css">
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
-<body>
-	<style type="text/css">
-		#top {
-			display: block;
-			padding: 20px;
-			background-color: black;
-			margin: 0 0 10px 0;
-		}
+{% extends "base.html" %}
+{% block title %} Signup {% endblock %}
+{% block top %} Signup {% endblock %}
+{% block imghref %}/{% endblock %}
+{% block content %}
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+ 	<!-- Tabs Titles -->
+    <br>
+    <!-- Login Form -->
+    <form method="POST">
+      <input type="text" id="login" class="fadeIn second" name="first_name" placeholder="First Name" required>
+      <input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Last Name" required> 
+      <div id="age">
+      	<label name="age">Age:</label>
+      	<input type="number" id="age" class="fadeIn third" name="age" placeholder="Age" required>
+      </div>
+      <br>
+		<label name = "gender">Gender:</label>
+		<input type="radio" name="gender" value="male" required> Male
+		<input type="radio" name="gender" value="female" required> Female
+	  <br>
+      <input type="submit" class="fadeIn fourth" value="Continue">
+      <a href="/" class="button">cancel</a>
+    </form>
 
-		*{
-			font-family: "Raleway";
-		}
+    <!-- Remind Passowrd -->
 
-		div{
-			margin:20px 0;
-		}
+  </div>
+</div>
 
-		h1 {
-			/*margin-left: 30%;
-			margin-right: 30%;*/
-			margin: 0 auto;
-			text-align: center;
-			width: 40%;
-			color: white;
-		}
-
-		#error {
-			background: #e86f6f;
-			font-size: 20px;
-			padding: 10px;
-			width: 80%;
-			display: block;
-			text-align:center;
-			margin: 0 auto;
-			border-radius: 20px;
-			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		}
-
-		/* BASIC */
-
-		html {
-		  /*background-color: #565656;*/
-		}
-
-		body {
-		  font-family: "Poppins", sans-serif;
-		  height: 130%;
-		}
-
-		a {
-		  color: #92badd;
-		  display:inline-block;
-		  text-decoration: none;
-		  font-weight: 400;
-		}
-
-		h2 {
-		  text-align: center;
-		  font-size: 16px;
-		  font-weight: 600;
-		  text-transform: uppercase;
-		  display:inline-block;
-		  margin: 40px 8px 10px 8px; 
-		  color: #cccccc;
-		}
-
-
-
-		/* STRUCTURE */
-
-		.wrapper {
-		  display: flex;
-		  align-items: center;
-		  flex-direction: column; 
-		  justify-content: center;
-		  width: 100%;
-		  min-height: 100%;
-		  padding: 20px;
-		}
-
-		#formContent {
-		  -webkit-border-radius: 10px 10px 10px 10px;
-		  border-radius: 10px 10px 10px 10px;
-		  background: #fff;
-		  padding: 30px;
-		  width: 90%;
-		  max-width: 450px;
-		  position: relative;
-		  padding: 0px;
-		  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  text-align: center;
-		}
-
-		#formFooter {
-		  background-color: #f6f6f6;
-		  border-top: 1px solid #dce8f1;
-		  padding: 25px;
-		  text-align: center;
-		  -webkit-border-radius: 0 0 10px 10px;
-		  border-radius: 0 0 10px 10px;
-		}
-
-
-
-		/* TABS */
-
-		h2.inactive {
-		  color: #cccccc;
-		}
-
-		h2.active {
-		  color: #0d0d0d;
-		  border-bottom: 2px solid #5fbae9;
-		}
-
-		#age {
-			margin:5px;
-		}
-
-
-		/* FORM TYPOGRAPHY*/
-
-		input[type=button], input[type=submit], input[type=reset], .button {
-		  background-color: black;
-		  border: none;
-		  color: white;
-		  padding: 15px 80px;
-		  text-align: center;
-		  text-decoration: none;
-		  display: inline-block;
-		  text-transform: uppercase;
-		  font-size: 13px;
-		  -webkit-box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
-		  box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
-		  -webkit-border-radius: 5px 5px 5px 5px;
-		  border-radius: 5px 5px 5px 5px;
-		  margin: 5px 20px 40px 20px;
-		  -webkit-transition: all 0.3s ease-in-out;
-		  -moz-transition: all 0.3s ease-in-out;
-		  -ms-transition: all 0.3s ease-in-out;
-		  -o-transition: all 0.3s ease-in-out;
-		  transition: all 0.3s ease-in-out;
-		}
-		input[type=submit], .button {
-			margin: 5px auto;
-		}
-		.button {
-			padding: 5px;
-			display:block;
-			width: max-content;
-			margin-top:0;
-			margin-bottom:40px;
-			text-transform: capitalize;
-		}
-		input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .button:hover  {
-		  background-color: #646669;
-		}
-
-		input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
-		  -moz-transform: scale(0.95);
-		  -webkit-transform: scale(0.95);
-		  -o-transform: scale(0.95);
-		  -ms-transform: scale(0.95);
-		  transform: scale(0.95);
-		}
-
-		input[type=text], input[type=password] {
-		  background-color: #f6f6f6;
-		  border: none;
-		  color: #0d0d0d;
-		  padding: 15px 0;
-		  text-align: center;
-		  text-decoration: none;
-		  display: inline-block;
-		  font-size: 16px;
-		  margin: 5px;
-		  width: 85%;
-		  border: 2px solid #f6f6f6;
-		  -webkit-transition: all 0.5s ease-in-out;
-		  -moz-transition: all 0.5s ease-in-out;
-		  -ms-transition: all 0.5s ease-in-out;
-		  -o-transition: all 0.5s ease-in-out;
-		  transition: all 0.5s ease-in-out;
-		  -webkit-border-radius: 5px 5px 5px 5px;
-		  border-radius: 5px 5px 5px 5px;
-		}
-
-		input[type=text]:focus {
-		  background-color: #fff;
-		  border-bottom: 2px solid #5fbae9;
-		}
-
-		input[type=text]:placeholder {
-		  color: #cccccc;
-		}
-		</style>	
-		
-		<div id="top"><h1>Signup</h1></div>	
-		<div class="wrapper fadeInDown">
-		  <div id="formContent">
-		 	<!-- Tabs Titles -->
-		    <br>
-		    <!-- Login Form -->
-		    <form method="POST">
-		      <input type="text" id="login" class="fadeIn second" name="first_name" placeholder="First Name" required>
-		      <input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Last Name" required> 
-		      <div id="age">
-		      	<label name="age">Age:</label>
-		      	<input type="number" id="age" class="fadeIn third" name="age" placeholder="Age" required>
-		      </div>
-		      <br>
-				<label name = "gender">Gender:</label>
-				<input type="radio" name="gender" value="male" required> Male
-				<input type="radio" name="gender" value="female" required> Female
-			  <br>
-		      <input type="submit" class="fadeIn fourth" value="Continue">
-		      <a href="/" class="button">cancel</a>
-		    </form>
-
-		    <!-- Remind Passowrd -->
-
-		  </div>
-		</div>
-
-</body>
-</html>
+{% endblock %}

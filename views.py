@@ -14,6 +14,10 @@ COMMENT = ''
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.jinja2'), 404
 
 @app.route('/')
 def landing_page():
@@ -166,4 +170,13 @@ def suggest_challenge(username):
 			print('would be sending emails but that was set to False so not doing that.')
 		return render_template('home.jinja2', username=username, users=users, name=name)
 	return render_template('new_challenge.jinja2',username=username)
+
+@app.route('/test')
+def test():
+	return render_template('test.jinja2')
+
+
+
+
+
 
