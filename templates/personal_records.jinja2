@@ -1,16 +1,20 @@
-{% extends "base.html" %}
+{% extends "error_base.html" %}
 {% block title %} New Challenge {% endblock %}
 {% block top %} Personal Records {% endblock %}
+{% block error %}
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+			<div id="error"><strong>{{message}}</strong></div>
+			{% endfor %}
+			<br id="above_img">
+		{% endif %}
+	{% endwith %}
+{% endblock %}
+
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
-	{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				{% for message in messages %}
-				<div id="error"><strong>{{message}}</strong></div>
-				{% endfor %}
-				<br id="above_img">
-			{% endif %}
-		{% endwith %}
+	
 	<br>
 	<div id='table-container'>
 		{% if ch %}
