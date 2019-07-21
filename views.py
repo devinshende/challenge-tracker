@@ -2,10 +2,12 @@ from app import app, read, write
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
+from mylib.mail import send_email_to_somebody
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
 from challenges import Entry, challenges, challenge_dict
 from pprint import pprint
 import datetime
+
 COMMENT = ''
 
 @app.route('/favicon.ico')
@@ -143,6 +145,25 @@ def records(username):
 	return render_template('personal_records.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
-def suggest_challenge(username):	
+def suggest_challenge(username):
+	if request.method == "POST":
+		challenge_type = request.form.get('type')
+		challenge_name = request.form.get('challenge')
+		challenge_submission = {
+			'type':challenge_type,
+			'name':challenge_name,
+			'username':username
+		}
+		users = read('users.txt')
+		user_mapping = read('user_mapping.txt')
+		user_id = user_mapping[username]
+		name = users[user_id]['first_name']
+		send_emails = read('args.txt')
+		if send_emails == True:
+			send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
+			send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')
+		else:
+			print('would be sending emails but that was set to False so not doing that.')
+		return render_template('home.jinja2', username=username, users=users, name=name)
 	return render_template('new_challenge.jinja2',username=username)
 

@@ -6,7 +6,7 @@ from pprint import pprint
 import datetime
 import ast
 import os
-
+import argparse
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -30,6 +30,13 @@ app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 # this import must be after initialization of Flask(__name__)
 from views import *
-if __name__ == "__main__":
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	# if user types --email at the end of python3 app.py, then it will be set to true
+	# if user doesn't say --email, it will be set to false
+	parser.add_argument('--email',action='store_true')
 	COMMENT = ''
+	args = parser.parse_args()
+	write('args.txt',args.email)
+	print('Send emails:',args.email)
 	app.run()

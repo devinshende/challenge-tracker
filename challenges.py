@@ -29,6 +29,7 @@ challenge_dict = {
 	'Campus Board - Laps': "laps",
 }
 
+
 challenges = {
 	0:{},
 	1:{},
