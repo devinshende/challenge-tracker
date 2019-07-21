@@ -41,7 +41,8 @@ def signup():
 			'age':age,
 			'gender':gender
 		}
-		
+		write('current_user_id.txt',user_id)
+		pprint(users[user_id])
 		write('users.txt', users)
 
 		return redirect('/signup/2')
@@ -50,6 +51,7 @@ def signup():
 
 @app.route('/signup/2', methods=['GET','POST'])
 def signup2():
+	users = read('users.txt')
 	if request.method == 'POST':
 		username = request.form.get('username')
 		password = request.form.get('password')
@@ -59,7 +61,7 @@ def signup2():
 		answer = request.form.get('answer')
 		security = {'id':security_question_id,'answer':encode(answer)}
 
-		users = read('users.txt')
+		# users = read('users.txt')
 		user_id = len(users) - 1
 		users[user_id]['username'] = username
 		users[user_id]['password'] = encode(password)
@@ -74,9 +76,18 @@ def signup2():
 		print(username)
 		# pprint(users)
 		# pprint(user_mapping)
+		write('current_user_id','')
 		return redirect('/'+ username)
-	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
+	try:
+		user_id = read('current_user_id.txt')
+		print('your user id is ',user_id)
+		first_name_test = users[user_id]['first_name']
+		print('first name is ',first_name_test,'. Rendering signup2')
+	except KeyError:
+		print('first name doesn\'t exist. Redirecting you to signup1')
+		return redirect('/signup')
+	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
