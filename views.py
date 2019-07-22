@@ -44,7 +44,6 @@ def signup():
 		return redirect('/signup/2')
 	return render_template('signup.jinja2')
 
-
 @app.route('/signup/2', methods=['GET','POST'])
 def signup2():
 	users = read('users.txt')
@@ -177,4 +176,10 @@ def suggest_challenge(username):
 			print('would be sending emails but that was set to False so not doing that.')
 		return render_template('home.jinja2', username=username, users=users, name=name)
 	return render_template('new_challenge.jinja2',username=username)
+
+@app.route('/admin')
+def admin_login():
+	print('Admin')
+	return '<h1>admin login </h1>'
+
 
