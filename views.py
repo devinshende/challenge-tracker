@@ -140,6 +140,10 @@ def home(username):
 def leaderboard():
 	return render_template('leaderboard.jinja2')
 
+@app.route('/<username>/leaderboard')
+def userleaderboard(username):
+	return render_template('userleaderboard.jinja2',username=username)
+
 @app.route('/<username>/records',methods=['GET','POST'])
 def records(username):
 	global COMMENT
