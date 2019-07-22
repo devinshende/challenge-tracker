@@ -9,15 +9,23 @@ from pprint import pprint
 import datetime
 
 COMMENT = ''
+verbose = read('args.txt')['verbose']
 
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.jinja2'), 404
 
 @app.route('/')
 def landing_page():
-	print(app)
+	variables = read('vars.txt')
+	variables['current_user_id'] = None
+	variables['logged_in'] = False
+	write('vars.txt',variables)
 	return render_template('landing_page.jinja2') # kwargs are used for jinja2
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -37,14 +45,19 @@ def signup():
 			'age':age,
 			'gender':gender
 		}
-		write('current_user_id.txt',user_id)
-		pprint(users[user_id])
+		variables = read('vars.txt')
+		variables['current_user_id'] = user_id
+		write('vars.txt',variables)
+		if verbose:
+			print('current_user_id ',user_id)
+			print('user so far')
+			pprint(users[user_id])
 		write('users.txt', users)
 
-		return redirect('/signup/2')
+		return redirect('/signup2')
 	return render_template('signup.jinja2')
 
-@app.route('/signup/2', methods=['GET','POST'])
+@app.route('/signup2', methods=['GET','POST'])
 def signup2():
 	users = read('users.txt')
 	if request.method == 'POST':
@@ -67,18 +80,22 @@ def signup2():
 		user_mapping[username] = user_id
 		write('user_mapping.txt',user_mapping)
 		challenges[user_id] = {}
-		print('new user added')
-		print(username)
+		if verbose:
+			print('new user added')
+			print(username)
 		# pprint(users)
 		# pprint(user_mapping)
-		write('current_user_id','')
+		variables = read('vars.txt')
+		variables['current_user_id'] = None
+		variables['logged_in'] = True
+		write('vars.txt',variables)
 		return redirect('/'+ username)
 
 	try:
-		user_id = read('current_user_id.txt')
+		user_id = read('vars.txt')['current_user_id']
 		print('your user id is ',user_id)
 		first_name_test = users[user_id]['first_name']
-		print('first name is ',first_name_test,'. Rendering signup2')
+		print('first name is',first_name_test,'Rendering signup2')
 	except KeyError:
 		print('first name doesn\'t exist. Redirecting you to signup1')
 		return redirect('/signup')
@@ -100,11 +117,16 @@ def login():
 		user_id = user_mapping[username]
 		first_name = users[user_id]['first_name']
 		if entered_password == password:
+			# successful login
+			variables = read('vars.txt')
+			variables['logged_in'] = True
+			write('vars.txt',variables)
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
-			flash('Invalid Password')
+			flash('Incorrect Password')
 			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
+
 
 @app.route('/<username>/')
 def home(username):
@@ -116,7 +138,7 @@ def home(username):
 
 @app.route('/leaderboard')
 def leaderboard():
-	return 'Riley Cvitanich wins'
+	return render_template('leaderboard.jinja2')
 
 @app.route('/<username>/records',methods=['GET','POST'])
 def records(username):
@@ -142,16 +164,17 @@ def records(username):
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
 			challenges[user_id][challenge] = [en]
-		pprint(challenges)
-		print(COMMENT)
+		if verbose:
+			pprint(challenges)
+			print(COMMENT)
 		COMMENT = ''
-		print()
 		return render_template('personal_records.jinja2', 
 			challenge_dict=challenge_dict,
 			ch=challenges[user_id],
 			username=username,
 			comment=COMMENT)
-	print('COMMENT: ',COMMENT)
+	if verbose:
+		print('COMMENT: ',COMMENT)
 	return render_template('personal_records.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
@@ -168,12 +191,13 @@ def suggest_challenge(username):
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
 		name = users[user_id]['first_name']
-		send_emails = read('args.txt')
+		send_emails = read('args.txt')['email']
 		if send_emails == True:
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')
 		else:
-			print('would be sending emails but that was set to False so not doing that.')
+			if verbose:
+				print('would be sending emails but that was set to False so not doing that.')
 		return render_template('home.jinja2', username=username, users=users, name=name)
 	return render_template('new_challenge.jinja2',username=username)
 

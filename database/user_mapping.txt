@@ -1,1 +1,1 @@
-{'dshende': 0, 'hai': 1, 'exquisite_elephant': 2, 'rshende': 3, 'turtle': 4, 'elliephant': 5, 'afd': 6, 'kj': 8, 'ch': 9, '1': 15, '2': 16, '3': 17, '7': 17, 'clubpenguin': 28}
+{'ds': 0, 'rs': 1, 'turtle': 2, 'dshende': 3}

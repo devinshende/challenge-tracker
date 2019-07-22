@@ -1,1 +1,1 @@
-False
+{'email': False, 'verbose': False}
