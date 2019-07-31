@@ -196,6 +196,11 @@ def suggest_challenge(username):
 		user_id = user_mapping[username]
 		name = users[user_id]['first_name']
 		send_emails = read('args.txt')['email']
+		if verbose: print('writing suggestion to database')
+		# save suggestion to database
+		suggestions = read('challenge_suggestions.txt','list')
+		suggestions.append(challenge_submission)
+		write('challenge_suggestions.txt',suggestions)
 		if send_emails == True:
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')

@@ -14,13 +14,16 @@ import argparse
 styling of table and layout
 handle bad input from users for the score field in form
 '''
-def read(file_name):
+def read(file_name,type='dict'):
 	with open(os.path.join('database',file_name), 'r') as file:
 		x = file.read()
 	try:
 		return eval(x)
 	except SyntaxError:
-		return {}
+		if type=='dict':
+			return {}
+		if type=='list':
+			return []
 
 def write(file_name, data):
 	with open(os.path.join('database',file_name), 'w') as file:
