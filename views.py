@@ -86,7 +86,7 @@ def signup2():
 		# pprint(users)
 		# pprint(user_mapping)
 		variables = read('vars.txt')
-		variables['current_user_id'] = None
+		variables['current_user_id'] = user_id
 		variables['logged_in'] = True
 		write('vars.txt',variables)
 		return redirect('/'+ username)

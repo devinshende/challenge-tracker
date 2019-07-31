@@ -29,6 +29,12 @@ def write(file_name, data):
 	with open(os.path.join('database',file_name), 'w') as file:
 		file.write(str(data))
 
+def reset_all():
+	files = ['args','challenge_suggestions','user_mapping','users','vars']
+	for f in files:
+		write(f+'.txt','')
+	write('args.txt',{'email':False,'verbose':False})
+
 app = Flask(__name__)
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
