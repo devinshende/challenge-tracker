@@ -69,7 +69,6 @@ def signup2():
 		answer = request.form.get('answer')
 		security = {'id':security_question_id,'answer':encode(answer)}
 
-		# users = read('users.txt')
 		user_id = len(users) - 1
 		users[user_id]['username'] = username
 		users[user_id]['password'] = encode(password)
@@ -83,8 +82,7 @@ def signup2():
 		if verbose:
 			print('new user added')
 			print(username)
-		# pprint(users)
-		# pprint(user_mapping)
+		# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
 		variables = read('vars.txt')
 		variables['current_user_id'] = user_id
 		variables['logged_in'] = True
@@ -118,9 +116,11 @@ def login():
 		first_name = users[user_id]['first_name']
 		if entered_password == password:
 			# successful login
+			# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
 			variables = read('vars.txt')
 			variables['logged_in'] = True
 			write('vars.txt',variables)
+			if verbose: print('you are logged in')
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
 			flash('Incorrect Password')
@@ -164,6 +164,10 @@ def records(username):
 		user_id = user_mapping[username]
 		try:
 			# there is already an entry for the challenge. append the entry to the list
+			if verbose:
+				print('adding challenge to dict for databse')
+				print('challenges:')
+				pprint(challenges)
 			challenges[user_id][challenge].append(en)
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
@@ -212,7 +216,12 @@ def suggest_challenge(username):
 
 @app.route('/admin')
 def admin_login():
-	print('Admin')
-	return '<h1>admin login </h1>'
+	if verbose: print('Admin home page')
+	return render_template('admin_home.jinja2',username='stillworkingonusername')
 
+@app.route('/admin/suggestions')
+def admin_suggestions():
+	if verbose: print('Admin see suggestions page')
+	suggestions=read('challenge_suggestions.txt')
+	return render_template('admin_suggestions.jinja2',json=suggestions,username='stillworkingonusername')
 
