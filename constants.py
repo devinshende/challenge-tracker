@@ -1,6 +1,8 @@
 SECURITY_QUESTIONS = [
 	"What was the name of your first pet?",
-	"What is your favorite obstacle?"
+	"What is your favorite obstacle?",
+	"How old were you when you first got the warped wall?",
+	"What school did you attend in kindergarten?"
 ]
 
 def question_to_id(question):

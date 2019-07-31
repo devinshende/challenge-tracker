@@ -43,9 +43,5 @@ challenge_dict = {
 
 
 challenges = {
-	0:{},
-	1:{},
-	2:{},
-	3:{},
-	4:{}
+
 }

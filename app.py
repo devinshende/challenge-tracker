@@ -3,6 +3,7 @@ from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
 from challenges import Entry, challenges
 from pprint import pprint
+from termcolor import colored
 import datetime
 import ast
 import os
@@ -40,6 +41,6 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	write('args.txt',{'email':args.email,'verbose':args.verbose})
 	if args.verbose:
-		print('Send emails:',args.email)
-		print('Verbose: True')
+		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+		print(' * Verbose:', colored('True','green'))
 	app.run()

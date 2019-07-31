@@ -93,9 +93,9 @@ def signup2():
 
 	try:
 		user_id = read('vars.txt')['current_user_id']
-		print('your user id is ',user_id)
+		if verbose: print('your user id is ',user_id)
 		first_name_test = users[user_id]['first_name']
-		print('first name is',first_name_test,'Rendering signup2')
+		if verbose: print('first name is',first_name_test,'Rendering signup2')
 	except KeyError:
 		print('first name doesn\'t exist. Redirecting you to signup1')
 		return redirect('/signup')
