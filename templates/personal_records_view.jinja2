@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} New Challenge {% endblock %}
+{% block top %} Personal Records {% endblock %}
+{% block imghref %}/{{username}}{% endblock %}
+{% block content %}
+	<style type="text/css">
+		.container { 
+			text-align: center;
+			font-size: 30px;
+		}
+	</style>	
+	
+	<div id='table-container'>
+		{% if ch %}
+			<br>
+			<table border="2" style="margin: 0 auto;">
+			<thead>
+				<tr>
+					<td id="head-td">Challenge</td>
+					<td id="head-td">Score</td>
+					<td id="head-td">Date</td>
+					<td id="head-td">Comment</td>
+				</tr>
+			</thead>
+			<tbody>
+			{% for challenge in ch.keys()%}
+				<tr>
+					<td>{{challenge}}</td>
+					<td>{{ch[challenge][0].score}}</td>
+					<td>{{ch[challenge][0].date_str}}</td>
+					<td>{{ch[challenge][0].comment}}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			</table>
+		{% endif %}
+		{% if not ch %}
+			<div class="container"><p>No records added yet</p></div>
+		{% endif %}}
+	<a href="/{{username}}/records-add" class="btn">Add New Record</a>
+	</div>
+{% endblock %}
