@@ -149,8 +149,8 @@ def leaderboard():
 def userleaderboard(username):
 	return render_template('userleaderboard.jinja2',username=username)
 
-@app.route('/<username>/records',methods=['GET','POST'])
-def records(username):
+@app.route('/<username>/records-add',methods=['GET','POST'])
+def records_add(username):
 	global COMMENT
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
@@ -162,7 +162,7 @@ def records(username):
 			time = float(time)
 		except ValueError:
 			flash('please enter a number for score')
-			return redirect('/'+username+'/records')
+			return redirect('/'+username+'/records-add')
 		date = datetime.datetime.today()
 		en = Entry(time, date, comment)
 		user_mapping = read('user_mapping.txt')
@@ -181,14 +181,18 @@ def records(username):
 			pprint(challenges)
 			print(COMMENT)
 		COMMENT = ''
-		return render_template('personal_records.jinja2', 
-			challenge_dict=challenge_dict,
-			ch=challenges[user_id],
-			username=username,
-			comment=COMMENT)
+		return redirect('/'+username+'/records-view')
 	if verbose:
 		print('COMMENT: ',COMMENT)
-	return render_template('personal_records.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
+	return render_template('personal_records_add.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
+
+@app.route('/<username>/records-view')
+def records_view(username):
+	user_mapping = read('user_mapping.txt')
+	user_id = user_mapping[username]
+	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=challenges[user_id])
+
+
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):
