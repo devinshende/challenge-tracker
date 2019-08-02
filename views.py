@@ -20,6 +20,11 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.jinja2'), 404
 
+
+@app.errorhandler(500)
+def internal_error(error):
+    return "500 error"+str(error)
+
 @app.route('/')
 def landing_page():
 	variables = read('vars.txt')
