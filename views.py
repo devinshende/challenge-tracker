@@ -176,11 +176,7 @@ def records_add(username):
 			pprint(challenges)
 			print(COMMENT)
 		COMMENT = ''
-		return redirect('/<username>/records-view', 
-			challenge_dict=challenge_dict,
-			ch=challenges[user_id],
-			username=username,
-			comment=COMMENT)
+		return redirect('/'+username+'/records-view')
 	if verbose:
 		print('COMMENT: ',COMMENT)
 	return render_template('personal_records_add.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
