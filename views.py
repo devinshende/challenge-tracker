@@ -20,7 +20,7 @@ def favicon():
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template('404.jinja2'), 404
+    return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
@@ -34,7 +34,7 @@ def landing_page():
 		variables[key] = None
 	variables['logged_in'] = False # everything but this should be set to False
 	write('vars.txt',variables)
-	return render_template('landing_page.jinja2') # kwargs are used for jinja2
+	return render_template('landing_page.html') # kwargs are used for html
 
 @app.route('/api/<filename>')
 def api(filename):
@@ -73,11 +73,11 @@ def signup():
 				if user["first_name"] == to_name_case(first_name) \
 				and user["last_name"] == to_name_case(last_name):
 					flash('You have already registered for an account')
-					return render_template("signup.jinja2")
+					return render_template("signup.html")
 			variables['half_user'] = signup1
 			variables['current_user_id'] = user_id
 			write('vars.txt',variables)
-			return render_template('signup2.jinja2', security_questions=SECURITY_QUESTIONS)
+			return render_template('signup2.html', security_questions=SECURITY_QUESTIONS)
 		else:
 			# signup2
 			if verbose:
@@ -98,7 +98,7 @@ def signup():
 					print(user['username'] == username)
 				if user["username"] == username:
 					flash('That username is already taken')
-					return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
+					return render_template("signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
 
 			# print(user_id)
 			variables = read('vars.txt')
@@ -120,7 +120,7 @@ def signup():
 			write_challenges(challenges)
 			return redirect('/'+username+'/')
 
-	return render_template('signup.jinja2')
+	return render_template('signup.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -134,7 +134,7 @@ def login():
 			user_id = user_mapping[username]
 		except KeyError:
 			flash('Invalid Username')
-			return render_template('login.jinja2')
+			return render_template('login.html')
 		password = decode(users[user_id]['password'])
 		user_id = user_mapping[username]
 		first_name = users[user_id]['first_name']
@@ -148,8 +148,8 @@ def login():
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
 			flash('Incorrect Password')
-			return render_template('login.jinja2', username=username)
-	return render_template('login.jinja2')
+			return render_template('login.html', username=username)
+	return render_template('login.html')
 
 @app.route('/forgot-password',methods=['GET','POST'])
 def forgot_password():
@@ -169,7 +169,7 @@ def forgot_password():
 				return redirect('/forgot-password')
 			question_id = users[user_id]['security_question']['id']
 			question = id_to_question(question_id)
-			return render_template('forgot_password.jinja2', username=username, security_question=question)
+			return render_template('forgot_password.html', username=username, security_question=question)
 		if not username and not password:
 			# security question step
 			variables = read('vars.txt')
@@ -179,7 +179,7 @@ def forgot_password():
 			actual_answer = decode(users[user_id]['security_question']['answer'])
 			if entered_answer.lower() == actual_answer.lower(): # case insensitive
 				if verbose: print('answers match!')
-				return render_template('forgot_password.jinja2',success=True)
+				return render_template('forgot_password.html',success=True)
 			else:
 				question_id = users[user_id]['security_question']['id']
 				question = id_to_question(question_id)
@@ -187,7 +187,7 @@ def forgot_password():
 					print('answers do not match')
 					print('question is ',question)
 				flash('Incorrect Answer')
-				return render_template('forgot_password.jinja2', username=username, security_question=question)
+				return render_template('forgot_password.html', username=username, security_question=question)
 		if password:
 			# password step
 			variables = read('vars.txt')
@@ -201,7 +201,7 @@ def forgot_password():
 			return redirect('/'+username+'/')
 		else:
 			print('something went wrong')
-	return render_template('forgot_password.jinja2')
+	return render_template('forgot_password.html')
 
 @app.route('/<username>/')
 def home(username):
@@ -209,15 +209,15 @@ def home(username):
 	user_mapping = read('user_mapping.txt')
 	user_id = user_mapping[username]
 	name = users[user_id]['first_name']
-	return render_template('home.jinja2', username=username, users=users, name=name)
+	return render_template('home.html', username=username, users=users, name=name)
 
 @app.route('/leaderboard')
 def leaderboard():
-	return render_template('leaderboard.jinja2')
+	return render_template('leaderboard.html')
 
 @app.route('/<username>/leaderboard')
 def userleaderboard(username):
-	return render_template('userleaderboard.jinja2',username=username)
+	return render_template('userleaderboard.html',username=username)
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
 def records_add(username):
@@ -257,7 +257,7 @@ def records_add(username):
 		return redirect('/'+username+'/records-view')
 	if verbose:
 		print('COMMENT: ',COMMENT)
-	return render_template('personal_records_add.jinja2',challenge_dict=challenge_dict,username=username,comment=COMMENT)
+	return render_template('personal_records_add.html',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/records-view')
 def records_view(username):
@@ -271,7 +271,7 @@ def records_view(username):
 		print('user id',user_id)
 		print(challenges[user_id])
 	ch = challenges[user_id]
-	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=ch)
+	return render_template('personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):
@@ -299,19 +299,19 @@ def suggest_challenge(username):
 		else:
 			if verbose:
 				print('would be sending emails but that was set to False so not doing that.')
-		return render_template('home.jinja2', username=username, users=users, name=name)
-	return render_template('new_challenge.jinja2',username=username)
+		return render_template('home.html', username=username, users=users, name=name)
+	return render_template('new_challenge.html',username=username)
 
 @app.route('/admin')
 def admin_login():
 	if verbose: print('Admin home page')
-	return render_template('admin_home.jinja2',username='stillworkingonusername')
+	return render_template('admin_home.html',username='stillworkingonusername')
 
 @app.route('/admin/suggestions')
 def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	suggestions=read('challenge_suggestions.txt')
-	return render_template('admin_suggestions.jinja2',json=suggestions,username='stillworkingonusername')
+	return render_template('admin_suggestions.html',json=suggestions,username='stillworkingonusername')
 
 @app.route('/table')
 def table():

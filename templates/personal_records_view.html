@@ -3,6 +3,7 @@
 {% block top %} Personal Records {% endblock %}
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
 @font-face {
   font-family: OpenSans-Regular;
@@ -16,7 +17,7 @@
 }
 
 .container{
-	width:80%;
+	width:60%;
 	margin:0 auto;
 }
 
@@ -68,23 +69,54 @@ table tbody tr:hover{
 			text-align: center;
 			font-size: 30px;
 		}
+		.angle:hover{
+			color:#777
+		}
 	</style>
 	<br>
+	<script type="text/js">
+		var i = document.getElementsByTagName('i')
+		i[0].addEventListener("click", arrowDown)
+
+		function arrowDown(){
+			//i.classList.remove('fa-angle-right')
+			//i.classList.add('fa-angle-down')
+			background-color:blue;
+			alert('it worked! for the arrow')
+		}
+
+		function trash(){
+			var trash = document.getElementsByClassName('fa-trash')
+			trash[0].addEventListener('click', remove)
+
+			function remove(){
+			background-color:blue;
+			alert('it worked!')
+			}
+		}
+
+
+	</script>
+
 <div class="container">
 	<table>
 		<thead>
 			<tr class="table-head">
-				<th class="column1">Challenge</th>
-				<th class="column2">Score</th>
-				<th class="column3">Comment</th>
+				<th class="column1"></th>
+				<th class="column2">Challenge</th>
+				<th class="column3">Score</th>
+				<th class="column4">Comment</th>
+				<th class="column5"></th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for challenge in ch.keys()%}
 				<tr>
-					<td class="column1">{{challenge}}</td>
-					<td class="column2">{{ch[challenge][0].score}}</td>
-					<td class="column3">{{ch[challenge][0].comment}}</td>
+					<td class="column1"><i class="angle fa fa-angle-right"></td>
+					<td class="column2">{{challenge}}</td>
+					<td class="column3">{{ch[challenge][0].score}}</td>
+					<td class="column4">{{ch[challenge][0].comment}}</td>
+					<td class="column4"><i class="fa fa-trash"></td>
 				</tr>
 			{% endfor %}
 		</tbody>
