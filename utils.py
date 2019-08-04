@@ -3,6 +3,8 @@ from constants import SECURITY_QUESTIONS
 
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
+	if not name:
+		raise ValueError('you must enter a string for the name. '+str(name)+' is not a valid string')
 	first_letter = name[0]
 	rest_of_name = name[1:]
 	return first_letter.upper() + rest_of_name.lower()

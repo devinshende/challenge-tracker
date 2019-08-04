@@ -11,7 +11,7 @@ import datetime, pickle
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
-user_so_far = None
+# user_so_far = None
 
 @app.route('/favicon.ico')
 def favicon():
@@ -47,102 +47,81 @@ def api(filename):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-	global user_so_far
+	# global user_so_far
 	if request.method == 'POST':
-		first_name = request.form.get('first_name')
-		last_name = request.form.get('last_name')
-		age = request.form.get('age')
-		gender = request.form.get('gender')
 		users = read('users.txt')
-		user_id = len(users)
-
-		for user in users.values():
-			if user["first_name"] == to_name_case(first_name) \
-			and user["last_name"] == to_name_case(last_name):
-				flash('You have already registered for an account')
-				if verbose: print('already registered for an account')
-				return render_template("signup.jinja2")
-		
-		user_so_far = {
-			'user_id':user_id,
-			'first_name':to_name_case(first_name),
-			'last_name':to_name_case(last_name),
-			'age':age,
-			'gender':gender
-		}
 		variables = read('vars.txt')
-		variables['current_user_id'] = user_id
-		write('vars.txt',variables)
-		if verbose:
-			print('current_user_id ',user_id)
-			print('user so far. Not adding them to database')
-			pprint(user_so_far)
-		return redirect('/signup2')
+		first_name = request.form.get('first_name')
+		if first_name:
+			# signup1
+			if verbose:
+				print('in signup 1')
+			first_name = request.form.get('first_name')
+			last_name = request.form.get('last_name')
+			age = request.form.get('age')
+			gender = request.form.get('gender')
+			user_id = len(users)
+			signup1 = {
+				'user_id':user_id,
+				'first_name':to_name_case(first_name),
+				'last_name':to_name_case(last_name),
+				'age':age,
+				'gender':gender
+			}
+			users_lst = list(users.values())[:-1] # everything but last one
+			for user in users_lst:
+				if user["first_name"] == to_name_case(first_name) \
+				and user["last_name"] == to_name_case(last_name):
+					flash('You have already registered for an account')
+					return render_template("signup.jinja2")
+			variables['half_user'] = signup1
+			variables['current_user_id'] = user_id
+			write('vars.txt',variables)
+			return render_template('signup2.jinja2', security_questions=SECURITY_QUESTIONS)
+		else:
+			# signup2
+			if verbose:
+				print('in signup2')
+			# switching over to signup2 template
+			username = request.form.get('username')
+			password = request.form.get('password')
+			confirm_password = request.form.get('confirm_password')
+			security_question = request.form.get('security_question')
+			security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
+			answer = request.form.get('answer')
+			security = {'id':security_question_id,'answer':encode(answer)}
+			users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
+			for user in users_lst:
+				if verbose:
+					print(user)
+					print('username: ',user['username'])
+					print(user['username'] == username)
+				if user["username"] == username:
+					flash('That username is already taken')
+					return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
+
+			# print(user_id)
+			variables = read('vars.txt')
+			user = variables['half_user']
+			user_id = user['user_id']
+			user['username'] = username
+			user['password'] = encode(password)
+			user['security_question'] = security
+			users[user_id] = user
+			write('users.txt', users)
+			variables['half_user'] = None
+			write('vars.txt', variables)
+			user_mapping = read('user_mapping.txt')
+			user_mapping[username] = user_id
+			write('user_mapping.txt',user_mapping)
+
+			challenges = read_challenges()
+			challenges[user_id] = {}
+			write_challenges(challenges)
+			return redirect('/'+username+'/')
+
 	return render_template('signup.jinja2')
 
-@app.route('/signup2', methods=['GET','POST'])
-def signup2():
-	global user_so_far
-	users = read('users.txt')
-	if request.method == 'POST':
-		username = request.form.get('username')
-		password = request.form.get('password')
-		confirm_password = request.form.get('confirm_password')
-		security_question = request.form.get('security_question')
-		security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
-		answer = request.form.get('answer')
-		security = {'id':security_question_id,'answer':encode(answer)}
-		users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
-		for user in users_lst:
-			if verbose:
-				print(user)
-				print('username: ',user['username'])
-				print(user['username'] == username)
-			if user["username"] == username:
-				flash('That username is already taken')
-				return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
-
-		user_id = len(users)
-		print(user_id)
-		users[user_id] = user_so_far
-		users[user_id]['username'] = username
-		users[user_id]['password'] = encode(password)
-		users[user_id]['security_question'] = security
-		
-		write('users.txt', users)
-		user_mapping = read('user_mapping.txt')
-		user_mapping[username] = user_id
-		write('user_mapping.txt',user_mapping)
-
-		challenges = read_challenges()
-		challenges[user_id] = {}
-		write_challenges(challenges)
-
-		if verbose:
-			print('new user added')
-			print(username)
-		# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
-		variables = read('vars.txt')
-		variables['current_user_id'] = user_id
-		variables['logged_in'] = True
-		write('vars.txt',variables)
-		return redirect('/'+ username)
-
-	try:
-		user_id = read('vars.txt')['current_user_id']
-		if verbose: print('your user id is ',user_id)
-		try:
-			if verbose:
-				print('name',user_so_far['first_name'])
-			first_name_test = user_so_far['first_name']
-		except TypeError:
-			if verbose: print('user_so_far["first_name"] does not exist. Returning you to signup1')
-			return redirect('/signup')
-		if verbose: print('First name is',first_name_test,'\nRendering signup2')
-	except KeyError:
-		print('first name doesn\'t exist. Redirecting you to signup1')
-		return redirect('/signup')
-	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
