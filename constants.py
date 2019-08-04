@@ -5,6 +5,27 @@ SECURITY_QUESTIONS = [
 	"What school did you attend in kindergarten?"
 ]
 
+
+challenge_dict = {
+	'time':[
+		'Devil Steps',
+		'Campus Board (up and down)',
+		'Floating Doors to Cliffhanger',
+		'Rope Climb'
+	], 
+
+	'laps':[
+		'Rings',
+		'Campus Board',
+		'Balance Beam Slack Line'
+	],
+
+	'reps':[
+		'Warped Wall',
+		'Quintuple Steps'
+	]
+}
+
 def question_to_id(question):
 	if question not in SECURITY_QUESTIONS:
 		print(f'{question} not in SECURITY_QUESTIONS')
