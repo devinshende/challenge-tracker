@@ -210,7 +210,14 @@
 		}
 	</style>
 	<div id="top"><h1>{% block top %}{% endblock %}</h1></div>
-	{% block error %}{% endblock %}
+	  {% with messages = get_flashed_messages() %}
+	      {% if messages %}
+	        {% for message in messages %}
+	        <div id="error"><strong>{{message}}</strong></div>
+	        {% endfor %}
+	        <br id="above_img">
+	      {% endif %}
+	    {% endwith %}
 	<a href="{% block imghref %}{% endblock %}"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
       {% block content %}{% endblock %}
   </body>

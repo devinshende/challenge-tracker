@@ -1,4 +1,5 @@
 import os
+from constants import SECURITY_QUESTIONS
 
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
@@ -30,3 +31,17 @@ def reset_all():
 	for f in files:
 		write(f+'.txt','')
 	write('args.txt',{'email':False,'verbose':False})
+
+def get_user_id(username):
+	user_mapping = read('user_mapping.txt')
+	return user_mapping[username]
+
+def question_to_id(question):
+	if question not in SECURITY_QUESTIONS:
+		print(f'{question} not in SECURITY_QUESTIONS')
+	return SECURITY_QUESTIONS.index(question)
+
+def id_to_question(ID):
+	if ID > len(SECURITY_QUESTIONS):
+		print(f'{ID} is too big to be one of the accepted SECURITY_QUESTIONS')
+	return SECURITY_QUESTIONS[ID]

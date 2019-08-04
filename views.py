@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, question_to_id, id_to_question, challenge_dict
+from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
 import datetime, pickle
@@ -30,8 +30,9 @@ def internal_error(error):
 @app.route('/')
 def landing_page():
 	variables = read('vars.txt')
-	variables['current_user_id'] = None
-	variables['logged_in'] = False
+	for key, _ in variables.items():
+		variables[key] = None
+	variables['logged_in'] = False # everything but this should be set to False
 	write('vars.txt',variables)
 	return render_template('landing_page.jinja2') # kwargs are used for jinja2
 
@@ -170,6 +171,58 @@ def login():
 			flash('Incorrect Password')
 			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
+
+@app.route('/forgot-password',methods=['GET','POST'])
+def forgot_password():
+	users = read('users.txt')
+	if request.method == 'POST':
+		username = request.form.get('username')
+		password = request.form.get('password')
+		if username: # if there is no username in the form then they are on the next step. Ask them for security question
+			# username step
+			variables = read('vars.txt')
+			variables['forgot_username'] = username
+			write('vars.txt',variables)
+			try:
+				user_id = get_user_id(username)
+			except KeyError:
+				flash('That username does not exist')
+				return redirect('/forgot-password')
+			question_id = users[user_id]['security_question']['id']
+			question = id_to_question(question_id)
+			return render_template('forgot_password.jinja2', username=username, security_question=question)
+		if not username and not password:
+			# security question step
+			variables = read('vars.txt')
+			username = variables['forgot_username']
+			user_id = get_user_id(username)
+			entered_answer = request.form.get('answer')
+			actual_answer = decode(users[user_id]['security_question']['answer'])
+			if entered_answer.lower() == actual_answer.lower(): # case insensitive
+				if verbose: print('answers match!')
+				return render_template('forgot_password.jinja2',success=True)
+			else:
+				question_id = users[user_id]['security_question']['id']
+				question = id_to_question(question_id)
+				if verbose: 
+					print('answers do not match')
+					print('question is ',question)
+				flash('Incorrect Answer')
+				return render_template('forgot_password.jinja2', username=username, security_question=question)
+		if password:
+			# password step
+			variables = read('vars.txt')
+			username = variables['forgot_username']
+			user_id = get_user_id(username)
+			if verbose: print('new password is ',password)
+			users[user_id]['password'] = encode(password)
+			variables['forgot_username'] = None
+			write('vars.txt',variables)
+			write('users.txt',users)
+			return redirect('/'+username+'/')
+		else:
+			print('something went wrong')
+	return render_template('forgot_password.jinja2')
 
 @app.route('/<username>/')
 def home(username):
