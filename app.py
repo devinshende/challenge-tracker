@@ -8,32 +8,13 @@ import datetime
 import ast
 import os
 import argparse
+from util import *
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
 styling of table and layout
 handle bad input from users for the score field in form
 '''
-def read(file_name,type='dict'):
-	with open(os.path.join('database',file_name), 'r') as file:
-		x = file.read()
-	try:
-		return eval(x) # gets dictionary of string
-	except:
-		if type=='dict':
-			return {}
-		if type=='list':
-			return []
-
-def write(file_name, data):
-	with open(os.path.join('database',file_name), 'w') as file:
-		file.write(str(data))
-
-def reset_all():
-	files = ['args','challenge_suggestions','user_mapping','users','vars']
-	for f in files:
-		write(f+'.txt','')
-	write('args.txt',{'email':False,'verbose':False})
 
 app = Flask(__name__)
 app.static_folder = 'static'

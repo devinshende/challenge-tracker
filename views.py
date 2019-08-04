@@ -1,4 +1,5 @@
-from app import app, read, write
+from app import app
+from utils import *
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
@@ -10,12 +11,6 @@ import datetime, pickle
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
-
-def to_name_case(name):
-	"converts name to have first letter uppercase and the rest lowercase"
-	first_letter = name[0]
-	rest_of_name = name[1:]
-	return first_letter.upper() + rest_of_name.lower()
 
 @app.route('/favicon.ico')
 def favicon():
