@@ -28,6 +28,15 @@ def landing_page():
 	write('vars.txt',variables)
 	return render_template('landing_page.jinja2') # kwargs are used for jinja2
 
+@app.route('/api/<filename>')
+def api(filename):
+	if filename != 'challenges.pickle':
+		with open('database/'+filename,'r') as file:
+			data = file.read()
+	else:
+		data = read_challenges()
+	return str(data)
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
