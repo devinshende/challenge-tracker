@@ -4,9 +4,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, sen
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges, challenge_dict
+from challenges import Entry, challenge_dict, read_challenges, write_challenges
 from pprint import pprint
-import datetime
+import datetime, pickle
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
@@ -32,6 +32,15 @@ def landing_page():
 	variables['logged_in'] = False
 	write('vars.txt',variables)
 	return render_template('landing_page.jinja2') # kwargs are used for jinja2
+
+@app.route('/api/<filename>')
+def api(filename):
+	if filename != 'challenges.pickle':
+		with open('database/'+filename,'r') as file:
+			data = file.read()
+	else:
+		data = read_challenges()
+	return str(data)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -98,7 +107,11 @@ def signup2():
 		user_mapping = read('user_mapping.txt')
 		user_mapping[username] = user_id
 		write('user_mapping.txt',user_mapping)
+
+		challenges = read_challenges()
 		challenges[user_id] = {}
+		write_challenges(challenges)
+
 		if verbose:
 			print('new user added')
 			print(username)
@@ -182,6 +195,8 @@ def records_add(username):
 		en = Entry(time, date, comment)
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
+
+		challenges = read_challenges()
 		try:
 			# there is already an entry for the challenge. append the entry to the list
 			if verbose:
@@ -195,6 +210,7 @@ def records_add(username):
 		if verbose:
 			pprint(challenges)
 			print(COMMENT)
+		write_challenges(challenges)
 		COMMENT = ''
 		return redirect('/'+username+'/records-view')
 	if verbose:
@@ -205,8 +221,15 @@ def records_add(username):
 def records_view(username):
 	user_mapping = read('user_mapping.txt')
 	user_id = user_mapping[username]
-	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=challenges[user_id])
-
+	challenges = read_challenges()
+	print(verbose)
+	if verbose: 
+		print(type(challenges))
+		print(challenges)
+		print('user id',user_id)
+		print(challenges[user_id])
+	ch = challenges[user_id]
+	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=ch)
 
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges
+from challenges import Entry
 from pprint import pprint
 from termcolor import colored
 import datetime
@@ -18,8 +18,8 @@ def read(file_name,type='dict'):
 	with open(os.path.join('database',file_name), 'r') as file:
 		x = file.read()
 	try:
-		return eval(x)
-	except SyntaxError:
+		return eval(x) # gets dictionary of string
+	except:
 		if type=='dict':
 			return {}
 		if type=='list':
