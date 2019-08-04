@@ -54,7 +54,8 @@ def signup():
 		user_id = len(users)
 
 		for user in users.values():
-			if user["first_name"] == first_name and user["last_name"] == last_name:
+			if user["first_name"] == to_name_case(first_name) \
+			and user["last_name"] == to_name_case(last_name):
 				flash('You have already registered for an account')
 				if verbose: print('already registered for an account')
 				return render_template("signup.jinja2")
@@ -161,7 +162,6 @@ def login():
 			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
 
-
 @app.route('/<username>/')
 def home(username):
 	users = read('users.txt')
@@ -232,7 +232,6 @@ def records_view(username):
 	ch = challenges[user_id]
 	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=ch)
 
-
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):
 	if request.method == "POST":
@@ -272,4 +271,3 @@ def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	suggestions=read('challenge_suggestions.txt')
 	return render_template('admin_suggestions.jinja2',json=suggestions,username='stillworkingonusername')
-
