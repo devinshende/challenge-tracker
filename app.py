@@ -8,7 +8,7 @@ import datetime
 import ast
 import os
 import argparse
-from util import *
+from utils import *
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
