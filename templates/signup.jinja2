@@ -2,16 +2,6 @@
 {% block title %} Signup {% endblock %}
 {% block top %} Signup {% endblock %}
 {% block imghref %}/{% endblock %}
-{% block error %}
-  {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-        <div id="error"><strong>{{message}}</strong></div>
-        {% endfor %}
-        <br id="above_img">
-      {% endif %}
-    {% endwith %}
-{% endblock %}
 {% block content %}
 <div class="wrapper fadeInDown">
   <div id="formContent">
@@ -23,7 +13,7 @@
       <input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Last Name" required> 
       <div id="age">
       	<label name="age">Age:</label>
-      	<input type="number" id="age" class="fadeIn third" name="age" placeholder="Age" required>
+      	<input type="number" id="age" class="fadeIn third" name="age" placeholder="Age" value="{{age}}" required>
       </div>
       <br>
 		<label name = "gender">Gender:</label>

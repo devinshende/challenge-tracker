@@ -1,39 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from mylib.cipher import encode, decode
-from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges
+from constants import SECURITY_QUESTIONS
+from challenges import Entry
 from pprint import pprint
 from termcolor import colored
 import datetime
 import ast
 import os
 import argparse
+from utils import *
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
 styling of table and layout
 handle bad input from users for the score field in form
 '''
-def read(file_name,type='dict'):
-	with open(os.path.join('database',file_name), 'r') as file:
-		x = file.read()
-	try:
-		return eval(x)
-	except SyntaxError:
-		if type=='dict':
-			return {}
-		if type=='list':
-			return []
-
-def write(file_name, data):
-	with open(os.path.join('database',file_name), 'w') as file:
-		file.write(str(data))
-
-def reset_all():
-	files = ['args','challenge_suggestions','user_mapping','users','vars']
-	for f in files:
-		write(f+'.txt','')
-	write('args.txt',{'email':False,'verbose':False})
 
 app = Flask(__name__)
 app.static_folder = 'static'

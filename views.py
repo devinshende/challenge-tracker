@@ -1,15 +1,17 @@
-from app import app, read, write
+from app import app
+from utils import *
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenges, challenge_dict
+from constants import SECURITY_QUESTIONS, challenge_dict
+from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
-import datetime
+import datetime, pickle
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
+# user_so_far = None
 
 @app.route('/favicon.ico')
 def favicon():
@@ -28,96 +30,98 @@ def internal_error(error):
 @app.route('/')
 def landing_page():
 	variables = read('vars.txt')
-	variables['current_user_id'] = None
-	variables['logged_in'] = False
+	for key, _ in variables.items():
+		variables[key] = None
+	variables['logged_in'] = False # everything but this should be set to False
 	write('vars.txt',variables)
 	return render_template('landing_page.jinja2') # kwargs are used for jinja2
 
+@app.route('/api/<filename>')
+def api(filename):
+	if filename != 'challenges.pickle':
+		with open('database/'+filename,'r') as file:
+			data = file.read()
+	else:
+		data = read_challenges()
+	return str(data)
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+	# global user_so_far
 	if request.method == 'POST':
-		first_name = request.form.get('first_name')
-		last_name = request.form.get('last_name')
-		age = request.form.get('age')
-		gender = request.form.get('gender')
 		users = read('users.txt')
-		user_id = len(users)
-
-		for user in users.values():
-			if user["first_name"] == first_name and user["last_name"] == last_name:
-				flash('You have already registered for an account')
-				if verbose: print('already registered for an account')
-				return render_template("signup.jinja2")
-		
-		users[user_id] = {
-			'user_id':user_id,
-			'first_name':first_name,
-			'last_name':last_name,
-			'age':age,
-			'gender':gender
-		}
 		variables = read('vars.txt')
-		variables['current_user_id'] = user_id
-		write('vars.txt',variables)
-		if verbose:
-			print('current_user_id ',user_id)
-			print('user so far')
-			pprint(users[user_id])
-		write('users.txt', users)
+		first_name = request.form.get('first_name')
+		if first_name:
+			# signup1
+			if verbose:
+				print('in signup 1')
+			first_name = request.form.get('first_name')
+			last_name = request.form.get('last_name')
+			age = request.form.get('age')
+			gender = request.form.get('gender')
+			user_id = len(users)
+			signup1 = {
+				'user_id':user_id,
+				'first_name':to_name_case(first_name),
+				'last_name':to_name_case(last_name),
+				'age':age,
+				'gender':gender
+			}
+			users_lst = list(users.values())[:-1] # everything but last one
+			for user in users_lst:
+				if user["first_name"] == to_name_case(first_name) \
+				and user["last_name"] == to_name_case(last_name):
+					flash('You have already registered for an account')
+					return render_template("signup.jinja2")
+			variables['half_user'] = signup1
+			variables['current_user_id'] = user_id
+			write('vars.txt',variables)
+			return render_template('signup2.jinja2', security_questions=SECURITY_QUESTIONS)
+		else:
+			# signup2
+			if verbose:
+				print('in signup2')
+			# switching over to signup2 template
+			username = request.form.get('username')
+			password = request.form.get('password')
+			confirm_password = request.form.get('confirm_password')
+			security_question = request.form.get('security_question')
+			security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
+			answer = request.form.get('answer')
+			security = {'id':security_question_id,'answer':encode(answer)}
+			users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
+			for user in users_lst:
+				if verbose:
+					print(user)
+					print('username: ',user['username'])
+					print(user['username'] == username)
+				if user["username"] == username:
+					flash('That username is already taken')
+					return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
 
-		return redirect('/signup2')
+			# print(user_id)
+			variables = read('vars.txt')
+			user = variables['half_user']
+			user_id = user['user_id']
+			user['username'] = username
+			user['password'] = encode(password)
+			user['security_question'] = security
+			users[user_id] = user
+			write('users.txt', users)
+			variables['half_user'] = None
+			write('vars.txt', variables)
+			user_mapping = read('user_mapping.txt')
+			user_mapping[username] = user_id
+			write('user_mapping.txt',user_mapping)
+
+			challenges = read_challenges()
+			challenges[user_id] = {}
+			write_challenges(challenges)
+			return redirect('/'+username+'/')
+
 	return render_template('signup.jinja2')
 
-@app.route('/signup2', methods=['GET','POST'])
-def signup2():
-	users = read('users.txt')
-	if request.method == 'POST':
-		username = request.form.get('username')
-		password = request.form.get('password')
-		confirm_password = request.form.get('confirm_password')
-		security_question = request.form.get('security_question')
-		security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
-		answer = request.form.get('answer')
-		security = {'id':security_question_id,'answer':encode(answer)}
-		users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
-		for user in users_lst:
-			if verbose:
-				print(user)
-				print('username: ',user['username'])
-				print(user['username'] == username)
-			if user["username"] == username:
-				flash('That username is already taken')
-				return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
-
-		user_id = len(users) - 1
-		users[user_id]['username'] = username
-		users[user_id]['password'] = encode(password)
-		users[user_id]['security_question'] = security
-		
-		write('users.txt', users)
-		user_mapping = read('user_mapping.txt')
-		user_mapping[username] = user_id
-		write('user_mapping.txt',user_mapping)
-		challenges[user_id] = {}
-		if verbose:
-			print('new user added')
-			print(username)
-		# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
-		variables = read('vars.txt')
-		variables['current_user_id'] = user_id
-		variables['logged_in'] = True
-		write('vars.txt',variables)
-		return redirect('/'+ username)
-
-	try:
-		user_id = read('vars.txt')['current_user_id']
-		if verbose: print('your user id is ',user_id)
-		first_name_test = users[user_id]['first_name']
-		if verbose: print('first name is',first_name_test,'Rendering signup2')
-	except KeyError:
-		print('first name doesn\'t exist. Redirecting you to signup1')
-		return redirect('/signup')
-	return render_template('signup2.jinja2', security_questions = SECURITY_QUESTIONS)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -147,6 +151,57 @@ def login():
 			return render_template('login.jinja2', username=username)
 	return render_template('login.jinja2')
 
+@app.route('/forgot-password',methods=['GET','POST'])
+def forgot_password():
+	users = read('users.txt')
+	if request.method == 'POST':
+		username = request.form.get('username')
+		password = request.form.get('password')
+		if username: # if there is no username in the form then they are on the next step. Ask them for security question
+			# username step
+			variables = read('vars.txt')
+			variables['forgot_username'] = username
+			write('vars.txt',variables)
+			try:
+				user_id = get_user_id(username)
+			except KeyError:
+				flash('That username does not exist')
+				return redirect('/forgot-password')
+			question_id = users[user_id]['security_question']['id']
+			question = id_to_question(question_id)
+			return render_template('forgot_password.jinja2', username=username, security_question=question)
+		if not username and not password:
+			# security question step
+			variables = read('vars.txt')
+			username = variables['forgot_username']
+			user_id = get_user_id(username)
+			entered_answer = request.form.get('answer')
+			actual_answer = decode(users[user_id]['security_question']['answer'])
+			if entered_answer.lower() == actual_answer.lower(): # case insensitive
+				if verbose: print('answers match!')
+				return render_template('forgot_password.jinja2',success=True)
+			else:
+				question_id = users[user_id]['security_question']['id']
+				question = id_to_question(question_id)
+				if verbose: 
+					print('answers do not match')
+					print('question is ',question)
+				flash('Incorrect Answer')
+				return render_template('forgot_password.jinja2', username=username, security_question=question)
+		if password:
+			# password step
+			variables = read('vars.txt')
+			username = variables['forgot_username']
+			user_id = get_user_id(username)
+			if verbose: print('new password is ',password)
+			users[user_id]['password'] = encode(password)
+			variables['forgot_username'] = None
+			write('vars.txt',variables)
+			write('users.txt',users)
+			return redirect('/'+username+'/')
+		else:
+			print('something went wrong')
+	return render_template('forgot_password.jinja2')
 
 @app.route('/<username>/')
 def home(username):
@@ -182,6 +237,8 @@ def records_add(username):
 		en = Entry(time, date, comment)
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
+
+		challenges = read_challenges()
 		try:
 			# there is already an entry for the challenge. append the entry to the list
 			if verbose:
@@ -195,6 +252,7 @@ def records_add(username):
 		if verbose:
 			pprint(challenges)
 			print(COMMENT)
+		write_challenges(challenges)
 		COMMENT = ''
 		return redirect('/'+username+'/records-view')
 	if verbose:
@@ -205,9 +263,15 @@ def records_add(username):
 def records_view(username):
 	user_mapping = read('user_mapping.txt')
 	user_id = user_mapping[username]
-	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=challenges[user_id])
-
-
+	challenges = read_challenges()
+	print(verbose)
+	if verbose: 
+		print(type(challenges))
+		print(challenges)
+		print('user id',user_id)
+		print(challenges[user_id])
+	ch = challenges[user_id]
+	return render_template('personal_records_view.jinja2',challenge_dict=challenge_dict,username=username, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):
@@ -248,4 +312,3 @@ def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	suggestions=read('challenge_suggestions.txt')
 	return render_template('admin_suggestions.jinja2',json=suggestions,username='stillworkingonusername')
-

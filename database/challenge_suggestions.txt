@@ -1,1 +1,0 @@
-[{'type': 'Laps', 'name': 'sd', 'username': 'rs'}, {'type': 'Repetitions', 'name': 'squats bro', 'username': 'turtle'}, {'type': 'Time', 'name': 'asd', 'username': 'rs'}, {'type': 'Time', 'name': 'sadf', 'username': 'rs'}]

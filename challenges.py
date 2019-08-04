@@ -1,3 +1,4 @@
+import pickle, os
 
 class Entry(object):
 	"""class to store data about a user's time entry on a certain obstacle"""
@@ -17,34 +18,18 @@ class Entry(object):
 			raise ValueError('comment must be of type <str>')
 
 	def __repr__(self):
-		date = self.date.strftime("%A, %B %dth, %Y")
-		return f'Entry(score:{self.score} date:{date} comment: {self.comment})'
+		date = self.date.strftime("%B %d %Y")
+		return f'--Entry score={self.score}, date={date}, comment="{self.comment}--'
 
-challenge_dict = {
-	'time':[
-		'Devil Steps',
-		'Campus Board (up and down)',
-		'Floating Doors to Cliffhanger',
-		'Rope Climb'
-	], 
+def write_challenges(data):
+	with open('database/challenges.pickle','wb') as file:
+		pickle.dump(data,file)
 
-	'laps':[
-		'Rings',
-		'Campus Board',
-		'Balance Beam Slack Line'
-	],
-
-	'reps':[
-		'Warped Wall',
-		'Quintuple Steps'
-	]
-}
-
-
-
-challenges = {
-	0:{},
-	1:{},
-	2:{},
-	3:{}
-}
+def read_challenges():
+	if os.path.getsize('database/challenges.pickle') > 0:   
+		with open('database/challenges.pickle','rb') as file:
+			x = pickle.load(file)
+		return x
+	else:
+		print('pickle file is empty')
+		return {}
