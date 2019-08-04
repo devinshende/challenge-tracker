@@ -11,6 +11,7 @@ import datetime, pickle
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
+user_so_far = None
 
 @app.route('/favicon.ico')
 def favicon():
@@ -45,6 +46,7 @@ def api(filename):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+	global user_so_far
 	if request.method == 'POST':
 		first_name = request.form.get('first_name')
 		last_name = request.form.get('last_name')
@@ -60,7 +62,7 @@ def signup():
 				if verbose: print('already registered for an account')
 				return render_template("signup.jinja2")
 		
-		users[user_id] = {
+		user_so_far = {
 			'user_id':user_id,
 			'first_name':to_name_case(first_name),
 			'last_name':to_name_case(last_name),
@@ -72,15 +74,14 @@ def signup():
 		write('vars.txt',variables)
 		if verbose:
 			print('current_user_id ',user_id)
-			print('user so far')
-			pprint(users[user_id])
-		write('users.txt', users)
-
+			print('user so far. Not adding them to database')
+			pprint(user_so_far)
 		return redirect('/signup2')
 	return render_template('signup.jinja2')
 
 @app.route('/signup2', methods=['GET','POST'])
 def signup2():
+	global user_so_far
 	users = read('users.txt')
 	if request.method == 'POST':
 		username = request.form.get('username')
@@ -100,7 +101,9 @@ def signup2():
 				flash('That username is already taken')
 				return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
 
-		user_id = len(users) - 1
+		user_id = len(users)
+		print(user_id)
+		users[user_id] = user_so_far
 		users[user_id]['username'] = username
 		users[user_id]['password'] = encode(password)
 		users[user_id]['security_question'] = security
@@ -127,8 +130,14 @@ def signup2():
 	try:
 		user_id = read('vars.txt')['current_user_id']
 		if verbose: print('your user id is ',user_id)
-		first_name_test = users[user_id]['first_name']
-		if verbose: print('first name is',first_name_test,'Rendering signup2')
+		try:
+			if verbose:
+				print('name',user_so_far['first_name'])
+			first_name_test = user_so_far['first_name']
+		except TypeError:
+			if verbose: print('user_so_far["first_name"] does not exist. Returning you to signup1')
+			return redirect('/signup')
+		if verbose: print('First name is',first_name_test,'\nRendering signup2')
 	except KeyError:
 		print('first name doesn\'t exist. Redirecting you to signup1')
 		return redirect('/signup')

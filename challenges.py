@@ -1,4 +1,4 @@
-import pickle
+import pickle, os
 
 class Entry(object):
 	"""class to store data about a user's time entry on a certain obstacle"""
@@ -26,6 +26,10 @@ def write_challenges(data):
 		pickle.dump(data,file)
 
 def read_challenges():
-	with open('database/challenges.pickle','rb') as file:
-		x = pickle.load(file)
-	return x
+	if os.path.getsize('database/challenges.pickle') > 0:   
+		with open('database/challenges.pickle','rb') as file:
+			x = pickle.load(file)
+		return x
+	else:
+		print('pickle file is empty')
+		return {}
