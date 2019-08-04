@@ -3,8 +3,8 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, question_to_id, id_to_question
-from challenges import Entry, challenge_dict, read_challenges, write_challenges
+from constants import SECURITY_QUESTIONS, question_to_id, id_to_question, challenge_dict
+from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
 import datetime, pickle
 

@@ -29,24 +29,3 @@ def read_challenges():
 	with open('database/challenges.pickle','rb') as file:
 		x = pickle.load(file)
 	return x
-
-
-challenge_dict = {
-	'time':[
-		'Devil Steps',
-		'Campus Board (up and down)',
-		'Floating Doors to Cliffhanger',
-		'Rope Climb'
-	], 
-
-	'laps':[
-		'Rings',
-		'Campus Board',
-		'Balance Beam Slack Line'
-	],
-
-	'reps':[
-		'Warped Wall',
-		'Quintuple Steps'
-	]
-}
