@@ -1,14 +1,24 @@
-{% extends "base.html" %}
+{% extends "error_base.html" %}
 {% block title %} Signup {% endblock %}
 {% block top %} Signup {% endblock %}
 {% block imghref %}#{% endblock %}
+{% block error %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+        <div id="error"><strong>{{message}}</strong></div>
+        {% endfor %}
+        <br id="above_img">
+      {% endif %}
+    {% endwith %}
+{% endblock %}
 {% block content %}
 	<div class="wrapper fadeInDown">
 		<div id="formContent">
 		<form method = "POST">
 			<input type="text" id="username" name="username" placeholder="Username" required>
-			<input type="password" name="password" id="password" placeholder="Password" required>
-			<input type="password" name="confirm_password" placeholder="Confirm Password"  oninput="check(this)" required>
+			<input type="password" name="password" id="password" placeholder="Password" value="{{password}}" required>
+			<input type="password" name="confirm_password" value="{{confirm_password}}" placeholder="Confirm Password"  oninput="check(this)" required>
 				<script language='javascript' type='text/javascript'>
 				    function check(input) {
 				        if (input.value != document.getElementById('password').value) {
@@ -21,7 +31,7 @@
 				</script>
 			<label for="security_question">Security Question (pick one):</label>
 			<select name="security_question" required>
-				<option selected value="" hidden>Pick One</option>
+				<option selected value="{{security_question_id}}" hidden>Pick One</option>
 				{% for choice in security_questions%}
 				<option value="{{choice}}" required>{{choice}}</option>
 				{% endfor %}
