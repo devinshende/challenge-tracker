@@ -312,3 +312,7 @@ def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	suggestions=read('challenge_suggestions.txt')
 	return render_template('admin_suggestions.jinja2',json=suggestions,username='stillworkingonusername')
+
+@app.route('/table')
+def table():
+	return render_template('my_table.html')
