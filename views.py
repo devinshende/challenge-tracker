@@ -11,6 +11,12 @@ import datetime, pickle
 COMMENT = ''
 verbose = read('args.txt')['verbose']
 
+def to_name_case(name):
+	"converts name to have first letter uppercase and the rest lowercase"
+	first_letter = name[0]
+	rest_of_name = name[1:]
+	return first_letter.upper() + rest_of_name.lower()
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -49,8 +55,8 @@ def signup():
 		
 		users[user_id] = {
 			'user_id':user_id,
-			'first_name':first_name,
-			'last_name':last_name,
+			'first_name':to_name_case(first_name),
+			'last_name':to_name_case(last_name),
 			'age':age,
 			'gender':gender
 		}
