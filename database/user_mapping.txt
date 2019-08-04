@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-{'rs': 0, 'ds': 1, 'turtle': 2, 'ellaaaaa': 3, 'ella': 3}
-=======
-{'rs': 0, 'ds': 1, 'turtle': 2, '1': 3, 'louis01': 3, 'dshende': 4}
->>>>>>> 7279a0557ca8edd81ec4d1923b0e6862e681c021

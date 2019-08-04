@@ -1,1 +1,0 @@
-{'current_user_id': 5, 'logged_in': True}
