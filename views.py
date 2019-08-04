@@ -42,6 +42,12 @@ def signup():
 		gender = request.form.get('gender')
 		users = read('users.txt')
 		user_id = len(users)
+
+		for user in users.values():
+			if user["first_name"] == first_name and user["last_name"] == last_name:
+				flash('You have already registered for an account')
+				if verbose: print('already registered for an account')
+				return render_template("signup.jinja2")
 		
 		users[user_id] = {
 			'user_id':user_id,
@@ -73,6 +79,15 @@ def signup2():
 		security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
 		answer = request.form.get('answer')
 		security = {'id':security_question_id,'answer':encode(answer)}
+		users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
+		for user in users_lst:
+			if verbose:
+				print(user)
+				print('username: ',user['username'])
+				print(user['username'] == username)
+			if user["username"] == username:
+				flash('That username is already taken')
+				return render_template("signup2.jinja2", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
 
 		user_id = len(users) - 1
 		users[user_id]['username'] = username
