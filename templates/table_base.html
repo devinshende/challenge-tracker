@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %} {% endblock %}</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" type="text/css" href="static/styles.css">
+ 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<style type="text/css">
+@font-face {
+  font-family: OpenSans-Regular;
+  src: url('../fonts/OpenSans/OpenSans-Regular.ttf'); 
+}
+
+* {
+	margin: 0px; 
+	padding: 0px; 
+	box-sizing: border-box;
+}
+
+.container{
+	border-radius: 20px;
+  	height: 100%;
+	margin: 0 auto;
+	width:60%;
+	margin:0 auto;
+}
+
+table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.table-head th { 
+	font-family: OpenSans-Regular;
+	font-size: 20px;
+	color: #eee;
+	line-height: 1.2;
+}
+
+table td, table th {
+	padding-left: 8px;
+}
+table thead tr {
+	height: 60px;
+	background-color: #262136;
+}
+table tbody tr {
+	height: 50px;
+}
+tbody tr {
+	background-color: #e4e4e4;
+}
+
+tbody tr:nth-child(even) {
+	background-color: #f5f5f5
+}
+table td, table th {
+	text-align: center;
+}
+table tbody tr:hover{
+	background-color: #DDE8E9;
+}
+
+		img {
+			margin: 0 auto;
+			height: 200px;
+			display: flex;
+		}
+		#top {
+			display: block;
+			padding: 20px;
+			background-color: black;
+			margin: 0 0 10px 0;
+		}
+		h1 {
+			margin: 0 auto;
+			text-align: center;
+			width: 40%;
+			color: white;
+		}
+	#error {
+		background: #e86f6f;
+		font-size: 20px;
+		padding: 10px;
+		width: 80%;
+		display: block;
+		text-align:center;
+		margin: 0 auto;
+		border-radius: 20px;
+		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	}
+
+	a.btn {
+		text-decoration: none;
+		
+		font-size: 30px;
+		width: 200px;
+		height: 100%;
+		
+		padding: 10px;
+		margin: 20px auto;
+		text-align: center;
+		display: block;
+		
+		color: white;
+		background-color: black;
+		/*background-color: #1d8ece;*/
+		border-radius: 15px;
+	}
+	.btn:hover {
+		/*background:#27aee3;*/
+		background-color: #646669;
+	}
+	#head-td {
+		background-color: white; 
+		color:black;
+	}
+	.field {
+		width: 50%;
+		align-content:center;
+	}
+	.field input {
+		align-content:right;
+	}
+/*	#table-container {
+		margin: 10px auto;
+	}*/
+	.container div {
+		display:block;
+		margin: 0 auto;
+	}
+	#spacing {
+		color: red;
+		height:150px;
+		margin-top:30px;
+	}
+	#above_img {
+		line-height:100px;
+	}
+	.wrapper {
+	  display: flex;
+	  align-items: center;
+	  flex-direction: column; 
+	  justify-content: center;
+	  width: 100%;
+	  min-height: 100%;
+	  padding: 20px;
+	}
+	#formContent {
+	  -webkit-border-radius: 10px 10px 10px 10px;
+	  border-radius: 10px 10px 10px 10px;
+	  background: #fff;
+	  padding: 30px;
+	  width: 90%;
+	  max-width: 450px;
+	  position: relative;
+	  padding: 0px;
+	  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	  text-align: center;
+	}
+	#formFooter {
+	  background-color: #f6f6f6;
+	  border-top: 1px solid #dce8f1;
+	  padding: 25px;
+	  text-align: center;
+	  -webkit-border-radius: 0 0 10px 10px;
+	  border-radius: 0 0 10px 10px;
+	}
+	/* TABS */
+	h2.inactive {
+	  color: #cccccc;
+	}
+	h2.active {
+	  color: #0d0d0d;
+	  border-bottom: 2px solid #5fbae9;
+	}
+	/* FORM TYPOGRAPHY*/
+	input[type=button], input[type=submit], input[type=reset]  {
+	  background-color: black;
+	  border: none;
+	  color: white;
+	  padding: 15px 80px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  text-transform: uppercase;
+	  font-size: 13px;
+	  -webkit-box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+	  box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+	  -webkit-border-radius: 5px 5px 5px 5px;
+	  border-radius: 5px 5px 5px 5px;
+	  margin: 5px 20px 40px 20px;
+	  -webkit-transition: all 0.3s ease-in-out;
+	  -moz-transition: all 0.3s ease-in-out;
+	  -ms-transition: all 0.3s ease-in-out;
+	  -o-transition: all 0.3s ease-in-out;
+	  transition: all 0.3s ease-in-out;
+	}
+	input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+	  background-color: #646669;
+	}
+	input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+	  -moz-transform: scale(0.95);
+	  -webkit-transform: scale(0.95);
+	  -o-transform: scale(0.95);
+	  -ms-transform: scale(0.95);
+	  transform: scale(0.95);
+	}
+	input[type=text], input[type=password] {
+	  background-color: #f6f6f6;
+	  border: none;
+	  color: #0d0d0d;
+	  padding: 15px 0;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 16px;
+	  margin: 5px;
+	  width: 85%;
+	  border: 2px solid #f6f6f6;
+	  -webkit-transition: all 0.5s ease-in-out;
+	  -moz-transition: all 0.5s ease-in-out;
+	  -ms-transition: all 0.5s ease-in-out;
+	  -o-transition: all 0.5s ease-in-out;
+	  transition: all 0.5s ease-in-out;
+	  -webkit-border-radius: 5px 5px 5px 5px;
+	  border-radius: 5px 5px 5px 5px;
+	}
+	input[type=text]:focus {
+	  background-color: #fff;
+	  border-bottom: 2px solid #5fbae9;
+	}
+	input[type=text]:placeholder {
+	  color: #cccccc;
+	}
+	</style>
+	<div id="top"><h1>{% block top %}{% endblock %}</h1></div>
+	  {% with messages = get_flashed_messages() %}
+	      {% if messages %}
+	        {% for message in messages %}
+	        <div id="error"><strong>{{message}}</strong></div>
+	        {% endfor %}
+	        <br id="above_img">
+	      {% endif %}
+	    {% endwith %}
+	<a href="{% block imghref %}{% endblock %}"><img src="https://static1.squarespace.com/static/5bafd323fd67936d5838d439/t/5bb19cf10d929713f2aa86ba/1538366719559/NNP%2BSmall%2Buse%2Bno%2Bgrad%2Bclr.jpg"></a>
+      {% block content %}{% endblock %}
+  </body>
+</html>
