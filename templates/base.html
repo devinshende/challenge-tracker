@@ -8,7 +8,7 @@
 <body>
  	<style type="text/css">
 		body {
-			font-family: "Raleway";
+			font-family: Raleway;
 			margin: 0;
 		}	
 		img {
@@ -133,6 +133,7 @@
 	  text-align: center;
 	  -webkit-border-radius: 0 0 10px 10px;
 	  border-radius: 0 0 10px 10px;
+	  align-content:center;
 	}
 	/* TABS */
 	h2.inactive {
@@ -143,7 +144,7 @@
 	  border-bottom: 2px solid #5fbae9;
 	}
 	/* FORM TYPOGRAPHY*/
-	input[type=button], input[type=submit], input[type=reset]  {
+	input[type=button], input[type=submit], input[type=reset], #cancel {
 	  background-color: black;
 	  border: none;
 	  color: white;
@@ -164,7 +165,7 @@
 	  -o-transition: all 0.3s ease-in-out;
 	  transition: all 0.3s ease-in-out;
 	}
-	input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+	input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, #cancel:hover, #submit:hover  {
 	  background-color: #646669;
 	}
 	input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
@@ -200,6 +201,32 @@
 	}
 	input[type=text]:placeholder {
 	  color: #cccccc;
+	}
+
+	#cancel#cancel {
+	    /*padding: 16px 38px 14px 38px;*/
+	    padding: 15px 38px;
+	    width:130px;
+	    margin-right: 0px;
+	    display: inline;
+	    cursor: auto;
+	    font-family: system-ui;
+	}
+
+	#submit-btn {
+		margin:-15px 0 0 2px;
+		/*since cancel is an <a></a> tag with padding instead of <input type="submit">, the center of the button is at the top of the container while the top of the submit is at the top of the container. To fix this, I made the padding-top of the container as much as the padding-top of the button so  that the button would be at the top of the container. This made the submit lower though, so i made the margin-top negative to raise it.*/
+		display:inline;
+		/*padding: 15px 95px;*/
+		padding: 15px 0;
+		width:240px;
+    	float:left;
+	}
+
+	#container {
+		width:87%;
+		margin:5px auto;
+		padding:15px 0;
 	}
 	</style>
 	<div id="top"><h1>{% block top %}{% endblock %}</h1></div>
