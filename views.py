@@ -239,16 +239,45 @@ def leaderboard():
 		elif selected_challenge_type  == 'time':
 			# sort so lowest score is first in the `data`
 			sorted_data = sorted(data, key=lambda x:x[1])
-		return render_template('leaderboard.html', unsorted_data=data, data=sorted_data, header=selected_challenge, \
+		return render_template('leaderboard.html', data=sorted_data, header=selected_challenge, \
 			challenge_type=to_name_case(selected_challenge_type) \
 			)
 	return render_template('leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
 
 @app.route('/<username>/leaderboard',methods=['GET','POST'])
 def userleaderboard(username):
-	# FIX THIS
-	return redirect('/leaderboard')
-	# return render_template('userleaderboard.html',username=username)
+	if request.method == "POST":
+		selected_challenge = request.form.get('challenge')
+		selected_challenge_type = get_challenge_type(selected_challenge)
+		challenges = read_challenges()
+		data = []
+		for user_id,usr_challenges_dict in challenges.items():
+			if selected_challenge in usr_challenges_dict.keys():
+				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
+				data.append(
+					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment)
+				)
+		# `data` is a list containing tuples that have †he same four things
+		'''
+		(
+			full name of user,
+			score of challenge,
+			date of doing challenge,
+			comment about challenge
+		)
+		'''
+		if selected_challenge_type in ['reps','laps']:
+			# sort it so highest score is first in `data`
+			# sort it lowest first then reverse list
+			sorted_data = sorted(data, key=lambda x:x[1])[::-1]
+		elif selected_challenge_type  == 'time':
+			# sort so lowest score is first in the `data`
+			sorted_data = sorted(data, key=lambda x:x[1])
+		return render_template('userleaderboard.html', data=sorted_data, header=selected_challenge, \
+			challenge_type=to_name_case(selected_challenge_type), \
+			username=username)
+	return render_template('userleaderboard.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
+
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
 def records_add(username):

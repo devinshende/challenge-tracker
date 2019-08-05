@@ -39,6 +39,7 @@
 </div>
 {% endif %}
 {% if not challenge_dict %}
+{% if data %}
 <div class="container">
 	<table>
 		<thead>
@@ -71,10 +72,11 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	<p>{{unsorted_data}}</p>
-	<br>
-	<p>{{data}}</p>
+{% endif %}
+{% if not data %}
+<p class="nothing">There are no competitors for that challenge</p>
+{% endif %}
 <a href="/leaderboard" class="btn">Pick a new challenge</a>
-</div>	
+</div>
 {% endif %}
 {% endblock %}
