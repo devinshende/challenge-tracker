@@ -21,6 +21,10 @@ class Entry(object):
 		date = self.date.strftime("%B %d %Y")
 		return f'--Entry score={self.score}, date={date}, comment="{self.comment}--'
 
+	def format_date(self):
+		date = self.date.strftime("%B %d %Y")
+		return date
+
 def write_challenges(data):
 	with open('database/challenges.pickle','wb') as file:
 		pickle.dump(data,file)

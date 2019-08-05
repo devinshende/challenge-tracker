@@ -1,7 +1,80 @@
-{% extends "base.html" %}
+{% extends "table_base.html" %}
 {% block title %} Leaderboard {% endblock %}
-{% block top %} Leaderboard {% endblock %}
+{% block top %} {{header}} {% endblock %}
 {% block imghref %}/{% endblock %}
 {% block content %}
-	<p>Leaderboard for sneaky unlogged in people</p>
+<br>
+{% if challenge_dict %}
+<div class="wrapper">
+	<div id="formContent">
+	<br>
+	<form method="POST">
+		<label for="challenge">Challenge: </label>
+
+		<select name="challenge" required="required" class="fadeIn second" id="select">
+			<option value="" hidden>Select Challenge</option>
+
+			<optgroup label="Time (seconds)">
+		    {% for item in challenge_dict['time'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+			</optgroup>
+
+		    <optgroup label="Laps">
+		    {% for item in challenge_dict['laps'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+			</optgroup>
+
+		    <optgroup label="Reps (in one minute)">
+		    {% for item in challenge_dict['reps'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+		    </optgroup>
+		</select>
+		<input type="submit" class="fadeIn fourth" value="Load Leaderboard" id="submit">
+		</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+{% if not challenge_dict %}
+<div class="container">
+	<table>
+		<thead>
+			<tr class="table-head">
+				<th>Place</th>
+				<th>Name</th>
+				<th>{{challenge_type}}</th>
+				<th>Date</th>
+				<th>Comment</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in data %}
+				<tr>
+					<!-- place -->
+					<td>{{data.index(item)+1}}</td>
+					<!-- name -->
+					<td>{{item[0]}}</td> 
+					
+					<!-- score -->
+					{% if challenge_type == 'time' %}
+					<td>{{item[1]}} seconds</td>
+					{% endif %}
+					<td>{{item[1]}}</td>
+					<!-- date -->
+					<td>{{item[2]}}</td>
+					<!-- comment -->
+					<td>{{item[3]}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<p>{{unsorted_data}}</p>
+	<br>
+	<p>{{data}}</p>
+<a href="/leaderboard" class="btn">Pick a new challenge</a>
+</div>	
+{% endif %}
 {% endblock %}

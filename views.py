@@ -22,7 +22,6 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
-
 @app.errorhandler(500)
 def internal_error(error):
     return "500 error"+str(error)
@@ -211,13 +210,45 @@ def home(username):
 	name = users[user_id]['first_name']
 	return render_template('home.html', username=username, users=users, name=name)
 
-@app.route('/leaderboard')
+@app.route('/leaderboard',methods=['GET','POST'])
 def leaderboard():
-	return render_template('leaderboard.html')
+	if request.method == "POST":
+		selected_challenge = request.form.get('challenge')
+		selected_challenge_type = get_challenge_type(selected_challenge)
+		challenges = read_challenges()
+		data = []
+		for user_id,usr_challenges_dict in challenges.items():
+			if selected_challenge in usr_challenges_dict.keys():
+				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
+				data.append(
+					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment)
+				)
+		# `data` is a list containing tuples that have †he same four things
+		'''
+		(
+			full name of user,
+			score of challenge,
+			date of doing challenge,
+			comment about challenge
+		)
+		'''
+		if selected_challenge_type in ['reps','laps']:
+			# sort it so highest score is first in `data`
+			# sort it lowest first then reverse list
+			sorted_data = sorted(data, key=lambda x:x[1])[::-1]
+		elif selected_challenge_type  == 'time':
+			# sort so lowest score is first in the `data`
+			sorted_data = sorted(data, key=lambda x:x[1])
+		return render_template('leaderboard.html', unsorted_data=data, data=sorted_data, header=selected_challenge, \
+			challenge_type=to_name_case(selected_challenge_type) \
+			)
+	return render_template('leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
 
-@app.route('/<username>/leaderboard')
+@app.route('/<username>/leaderboard',methods=['GET','POST'])
 def userleaderboard(username):
-	return render_template('userleaderboard.html',username=username)
+	# FIX THIS
+	return redirect('/leaderboard')
+	# return render_template('userleaderboard.html',username=username)
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
 def records_add(username):
@@ -243,14 +274,11 @@ def records_add(username):
 			# there is already an entry for the challenge. append the entry to the list
 			if verbose:
 				print('adding challenge to dict for databse')
-				print('challenges:')
-				pprint(challenges)
 			challenges[user_id][challenge].append(en)
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
 			challenges[user_id][challenge] = [en]
 		if verbose:
-			pprint(challenges)
 			print(COMMENT)
 		write_challenges(challenges)
 		COMMENT = ''

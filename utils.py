@@ -1,5 +1,5 @@
 import os
-from constants import SECURITY_QUESTIONS
+from constants import SECURITY_QUESTIONS, challenge_dict
 
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
@@ -38,6 +38,14 @@ def get_user_id(username):
 	user_mapping = read('user_mapping.txt')
 	return user_mapping[username]
 
+def get_username(user_id):
+	users = read('users.txt')
+	return users[user_id]['username']
+
+def get_full_name(user_id):
+	users = read('users.txt')
+	return users[user_id]['first_name'] + ' ' + users[user_id]['last_name']
+
 def question_to_id(question):
 	if question not in SECURITY_QUESTIONS:
 		print(f'{question} not in SECURITY_QUESTIONS')
@@ -47,3 +55,30 @@ def id_to_question(ID):
 	if ID > len(SECURITY_QUESTIONS):
 		print(f'{ID} is too big to be one of the accepted SECURITY_QUESTIONS')
 	return SECURITY_QUESTIONS[ID]
+
+def get_best(entry_list,ch_type):
+	best_so_far = entry_list[0]
+	for entry in entry_list:
+		if ch_type == 'reps' or ch_type == 'laps':
+			if entry.score > best_so_far.score:
+				best_so_far = entry
+		elif ch_type == 'time':
+			if entry.score < best_so_far.score:
+				best_so_far = entry
+	return best_so_far
+
+def get_challenge_type(challenge):
+	for ch_type,lst in challenge_dict.items():
+		if challenge in lst:
+			return ch_type
+	else:
+		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
+
+
+
+
+
+
+
+
+

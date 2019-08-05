@@ -19,6 +19,9 @@ handle bad input from users for the score field in form
 app = Flask(__name__)
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
+app.jinja_env.globals.update(get_best=get_best)
+app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
+
 # this import must be after initialization of Flask(__name__)
 from views import *
 if __name__ == '__main__':
