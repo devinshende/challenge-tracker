@@ -33,7 +33,7 @@ def landing_page():
 		variables[key] = None
 	variables['logged_in'] = False # everything but this should be set to False
 	write('vars.txt',variables)
-	return render_template('landing_page.html') # kwargs are used for html
+	return render_template('unauth/landing_page.html') # kwargs are used for html
 
 @app.route('/api/<filename>')
 def api(filename):
@@ -76,7 +76,7 @@ def signup():
 			variables['half_user'] = signup1
 			variables['current_user_id'] = user_id
 			write('vars.txt',variables)
-			return render_template('signup2.html', security_questions=SECURITY_QUESTIONS)
+			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
 		else:
 			# signup2
 			if verbose:
@@ -119,7 +119,7 @@ def signup():
 			write_challenges(challenges)
 			return redirect('/'+username+'/')
 
-	return render_template('signup.html')
+	return render_template('unauth/signup.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -133,7 +133,7 @@ def login():
 			user_id = user_mapping[username]
 		except KeyError:
 			flash('Invalid Username')
-			return render_template('login.html')
+			return render_template('unauth/login.html')
 		password = decode(users[user_id]['password'])
 		user_id = user_mapping[username]
 		first_name = users[user_id]['first_name']
@@ -147,8 +147,8 @@ def login():
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
 			flash('Incorrect Password')
-			return render_template('login.html', username=username)
-	return render_template('login.html')
+			return render_template('unauth/login.html', username=username)
+	return render_template('unauth/login.html')
 
 @app.route('/forgot-password',methods=['GET','POST'])
 def forgot_password():
@@ -168,7 +168,7 @@ def forgot_password():
 				return redirect('/forgot-password')
 			question_id = users[user_id]['security_question']['id']
 			question = id_to_question(question_id)
-			return render_template('forgot_password.html', username=username, security_question=question)
+			return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if not username and not password:
 			# security question step
 			variables = read('vars.txt')
@@ -178,7 +178,7 @@ def forgot_password():
 			actual_answer = decode(users[user_id]['security_question']['answer'])
 			if entered_answer.lower() == actual_answer.lower(): # case insensitive
 				if verbose: print('answers match!')
-				return render_template('forgot_password.html',success=True)
+				return render_template('unauth/forgot_password.html',success=True)
 			else:
 				question_id = users[user_id]['security_question']['id']
 				question = id_to_question(question_id)
@@ -186,7 +186,7 @@ def forgot_password():
 					print('answers do not match')
 					print('question is ',question)
 				flash('Incorrect Answer')
-				return render_template('forgot_password.html', username=username, security_question=question)
+				return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if password:
 			# password step
 			variables = read('vars.txt')
@@ -200,7 +200,7 @@ def forgot_password():
 			return redirect('/'+username+'/')
 		else:
 			print('something went wrong')
-	return render_template('forgot_password.html')
+	return render_template('unauth/forgot_password.html')
 
 @app.route('/<username>/')
 def home(username):
@@ -208,7 +208,7 @@ def home(username):
 	user_mapping = read('user_mapping.txt')
 	user_id = user_mapping[username]
 	name = users[user_id]['first_name']
-	return render_template('home.html', username=username, users=users, name=name)
+	return render_template('user/home.html', username=username, users=users, name=name)
 
 @app.route('/leaderboard',methods=['GET','POST'])
 def leaderboard():
@@ -239,15 +239,16 @@ def leaderboard():
 		elif selected_challenge_type  == 'time':
 			# sort so lowest score is first in the `data`
 			sorted_data = sorted(data, key=lambda x:x[1])
-		return render_template('leaderboard.html', data=sorted_data, header=selected_challenge, \
+		return render_template('unauth/leaderboard.html', data=sorted_data, header=selected_challenge, \
 			challenge_type=to_name_case(selected_challenge_type) \
 			)
-	return render_template('leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
+	return render_template('unauth/leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
 
 @app.route('/<username>/leaderboard',methods=['GET','POST'])
 def userleaderboard(username):
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
+		checked = request.form.get('bracketswitch')
 		selected_challenge_type = get_challenge_type(selected_challenge)
 		challenges = read_challenges()
 		data = []
@@ -273,10 +274,10 @@ def userleaderboard(username):
 		elif selected_challenge_type  == 'time':
 			# sort so lowest score is first in the `data`
 			sorted_data = sorted(data, key=lambda x:x[1])
-		return render_template('userleaderboard.html', data=sorted_data, header=selected_challenge, \
+		return render_template('user/userleaderboard.html', data=sorted_data, header=selected_challenge, \
 			challenge_type=to_name_case(selected_challenge_type), \
-			username=username)
-	return render_template('userleaderboard.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
+			username=username,checked=repr(checked))
+	return render_template('user/userleaderboard.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
 
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
@@ -314,7 +315,7 @@ def records_add(username):
 		return redirect('/'+username+'/records-view')
 	if verbose:
 		print('COMMENT: ',COMMENT)
-	return render_template('personal_records_add.html',challenge_dict=challenge_dict,username=username,comment=COMMENT)
+	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/records-view')
 def records_view(username):
@@ -328,7 +329,7 @@ def records_view(username):
 		print('user id',user_id)
 		print(challenges[user_id])
 	ch = challenges[user_id]
-	return render_template('personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
+	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 def suggest_challenge(username):
@@ -356,20 +357,20 @@ def suggest_challenge(username):
 		else:
 			if verbose:
 				print('would be sending emails but that was set to False so not doing that.')
-		return render_template('home.html', username=username, users=users, name=name)
-	return render_template('new_challenge.html',username=username)
+		return render_template('user/home.html', username=username, users=users, name=name)
+	return render_template('user/new_challenge.html',username=username)
 
 @app.route('/admin')
 def admin_login():
 	if verbose: print('Admin home page')
-	return render_template('admin_home.html',username='stillworkingonusername')
+	return render_template('admin/admin_home.html',username='stillworkingonusername')
 
 @app.route('/admin/suggestions')
 def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	suggestions=read('challenge_suggestions.txt')
-	return render_template('admin_suggestions.html',json=suggestions,username='stillworkingonusername')
+	return render_template('admin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
 
 @app.route('/table')
 def table():
-	return render_template('my_table.html')
+	return render_template('unauth/my_table.html')
