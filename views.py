@@ -256,7 +256,7 @@ def userleaderboard(username):
 			if selected_challenge in usr_challenges_dict.keys():
 				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
 				data.append(
-					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment)
+					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment, user_id)
 				)
 		# `data` is a list containing tuples that have †he same four things
 		'''
@@ -264,7 +264,8 @@ def userleaderboard(username):
 			full name of user,
 			score of challenge,
 			date of doing challenge,
-			comment about challenge
+			comment about challenge,
+			user id
 		)
 		'''
 		if selected_challenge_type in ['reps','laps']:
@@ -274,9 +275,24 @@ def userleaderboard(username):
 		elif selected_challenge_type  == 'time':
 			# sort so lowest score is first in the `data`
 			sorted_data = sorted(data, key=lambda x:x[1])
-		return render_template('user/userleaderboard.html', data=sorted_data, header=selected_challenge, \
-			challenge_type=to_name_case(selected_challenge_type), \
-			username=username,checked=repr(checked))
+			
+		if checked:
+			bn = [
+				'boys',
+				'girls',
+				'men',
+				'women'
+			]
+			print('yeet dem brackets on da page')
+			brackets = get_brackets(data)
+			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				username=username, brackets=brackets, bracket_names=bn)
+		else:
+			print('no brackets')
+			return render_template('user/userleaderboard.html', data=sorted_data, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				username=username,checked=repr(checked))
 	return render_template('user/userleaderboard.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
 
 
@@ -286,16 +302,24 @@ def records_add(username):
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
-		time = request.form.get('time')
+		challenge_type = get_challenge_type(challenge)
+		score = request.form.get('time')
 		comment = request.form.get('comment')
 		COMMENT = comment
 		try:
-			time = float(time)
+			if challenge_type == 'time':
+				score = float(score)
+			if challenge_type in ['reps', 'laps']:
+				score = int(score)
+			if verbose:
+				print('score is:',repr(score))
 		except ValueError:
 			flash('please enter a number for score')
 			return redirect('/'+username+'/records-add')
 		date = datetime.datetime.today()
-		en = Entry(time, date, comment)
+		if challenge_type in ['reps', 'laps']:
+				score = int(score)
+		en = Entry(score, date, comment)
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
 
@@ -322,12 +346,6 @@ def records_view(username):
 	user_mapping = read('user_mapping.txt')
 	user_id = user_mapping[username]
 	challenges = read_challenges()
-	print(verbose)
-	if verbose: 
-		print(type(challenges))
-		print(challenges)
-		print('user id',user_id)
-		print(challenges[user_id])
 	ch = challenges[user_id]
 	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
 

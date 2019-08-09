@@ -74,7 +74,41 @@ def get_challenge_type(challenge):
 	else:
 		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
 
+def get_brackets(data):
+	# `data` is a list containing tuples that have †he same four things
+	'''
+	(
+		full name of user,
+		score of challenge,
+		date of doing challenge,
+		comment about challenge,
+		user id
+	)
+	'''
+	users = read('users.txt')
+	mkid = []
+	fkid = []
+	madult = []
+	fadult = []
 
+	for person in data:
+		user_id = person[-1]
+		age = int(users[user_id]['age'])
+		gender = users[user_id]['gender']
+		#in one of the kid divisions
+		if age < 13: #is kid
+			if gender == 'male': #is kid male
+				mkid.append(person)
+			else: #is kid female
+				fkid.append(person)
+		else: #is adult
+			if gender == 'male': #is adult male
+				madult.append(person)
+			else: #is adult female
+				fadult.append(person)
+		# get_username()
+
+	return (mkid, fkid, madult, fadult)
 
 
 

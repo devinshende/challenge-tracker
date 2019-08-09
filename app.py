@@ -21,6 +21,7 @@ app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
+app.jinja_env.globals.update(to_name_case=to_name_case)
 
 # this import must be after initialization of Flask(__name__)
 from views import *
