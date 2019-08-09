@@ -256,14 +256,13 @@ def userleaderboard(username):
 			if selected_challenge in usr_challenges_dict.keys():
 				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
 				data.append(
-					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment, user_id)
+					(get_full_name(user_id), entry.score, entry.comment, user_id)
 				)
 		# `data` is a list containing tuples that have †he same four things
 		'''
 		(
 			full name of user,
 			score of challenge,
-			date of doing challenge,
 			comment about challenge,
 			user id
 		)
@@ -278,10 +277,10 @@ def userleaderboard(username):
 			
 		if checked:
 			bn = [
-				'13 and under male',
-				'13 and under female',
-				'above 13 male',
-				'above 13 female'
+				'12 and under male',
+				'12 and under female',
+				'teen/adult male',
+				'teen/adult female'
 			]
 			print('yeet dem brackets on da page')
 			brackets = get_brackets(data)

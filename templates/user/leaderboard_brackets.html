@@ -3,6 +3,13 @@
 {% block top %} {{header}} {% endblock %}
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
+<style type="text/css">
+	#divison { 
+		margin-bottom: 5px;
+	}
+
+</style>
+
 <br>
 <!-- <p>{{tables}}</p> -->
 
@@ -11,9 +18,9 @@
 		<br>
 		{% for table in tables %}
 		<!-- Boys, Girls, Men, Women (or not?) -->
-		<h3 style="margin-bottom: 5px;">{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
+		<h3 id="division">{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
 			{% if not table %}
-				<p>There are no entries for this division in {{header}}</p>
+			<p id="no_entries">There are no entries for this division in {{header}}</p>
 			{% endif %}
 			{% if table %}
 			<table>
@@ -22,7 +29,6 @@
 						<th>Place</th>
 						<th>Name</th>
 						<th>{{challenge_type}}</th>
-						<th>Date</th>
 						<th>Comment</th>
 					</tr>
 				</thead>
@@ -38,10 +44,8 @@
 							<td>{{item[1]}} seconds</td>
 							{% endif %}
 							<td>{{item[1]}}</td>
-							<!-- date -->
-							<td>{{item[2]}}</td>
 							<!-- comment -->
-							<td>{{item[3]}}</td>
+							<td>{{item[2]}}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
