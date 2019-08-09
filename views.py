@@ -306,19 +306,21 @@ def records_add(username):
 		score = request.form.get('time')
 		comment = request.form.get('comment')
 		COMMENT = comment
-		try:
-			if challenge_type == 'time':
+		if verbose:
+			print(challenge_type)
+		if challenge_type == 'time':
+			try:
 				score = float(score)
-			if challenge_type in ['reps', 'laps']:
-				score = int(score)
-			if verbose:
-				print('score is:',repr(score))
-		except ValueError:
-			flash('please enter a number for score')
-			return redirect('/'+username+'/records-add')
-		date = datetime.datetime.today()
+			except ValueError:
+				flash('Please enter a number for score')
+				return redirect('/'+username+'/records-add')
 		if challenge_type in ['reps', 'laps']:
+			try:
 				score = int(score)
+			except ValueError:
+				flash('Please only enter a whole number for ' + challenge_type)
+				return redirect('/'+username+'/records-add')
+		date = datetime.datetime.today()
 		en = Entry(score, date, comment)
 		user_mapping = read('user_mapping.txt')
 		user_id = user_mapping[username]
@@ -327,13 +329,14 @@ def records_add(username):
 		try:
 			# there is already an entry for the challenge. append the entry to the list
 			if verbose:
-				print('adding challenge to dict for databse')
+				print('adding challenge to dict for databse. Challenge is: '+ challenge) 
 			challenges[user_id][challenge].append(en)
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
 			challenges[user_id][challenge] = [en]
 		if verbose:
 			print(COMMENT)
+			print(en)
 		write_challenges(challenges)
 		COMMENT = ''
 		return redirect('/'+username+'/records-view')

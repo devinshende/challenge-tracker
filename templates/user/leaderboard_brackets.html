@@ -4,13 +4,10 @@
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
 <br>
-<p>{{tables}}</p>
+<!-- <p>{{tables}}</p> -->
 
 {% if tables %}
 <div class="container">
-		    <br>
-		    <br>
-		    <br>
 		<br>
 		{% for table in tables %}
 		<h3>{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
@@ -44,6 +41,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
+			<br>
 			<br>
 		{% endfor %}
  {% endif %}

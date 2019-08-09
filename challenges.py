@@ -6,7 +6,7 @@ class Entry(object):
 		if type(score) != float:
 			if type(score) != int:
 				raise ValueError('score must be of type float or int')
-		self.score = float(score)
+		self.score = score
 		self.date = date
 		if repr(type(self.date)) != "<class 'datetime.datetime'>":
 			raise ValueError('date provided to entry() must be of class <class \'datetime.datetime\'>')
