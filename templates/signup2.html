@@ -6,6 +6,7 @@
 	<div class="wrapper fadeInDown">
 		<div id="formContent">
 		<form method = "POST">
+			<br>
 			<input type="text" id="username" name="username" placeholder="Username" required>
 			<input type="password" name="password" id="password" placeholder="Password" value="{{password}}" required>
 			<input type="password" name="confirm_password" value="{{confirm_password}}" placeholder="Confirm Password"  oninput="check(this)" required>
@@ -28,10 +29,10 @@
 			</select>
 			<br>
 			<input type="text" name="answer" placeholder="Answer" required>
-			<div id="container">
-				<input type="submit" id="submit-btn">
-				<a href="/" class="btn" id="cancel"x>cancel</a>
-			</div>
+			<input type="submit" id="submit-btn">
+			<div id="formFooter" style="margin-top:-10px">
+          		<a href="/" style="display:block">cancel</a>   
+        	</div>
 		</form>
 		</div>
 	</div>
