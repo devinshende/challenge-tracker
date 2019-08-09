@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Login {% endblock %}
+{% block top %} Login {% endblock %}
+{% block imghref %}/{% endblock %}
+{% block content %}
+	<br>
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+		<!-- Tabs Titles -->
+			<br>
+				<!-- Login Form -->
+				<form method="POST">
+					<input type="text" id="login" class="fadeIn second" name="username" placeholder="username" value="{{username}}" required>
+					<input type="password" id="password" class="fadeIn third" name="password" placeholder="password" required>
+						<input type="submit" id="submit-btn" class="fadeIn fourth" value="Log In">
+					<div id="formFooter">
+			    		<a class="underlineHover" href="/forgot-password">Forgot Password?</a>
+			    		<br>
+			    		<br>
+			    		<a href="/" style="display:block">cancel</a>   
+			    	</div>
+			    </form>
+
+	    	<!-- Remind Passowrd -->
+
+	  	</div>
+	</div>
+
+{% endblock %}
