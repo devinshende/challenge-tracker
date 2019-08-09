@@ -10,7 +10,12 @@
 <div class="container">
 		<br>
 		{% for table in tables %}
-		<h3>{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
+		<!-- Boys, Girls, Men, Women (or not?) -->
+		<h3 style="margin-bottom: 5px;">{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
+			{% if not table %}
+				<p>There are no entries for this division in {{header}}</p>
+			{% endif %}
+			{% if table %}
 			<table>
 				<thead>
 					<tr class="table-head">
@@ -41,6 +46,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
+			{% endif%}
 			<br>
 			<br>
 		{% endfor %}

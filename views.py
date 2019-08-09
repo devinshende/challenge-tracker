@@ -278,10 +278,10 @@ def userleaderboard(username):
 			
 		if checked:
 			bn = [
-				'boys',
-				'girls',
-				'men',
-				'women'
+				'13 and under male',
+				'13 and under female',
+				'above 13 male',
+				'above 13 female'
 			]
 			print('yeet dem brackets on da page')
 			brackets = get_brackets(data)

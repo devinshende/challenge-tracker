@@ -105,9 +105,10 @@ def get_brackets(data):
 			if gender == 'male': #is adult male
 				madult.append(person)
 			else: #is adult female
+				print(f'appending \n{person}\nto adult female')
 				fadult.append(person)
-		# get_username()
-
+		# get_username()	
+	print(f'returning \n{repr((mkid, fkid, madult, fadult))}\n')
 	return (mkid, fkid, madult, fadult)
 
 
