@@ -100,7 +100,6 @@ input:checked[type="checkbox"]:before {
 					<th>Place</th>
 					<th>Name</th>
 					<th>{{challenge_type}}</th>
-					<th>Date</th>
 					<th>Comment</th>
 				</tr>
 			</thead>
@@ -108,16 +107,14 @@ input:checked[type="checkbox"]:before {
 				{% for item in data %}
 					<tr>
 						<!-- place -->
-						<td>{{data.index(item)+1}}</td>
+						<td>{{item[0]}}</td>
 						<!-- name -->
-						<td>{{item[0]}}</td> 
+						<td>{{item[1]}}</td> 
 						
 						<!-- score -->
 						{% if challenge_type == 'time' %}
-						<td>{{item[1]}} seconds</td>
+						<td>{{item[2]}} seconds</td>
 						{% endif %}
-						<td>{{item[1]}}</td>
-						<!-- date -->
 						<td>{{item[2]}}</td>
 						<!-- comment -->
 						<td>{{item[3]}}</td>

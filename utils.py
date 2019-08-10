@@ -75,15 +75,15 @@ def get_challenge_type(challenge):
 		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
 
 def get_brackets(data):
-	# `data` is a list containing tuples that have †he same four things
+	# `data` is a list containing lists that have †he same four things
 	'''
-	(
+	[
+		placement (1st 2nd 3rd)
 		full name of user,
 		score of challenge,
-		date of doing challenge,
 		comment about challenge,
 		user id
-	)
+	]
 	'''
 	users = read('users.txt')
 	mkid = []
@@ -95,21 +95,61 @@ def get_brackets(data):
 		user_id = person[-1]
 		age = int(users[user_id]['age'])
 		gender = users[user_id]['gender']
-		#in one of the kid divisions
-		if age < 13: #is kid
-			if gender == 'male': #is kid male
+		if age < 13: #in kid's divisino
+			if gender == 'male':
 				mkid.append(person)
-			else: #is kid female
+			else:
 				fkid.append(person)
-		else: #is adult
-			if gender == 'male': #is adult male
+		else: #in adult's division
+			if gender == 'male':
 				madult.append(person)
-			else: #is adult female
-				print(f'appending \n{person}\nto adult female')
+			else:
 				fadult.append(person)
 		# get_username()	
-	print(f'returning \n{repr((mkid, fkid, madult, fadult))}\n')
 	return (mkid, fkid, madult, fadult)
+
+def sort_data(data, selected_challenge_type):
+	"sorts data and then adds placements"
+	#sorts data based on score
+	if selected_challenge_type in ['reps','laps']:
+		# sort it so highest score is first in `data`
+		# sort it lowest first then reverse list
+		sorted_data = sorted(data, key=lambda x:x[1])[::-1]
+	elif selected_challenge_type  == 'time':
+		# sort so lowest score is first in the `data`
+		sorted_data = sorted(data, key=lambda x:x[1])
+	
+	# `sorted_data` is a sorted list containing lists that have †he same 5 things
+	'''
+	[
+		placement -- to be inserted here
+		full name of user,
+		score of challenge,
+		comment about challenge,
+		user id
+	]
+	'''
+	# x.insert(index, item)
+	#adds placements and deals with ties
+	prev_score = sorted_data[0][1]
+	prev_place = 1
+	sorted_data[0].insert(0, prev_place)
+	for item in sorted_data[1:]:
+		# print(f'\nprev_place is {prev_place}')
+		# print(f'\tprev_score: {prev_score}\n\tcurrent score: {item[1]}')
+		if prev_score == item[1]:
+			# print(f'scores match. setting place for {item[0]} to {prev_place}')
+			place = prev_place
+		else:
+			# print(f'scores do not match. setting place for {item[0]} to {prev_place+1}')
+			place = prev_place + 1
+		sorted_data[sorted_data.index(item)].insert(0, place)
+		prev_score = item[2] # 2 for score because new item was inserted
+		prev_place = place
+
+	final_data = sorted_data
+	print(final_data)
+	return final_data
 
 
 

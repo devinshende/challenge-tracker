@@ -256,25 +256,20 @@ def userleaderboard(username):
 			if selected_challenge in usr_challenges_dict.keys():
 				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
 				data.append(
-					(get_full_name(user_id), entry.score, entry.comment, user_id)
+					[get_full_name(user_id), entry.score, entry.comment, user_id]
 				)
-		# `data` is a list containing tuples that have †he same four things
+		# `data` is a list containing lists that have †he same five things
 		'''
-		(
+		[
+			placement (1st 2nd 3rd),
 			full name of user,
 			score of challenge,
 			comment about challenge,
 			user id
-		)
+		]
 		'''
-		if selected_challenge_type in ['reps','laps']:
-			# sort it so highest score is first in `data`
-			# sort it lowest first then reverse list
-			sorted_data = sorted(data, key=lambda x:x[1])[::-1]
-		elif selected_challenge_type  == 'time':
-			# sort so lowest score is first in the `data`
-			sorted_data = sorted(data, key=lambda x:x[1])
-			
+		sorted_data = sort_data(data, selected_challenge_type)
+
 		if checked:
 			bn = [
 				'12 and under male',
