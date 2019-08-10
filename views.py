@@ -268,7 +268,6 @@ def userleaderboard(username):
 			user id
 		]
 		'''
-		sorted_data = sort_data(data, selected_challenge_type)
 
 		if checked:
 			bn = [
@@ -278,11 +277,12 @@ def userleaderboard(username):
 				'teen/adult female'
 			]
 			print('yeet dem brackets on da page')
-			brackets = get_brackets(data)
+			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				username=username, brackets=brackets, bracket_names=bn)
 		else:
+			sorted_data = sort_data(data, selected_challenge_type)
 			print('no brackets')
 			return render_template('user/userleaderboard.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \

@@ -74,7 +74,7 @@ def get_challenge_type(challenge):
 	else:
 		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
 
-def get_brackets(data):
+def get_brackets(data, selected_challenge_type):
 	# `data` is a list containing lists that have †he same four things
 	'''
 	[
@@ -106,7 +106,13 @@ def get_brackets(data):
 			else:
 				fadult.append(person)
 		# get_username()	
-	return (mkid, fkid, madult, fadult)
+	brackets = (mkid, fkid, madult, fadult)
+	result = []
+	for bracket in brackets:
+		 result.append(
+		 	sort_data(bracket, selected_challenge_type)
+		 	)
+	return result
 
 def sort_data(data, selected_challenge_type):
 	"sorts data and then adds placements"
@@ -118,6 +124,7 @@ def sort_data(data, selected_challenge_type):
 	elif selected_challenge_type  == 'time':
 		# sort so lowest score is first in the `data`
 		sorted_data = sorted(data, key=lambda x:x[1])
+	return add_places(sorted_data)
 	
 	# `sorted_data` is a sorted list containing lists that have †he same 5 things
 	'''
@@ -131,17 +138,23 @@ def sort_data(data, selected_challenge_type):
 	'''
 	# x.insert(index, item)
 	#adds placements and deals with ties
+
+
+def add_places(sorted_data):
+	if not sorted_data:
+		return None
 	prev_score = sorted_data[0][1]
 	prev_place = 1
+	print(sorted_data[0])
 	sorted_data[0].insert(0, prev_place)
 	for item in sorted_data[1:]:
-		# print(f'\nprev_place is {prev_place}')
-		# print(f'\tprev_score: {prev_score}\n\tcurrent score: {item[1]}')
+		print(f'\nprev_place is {prev_place}')
+		print(f'\tprev_score: {prev_score}\n\tcurrent score: {item[1]}')
 		if prev_score == item[1]:
-			# print(f'scores match. setting place for {item[0]} to {prev_place}')
+			print(f'scores match. setting place for {item[0]} to {prev_place}')
 			place = prev_place
 		else:
-			# print(f'scores do not match. setting place for {item[0]} to {prev_place+1}')
+			print(f'scores do not match. setting place for {item[0]} to {prev_place+1}')
 			place = prev_place + 1
 		sorted_data[sorted_data.index(item)].insert(0, place)
 		prev_score = item[2] # 2 for score because new item was inserted
@@ -150,10 +163,3 @@ def sort_data(data, selected_challenge_type):
 	final_data = sorted_data
 	print(final_data)
 	return final_data
-
-
-
-
-
-
-
