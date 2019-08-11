@@ -9,8 +9,8 @@ import ast
 import os
 import argparse
 from utils import *
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
@@ -25,8 +25,8 @@ app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-db = SQLAlchemy(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# db = SQLAlchemy(app)
 		
 
 # this import must be after initialization of Flask(__name__)

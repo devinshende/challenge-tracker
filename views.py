@@ -8,28 +8,14 @@ from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
 import datetime, pickle
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
 
 
-class User(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
-	first_name = db.Column(db.String(20), nullable=False)
-	last_name = db.Column(db.String(20), nullable=False)
-	age = db.Column(db.Integer, nullable=False)
-	gender = db.Column(db.String(6), nullable=False)
-	username = db.Column(db.String(20), unique=True, nullable=False)
-	password = db.Column(db.String(40), nullable=False)
-	security_question_id = db.Column(db.Integer, nullable=False)
-	security_question_ans = db.Column(db.String(50), nullable=False)
 
-	def __repr__(self):
-		return '<User %r>' % self.username
-
-		
 
 @app.route('/favicon.ico')
 def favicon():
