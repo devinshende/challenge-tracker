@@ -1,4 +1,4 @@
-from app import app, db, User
+from app import app, db, User, login_manager
 # from classes import User # User
 from utils import *
 import os
@@ -40,6 +40,11 @@ def page_not_found(e):
 def internal_error(error):
     return "500 error"+str(error)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+# routes in the app
 @app.route('/')
 def landing_page():
 	variables = read('vars.txt')
@@ -175,28 +180,26 @@ def forgot_password():
 			variables = read('vars.txt')
 			variables['forgot_username'] = username
 			write('vars.txt',variables)
-			# TODO - make this more efficient - don't even get the user id, just get the question id etc directly and still handle
-			# when that username doesn't exist
-			try:
-				user_id = get_user_id(username)
-			except AttributeError:
+			user = User.query.filter_by(username=username).first()
+			if user is None:
 				flash('That username does not exist')
 				return redirect('/forgot-password')
-			question_id = User.query.get(user_id).security_question_id
+			question_id = user.security_question_id
 			question = id_to_question(question_id)
 			return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if not username and not password:
 			# security question step
 			variables = read('vars.txt')
 			username = variables['forgot_username']
-			user_id = get_user_id(username)
+			user = User.query.filter_by(username=username).first()
+			assert user is not None, f'could not find user with username {username}'
 			entered_answer = request.form.get('answer')
-			actual_answer = decode(User.query.get(user_id).security_question_ans)
+			actual_answer = decode(user.security_question_ans)
 			if entered_answer.lower() == actual_answer.lower(): # case insensitive
 				if verbose: print('answers match!')
 				return render_template('unauth/forgot_password.html',success=True)
 			else:
-				question_id = User.query.get(user_id).security_question_id
+				question_id = user.security_question_id
 				question = id_to_question(question_id)
 				if verbose: 
 					print('answers do not match')
@@ -207,7 +210,6 @@ def forgot_password():
 			# password step
 			variables = read('vars.txt')
 			username = variables['forgot_username']
-			# user_id = get_user_id(username)
 			if verbose: print('new password is ',password)
 			user = User.query.filter_by(username=username).first()
 			user.password = encode(password)

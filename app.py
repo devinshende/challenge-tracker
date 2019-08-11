@@ -27,6 +27,8 @@ app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 		
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
