@@ -29,7 +29,7 @@ def write(file_name, data):
 def reset_all():
 	"clears all data from all database files"
 	raise SyntaxError('fix reset all to work with challenges.pickle and database before running this')
-	files = ['args','challenge_suggestions','user_mapping','users','vars']
+	files = ['args','challenge_suggestions','users','vars']
 	for f in files:
 		write(f+'.txt','')
 	write('args.txt',{'email':False,'verbose':False})

@@ -127,9 +127,6 @@ def signup():
 			print('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
-			user_mapping = read('user_mapping.txt')
-			user_mapping[username] = user.id
-			write('user_mapping.txt',user_mapping)
 
 			challenges = read_challenges()
 			challenges[user.id] = {}
