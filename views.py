@@ -160,8 +160,9 @@ def login():
 			# successful login
 			# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
 			# remove this and use flask-login instead
+			login_user(user)
 			variables = read('vars.txt')
-			variables['logged_in'] = True
+			# variables['logged_in'] = True
 			write('vars.txt',variables)
 			if verbose: print('you are logged in')
 			return redirect('/'+ username)
@@ -222,7 +223,14 @@ def forgot_password():
 			print('something went wrong')
 	return render_template('unauth/forgot_password.html')
 
+@app.route('/<username>/logout')
+@login_required
+def logout(username):
+	logout_user()
+	return redirect('/')
+
 @app.route('/<username>/')
+@login_required
 def home(username):
 	name = User.query.filter_by(username=username).first().first_name
 	return render_template('user/home.html', username=username, name=name)
@@ -262,6 +270,7 @@ def leaderboard():
 	return render_template('unauth/leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
 
 @app.route('/<username>/leaderboard',methods=['GET','POST'])
+@login_required
 def userleaderboard(username):
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
@@ -307,6 +316,7 @@ def userleaderboard(username):
 
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
+@login_required
 def records_add(username):
 	global COMMENT
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
@@ -354,6 +364,7 @@ def records_add(username):
 	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict,username=username,comment=COMMENT)
 
 @app.route('/<username>/records-view')
+@login_required
 def records_view(username):
 	user_id = get_user_id(username)
 	challenges = read_challenges()
@@ -361,6 +372,7 @@ def records_view(username):
 	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
+@login_required
 def suggest_challenge(username):
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
