@@ -28,23 +28,26 @@ def write(file_name, data):
 
 def reset_all():
 	"clears all data from all database files"
-	raise SyntaxError('fix reset all to work with challenges.pickle before running this')
-	files = ['args','challenge_suggestions','user_mapping','users','vars']
+	raise SyntaxError('fix reset all to work with challenges.pickle and database before running this')
+	files = ['args','challenge_suggestions','users','vars']
 	for f in files:
 		write(f+'.txt','')
 	write('args.txt',{'email':False,'verbose':False})
 
 def get_user_id(username):
-	user_mapping = read('user_mapping.txt')
-	return user_mapping[username]
+	from app import User
+	return User.query.filter_by(username=username).first().id
 
 def get_username(user_id):
-	users = read('users.txt')
-	return users[user_id]['username']
+	from app import User
+	return User.query.get(user_id).username
 
 def get_full_name(user_id):
-	users = read('users.txt')
-	return users[user_id]['first_name'] + ' ' + users[user_id]['last_name']
+	from app import User
+	user = User.query.get(user_id)
+	assert user is not None, f'there is no user for the user_id {user_id}'
+	print(user)
+	return user.first_name + ' ' + user.last_name
 
 def question_to_id(question):
 	if question not in SECURITY_QUESTIONS:
@@ -75,6 +78,7 @@ def get_challenge_type(challenge):
 		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
 
 def get_brackets(data, selected_challenge_type):
+	from app import User
 	# `data` is a list containing lists that have †he same four things
 	'''
 	[
@@ -85,7 +89,6 @@ def get_brackets(data, selected_challenge_type):
 		user id
 	]
 	'''
-	users = read('users.txt')
 	mkid = []
 	fkid = []
 	madult = []
@@ -93,8 +96,8 @@ def get_brackets(data, selected_challenge_type):
 
 	for person in data:
 		user_id = person[-1]
-		age = int(users[user_id]['age'])
-		gender = users[user_id]['gender']
+		age = int(User.query.get(user_id).age)
+		gender = User.query.get(user_id).gender
 		if age < 13: #in kid's divisino
 			if gender == 'male':
 				mkid.append(person)
