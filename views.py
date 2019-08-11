@@ -1,4 +1,5 @@
-from app import app, db
+from app import app, db, User
+# from classes import User # User
 from utils import *
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
@@ -8,13 +9,22 @@ from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
 import datetime, pickle
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+
+# TODO
+'''
+normal leaderboard
+cmd f read('users.txt') and remove them
+completely delete user_mapping.txt and all references to it
+fix get_user_id and get_username in utils to use database
+
+long term
+refactor other database items like challenges and challenge_suggestions
+'''
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
-
-
 
 
 @app.route('/favicon.ico')
@@ -52,7 +62,7 @@ def api(filename):
 def signup():
 	# global user_so_far
 	if request.method == 'POST':
-		users = read('users.txt')
+		users = User.query.all()
 		variables = read('vars.txt')
 		first_name = request.form.get('first_name')
 		if first_name:
@@ -63,22 +73,20 @@ def signup():
 			last_name = request.form.get('last_name')
 			age = request.form.get('age')
 			gender = request.form.get('gender')
-			user_id = len(users)
 			signup1 = {
-				'user_id':user_id,
 				'first_name':to_name_case(first_name),
 				'last_name':to_name_case(last_name),
 				'age':age,
 				'gender':gender
 			}
-			users_lst = list(users.values())[:-1] # everything but last one
+			users_lst = list(users)[:-1] # everything but last one
 			for user in users_lst:
-				if user["first_name"] == to_name_case(first_name) \
-				and user["last_name"] == to_name_case(last_name):
+				if user.first_name == to_name_case(first_name) \
+				and user.last_name == to_name_case(last_name):
 					flash('You have already registered for an account')
 					return render_template("unauth/signup.html")
 			variables['half_user'] = signup1
-			variables['current_user_id'] = user_id
+			# variables['current_user_id'] = user.id
 			write('vars.txt',variables)
 			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
 		else:
@@ -93,34 +101,42 @@ def signup():
 			security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
 			answer = request.form.get('answer')
 			security = {'id':security_question_id,'answer':encode(answer)}
-			users_lst = list(users.values())[:-1] # all but current one which is only partly signed up.
+			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
 				if verbose:
 					print(user)
-					print('username: ',user['username'])
-					print(user['username'] == username)
-				if user["username"] == username:
+					print('username: ',user.username)
+					print(user.username == username)
+				if user.username == username:
 					flash('That username is already taken')
 					return render_template("signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
 
-			# print(user_id)
 			variables = read('vars.txt')
-			user = variables['half_user']
-			user_id = user['user_id']
-			user['username'] = username
-			user['password'] = encode(password)
-			user['security_question'] = security
-			users[user_id] = user
-			write('users.txt', users)
+			v = variables['half_user']
+			id = len(User.query.all())
+			print('user id is ',id)
+			user = User(id=id,
+						first_name=v['first_name'],
+			 			last_name=v['last_name'],
+			 			age=v['age'], 
+			 			gender=v['gender'],
+			 			username=username,
+			 			password=encode(password),
+			 			security_question_id=security['id'],
+			 			security_question_ans=security['answer'])
+			print('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
 			user_mapping = read('user_mapping.txt')
-			user_mapping[username] = user_id
+			user_mapping[username] = user.id
 			write('user_mapping.txt',user_mapping)
 
 			challenges = read_challenges()
-			challenges[user_id] = {}
+			challenges[user.id] = {}
 			write_challenges(challenges)
+
+			db.session.add(user)
+			db.session.commit()
 			return redirect('/'+username+'/')
 
 	return render_template('unauth/signup.html')
@@ -131,19 +147,17 @@ def login():
 	if request.method == "POST":
 		username = request.form.get('username')
 		entered_password = request.form.get('password')
-		user_mapping = read('user_mapping.txt')
-		users = read('users.txt')
 		try:
-			user_id = user_mapping[username]
+			user = User.query.filter_by(username=username).first()
 		except KeyError:
 			flash('Invalid Username')
 			return render_template('unauth/login.html')
-		password = decode(users[user_id]['password'])
-		user_id = user_mapping[username]
-		first_name = users[user_id]['first_name']
+		password = decode(user.password)
+		first_name = user.first_name
 		if entered_password == password:
 			# successful login
 			# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
+			# remove this and use flask-login instead
 			variables = read('vars.txt')
 			variables['logged_in'] = True
 			write('vars.txt',variables)
@@ -156,7 +170,6 @@ def login():
 
 @app.route('/forgot-password',methods=['GET','POST'])
 def forgot_password():
-	users = read('users.txt')
 	if request.method == 'POST':
 		username = request.form.get('username')
 		password = request.form.get('password')
@@ -165,12 +178,14 @@ def forgot_password():
 			variables = read('vars.txt')
 			variables['forgot_username'] = username
 			write('vars.txt',variables)
+			# TODO - make this more efficient - don't even get the user id, just get the question id etc directly and still handle
+			# when that username doesn't exist
 			try:
 				user_id = get_user_id(username)
-			except KeyError:
+			except AttributeError:
 				flash('That username does not exist')
 				return redirect('/forgot-password')
-			question_id = users[user_id]['security_question']['id']
+			question_id = User.query.get(user_id).security_question_id
 			question = id_to_question(question_id)
 			return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if not username and not password:
@@ -179,12 +194,12 @@ def forgot_password():
 			username = variables['forgot_username']
 			user_id = get_user_id(username)
 			entered_answer = request.form.get('answer')
-			actual_answer = decode(users[user_id]['security_question']['answer'])
+			actual_answer = decode(User.query.get(user_id).security_question_ans)
 			if entered_answer.lower() == actual_answer.lower(): # case insensitive
 				if verbose: print('answers match!')
 				return render_template('unauth/forgot_password.html',success=True)
 			else:
-				question_id = users[user_id]['security_question']['id']
+				question_id = User.query.get(user_id).security_question_id
 				question = id_to_question(question_id)
 				if verbose: 
 					print('answers do not match')
@@ -195,12 +210,14 @@ def forgot_password():
 			# password step
 			variables = read('vars.txt')
 			username = variables['forgot_username']
-			user_id = get_user_id(username)
+			# user_id = get_user_id(username)
 			if verbose: print('new password is ',password)
-			users[user_id]['password'] = encode(password)
+			user = User.query.filter_by(username=username).first()
+			user.password = encode(password)
+			db.session.add(user)
+			db.session.commit()
 			variables['forgot_username'] = None
 			write('vars.txt',variables)
-			write('users.txt',users)
 			return redirect('/'+username+'/')
 		else:
 			print('something went wrong')
@@ -208,11 +225,8 @@ def forgot_password():
 
 @app.route('/<username>/')
 def home(username):
-	users = read('users.txt')
-	user_mapping = read('user_mapping.txt')
-	user_id = user_mapping[username]
-	name = users[user_id]['first_name']
-	return render_template('user/home.html', username=username, users=users, name=name)
+	name = User.query.filter_by(username=username).first().first_name
+	return render_template('user/home.html', username=username, name=name)
 
 @app.route('/leaderboard',methods=['GET','POST'])
 def leaderboard():
@@ -280,7 +294,6 @@ def userleaderboard(username):
 				'teen/adult male',
 				'teen/adult female'
 			]
-			print('yeet dem brackets on da page')
 			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
@@ -320,8 +333,7 @@ def records_add(username):
 				return redirect('/'+username+'/records-add')
 		date = datetime.datetime.today()
 		en = Entry(score, date, comment)
-		user_mapping = read('user_mapping.txt')
-		user_id = user_mapping[username]
+		user_id = get_user_id(username)
 
 		challenges = read_challenges()
 		try:
@@ -344,8 +356,7 @@ def records_add(username):
 
 @app.route('/<username>/records-view')
 def records_view(username):
-	user_mapping = read('user_mapping.txt')
-	user_id = user_mapping[username]
+	user_id = get_user_id(username)
 	challenges = read_challenges()
 	ch = challenges[user_id]
 	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
@@ -360,10 +371,8 @@ def suggest_challenge(username):
 			'name':challenge_name,
 			'username':username
 		}
-		users = read('users.txt')
-		user_mapping = read('user_mapping.txt')
-		user_id = user_mapping[username]
-		name = users[user_id]['first_name']
+		user_id = get_user_id(username)
+		name = User.query.filter_by(username=username).first().first_name
 		send_emails = read('args.txt')['email']
 		if verbose: print('writing suggestion to database')
 		# save suggestion to database
@@ -376,7 +385,7 @@ def suggest_challenge(username):
 		else:
 			if verbose:
 				print('would be sending emails but that was set to False so not doing that.')
-		return render_template('user/home.html', username=username, users=users, name=name)
+		return render_template('user/home.html', username=username, name=name)
 	return render_template('user/new_challenge.html',username=username)
 
 @app.route('/admin')
@@ -393,3 +402,4 @@ def admin_suggestions():
 @app.route('/table')
 def table():
 	return render_template('unauth/my_table.html')
+# 
