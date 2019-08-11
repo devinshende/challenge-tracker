@@ -1,4 +1,4 @@
-from app import app
+from app import app, db
 from utils import *
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
@@ -8,10 +8,28 @@ from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry, read_challenges, write_challenges
 from pprint import pprint
 import datetime, pickle
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 
 COMMENT = ''
 verbose = read('args.txt')['verbose']
-# user_so_far = None
+
+
+class User(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
+	first_name = db.Column(db.String(20), nullable=False)
+	last_name = db.Column(db.String(20), nullable=False)
+	age = db.Column(db.Integer, nullable=False)
+	gender = db.Column(db.String(6), nullable=False)
+	username = db.Column(db.String(20), unique=True, nullable=False)
+	password = db.Column(db.String(40), nullable=False)
+	security_question_id = db.Column(db.Integer, nullable=False)
+	security_question_ans = db.Column(db.String(50), nullable=False)
+
+	def __repr__(self):
+		return '<User %r>' % self.username
+
+		
 
 @app.route('/favicon.ico')
 def favicon():
@@ -72,7 +90,7 @@ def signup():
 				if user["first_name"] == to_name_case(first_name) \
 				and user["last_name"] == to_name_case(last_name):
 					flash('You have already registered for an account')
-					return render_template("signup.html")
+					return render_template("unauth/signup.html")
 			variables['half_user'] = signup1
 			variables['current_user_id'] = user_id
 			write('vars.txt',variables)
