@@ -1,4 +1,4 @@
-from app import app, db, User, login_manager
+from app import *
 # from classes import User # User
 from utils import *
 import os
@@ -91,7 +91,6 @@ def signup():
 					flash('You have already registered for an account')
 					return render_template("unauth/signup.html")
 			variables['half_user'] = signup1
-			# variables['current_user_id'] = user.id
 			write('vars.txt',variables)
 			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
 		else:
@@ -149,9 +148,8 @@ def login():
 	if request.method == "POST":
 		username = request.form.get('username')
 		entered_password = request.form.get('password')
-		try:
-			user = User.query.filter_by(username=username).first()
-		except KeyError:
+		user = User.query.filter_by(username=username).first()
+		if user is None:
 			flash('Invalid Username')
 			return render_template('unauth/login.html')
 		password = decode(user.password)
@@ -377,19 +375,21 @@ def suggest_challenge(username):
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
 		challenge_name = request.form.get('challenge')
-		challenge_submission = {
-			'type':challenge_type,
-			'name':challenge_name,
-			'username':username
-		}
 		user_id = get_user_id(username)
+		challenge = Suggestion(
+						id=len(Suggestion.query.all()),
+						type=challenge_type,
+						name=challenge_name,
+						user_id=user_id
+					)
 		name = User.query.filter_by(username=username).first().first_name
 		send_emails = read('args.txt')['email']
 		if verbose: print('writing suggestion to database')
+		
 		# save suggestion to database
-		suggestions = read('challenge_suggestions.txt','list')
-		suggestions.append(challenge_submission)
-		write('challenge_suggestions.txt',suggestions)
+		db.session.add(challenge)
+		db.session.commit()
+
 		if send_emails == True:
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
 			send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')
@@ -399,15 +399,16 @@ def suggest_challenge(username):
 		return render_template('user/home.html', username=username, name=name)
 	return render_template('user/new_challenge.html',username=username)
 
-@app.route('/admin')
+@app.route('/siteadmin/')
 def admin_login():
 	if verbose: print('Admin home page')
 	return render_template('admin/admin_home.html',username='stillworkingonusername')
 
-@app.route('/admin/suggestions')
+@app.route('/siteadmin/suggestions')
 def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
-	suggestions=read('challenge_suggestions.txt')
+	# suggestions=read('challenge_suggestions.txt')
+	suggestions = Suggestion.query.all()
 	return render_template('admin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
 
 @app.route('/table')

@@ -1,7 +1,7 @@
 {% extends "table_base.html" %}
 {% block title %} Admin Home {% endblock %}
 {% block top %}Welcome, {{username}}{% endblock %}
-{% block imghref %}/admin{% endblock %}
+{% block imghref %}/siteadmin{% endblock %}
 {% block content %}
 <div class="container">
 	{% if json %}
@@ -20,9 +20,9 @@
 				{% for s in json %}
 				<tr>
 					<td><i class="angle fa fa-angle-right"></td>
-					<td>{{s['type']}}</td>
-					<td>{{s['name']}}</td>
-					<td>{{s['username']}}</td>
+					<td>{{s.type}}</td>
+					<td>{{s.name}}</td>
+					<td>{{User.query.get(s.user_id).username}}</td>
 					<td><i class="fa fa-trash"></td>
 				</tr>
 				{% endfor %}
