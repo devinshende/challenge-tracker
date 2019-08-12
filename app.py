@@ -15,6 +15,7 @@ from challenges import Entry
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_admin import Admin
+from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -58,16 +59,25 @@ class Suggestion(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	type = db.Column(db.String(10), nullable=False)
 	name = db.Column(db.String(30), unique=True, nullable=False)
-	# username = db.relationship(db.String(20), db.ForeignKey('user.username'))
-    # user = db.relationship('User', backref=db.backref('user', lazy=True))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # category = db.relationship('Category', backref=db.backref('posts', lazy=True))
 	def __repr__(self):
-		return '<User %r>' % self.username
+		return '<Suggestion %r>' % self.name
+
+# class Challenge(db.Model):
+	# look into many to many relationships (this might be required)
+	# User should have an attribute challenges which references this and that has entries for each challenge
+	# id = db.Column(db.Integer, primary_key=True)
+	# type = db.Column(db.String(10), nullable=False)
+	# name = db.Column(db.String(30), unique=True, nullable=False)
+	# user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+	# def __repr__(self):
+		# return '<Challenge Entry %r>' % self.username
 
 admin = Admin(app)
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Suggestion, db.session))
+#something with @action to accept challenges
 
 # this import must be after initialization of Flask(__name__)
 from views import *

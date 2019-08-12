@@ -2,7 +2,7 @@ from app import *
 # from classes import User # User
 from utils import *
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
 from constants import SECURITY_QUESTIONS, challenge_dict
@@ -230,7 +230,10 @@ def logout(username):
 @app.route('/<username>/')
 @login_required
 def home(username):
-	name = User.query.filter_by(username=username).first().first_name
+	user = User.query.filter_by(username=username).first()
+	if user is None:
+		abort(404)
+	name = user.first_name
 	return render_template('user/home.html', username=username, name=name)
 
 @app.route('/leaderboard',methods=['GET','POST'])
@@ -402,14 +405,14 @@ def suggest_challenge(username):
 @app.route('/siteadmin/')
 def admin_login():
 	if verbose: print('Admin home page')
-	return render_template('admin/admin_home.html',username='stillworkingonusername')
+	return render_template('siteadmin/admin_home.html',username='stillworkingonusername')
 
 @app.route('/siteadmin/suggestions')
 def admin_suggestions():
 	if verbose: print('Admin see suggestions page')
 	# suggestions=read('challenge_suggestions.txt')
 	suggestions = Suggestion.query.all()
-	return render_template('admin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
+	return render_template('siteadmin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
 
 @app.route('/table')
 def table():
