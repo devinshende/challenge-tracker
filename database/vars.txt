@@ -1,1 +1,1 @@
-{'current_user_id': None, 'logged_in': False, 'forgot_username': None, 'half_user': {'first_name': '1', 'last_name': '1', 'age': '1', 'gender': 'male'}}
+{'current_user_id': None, 'logged_in': False, 'forgot_username': None, 'half_user': None}

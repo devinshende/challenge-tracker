@@ -418,3 +418,13 @@ def admin_suggestions():
 def table():
 	return render_template('unauth/my_table.html')
 # 
+
+@app.route('/<username>/profile')
+@login_required
+def profile(username):
+	user = User.query.filter_by(username=username).first()
+	first_name = user.first_name
+	last_name = user.last_name
+	age = user.age
+	gender = user.gender
+	return render_template('user/profile.html', first_name=first_name, last_name=last_name, age=age, gender=gender)
