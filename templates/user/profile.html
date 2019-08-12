@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %} Profile Page {% endblock %}
+{% block top %} Profile {% endblock %}
+{% block imghref %}/{{username}}{% endblock %}
+{% block content %}
+<style type="text/css">
+	#formContent{
+		padding:20px;
+		box-shadow: 10px grey;
+		width:60%;
+	}
+	
+</style>
+<div class="wrapper">
+	<div id="formContent">
+		<div><label name="first_name">First Name: </label><span>{{first_name}}</span></div>
+		<div><label name="last_name">Last Name: </label><span>{{last_name}}</span></div>
+		<div><label name="age">Age: </label><span>{{age}}</span></div>
+		<div><label name="gender">Gender: </label><span>{{gender}}</span></div>
+	</div>
+</div>
+<a href="#" class="btn">Edit Profile</a>
+
+
+
+
+
+
+
+
+{% endblock %}
