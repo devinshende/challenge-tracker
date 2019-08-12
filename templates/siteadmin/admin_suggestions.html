@@ -1,0 +1,39 @@
+{% extends "table_base.html" %}
+{% block title %} Admin Home {% endblock %}
+{% block top %}Welcome, {{username}}{% endblock %}
+{% block imghref %}/siteadmin{% endblock %}
+{% block content %}
+<div class="container">
+	{% if json %}
+	<br>
+	<table>
+		<thead>
+			<tr class="table-head">
+				<th></th>
+				<th>Type of Challenge</th>
+				<th>Name of Challenge</th>
+				<th>Username of Suggestor</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+				{% for s in json %}
+				<tr>
+					<td><i class="angle fa fa-angle-right"></td>
+					<td>{{s.type}}</td>
+					<td>{{s.name}}</td>
+					<td>{{User.query.get(s.user_id).username}}</td>
+					<td><i class="fa fa-trash"></td>
+				</tr>
+				{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+	{% if not json %}
+		<div class="container">
+			<br>
+			<p class="nothing">No suggested challenges</p>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}
