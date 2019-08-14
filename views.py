@@ -122,7 +122,8 @@ def signup():
 			user = User(id=id,
 						first_name=v['first_name'],
 			 			last_name=v['last_name'],
-			 			age=v['age'], 
+			 			age=v['age'],
+			 			# birthday=birthday (db.Datetime) 
 			 			gender=v['gender'],
 			 			username=username,
 			 			password=encode(password),
@@ -139,8 +140,8 @@ def signup():
 			db.session.add(user)
 			db.session.commit()
 			return redirect('/'+username+'/')
-
-	return render_template('unauth/signup.html')
+	months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+	return render_template('unauth/signup.html', months=months)
 
 
 @app.route('/login', methods=['GET', 'POST'])
