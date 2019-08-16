@@ -17,7 +17,7 @@ from flask_login import UserMixin, LoginManager, login_user, login_required, log
 from flask_admin import Admin
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
-
+from flask.ext.heroku import Heroku
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -78,6 +78,8 @@ admin = Admin(app)
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Suggestion, db.session))
 #something with @action to accept challenges
+
+heroku = Heroku(app)
 
 # this import must be after initialization of Flask(__name__)
 from views import *
