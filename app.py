@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from pprint import pprint
 from termcolor import colored
-import datetime
+from datetime import datetime
 import ast
 import os
 import argparse
@@ -40,13 +40,14 @@ login_manager.login_view = "login"
 login_manager.init_app(app)
 
 class User(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
-	first_name = db.Column(db.String(20), nullable=False)
-	last_name = db.Column(db.String(20), nullable=False)
-	age = db.Column(db.Integer, nullable=False)
-	gender = db.Column(db.String(6), nullable=False)
-	username = db.Column(db.String(20), unique=True, nullable=False)
-	password = db.Column(db.String(40), nullable=False)
+	id 			= db.Column(db.Integer, primary_key=True)
+	first_name 	= db.Column(db.String(20), nullable=False)
+	last_name 	= db.Column(db.String(20), nullable=False)
+	age 		= db.Column(db.Integer, nullable=False)
+	birthday	= db.Column(db.DateTime, nullable=False)
+	gender 		= db.Column(db.String(6), nullable=False)
+	username 	= db.Column(db.String(20), unique=True, nullable=False)
+	password 	= db.Column(db.String(40), nullable=False)
 	security_question_id = db.Column(db.Integer, nullable=False)
 	security_question_ans = db.Column(db.String(50), nullable=False)
 

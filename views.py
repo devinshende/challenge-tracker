@@ -66,6 +66,7 @@ def api(filename):
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	# global user_so_far
+	months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	if request.method == 'POST':
 		users = User.query.all()
 		variables = read('vars.txt')
@@ -76,20 +77,30 @@ def signup():
 				print('in signup 1')
 			first_name = request.form.get('first_name')
 			last_name = request.form.get('last_name')
-			age = request.form.get('age')
+			# age = request.form.get('age')
+			yr = request.form.get('year')
+			month = request.form.get('month')
+			day = request.form.get('day')
 			gender = request.form.get('gender')
 			signup1 = {
 				'first_name':to_name_case(first_name),
 				'last_name':to_name_case(last_name),
-				'age':age,
-				'gender':gender
+				# 'age':age,
+				'gender':gender,
+				'year':yr,
+				'month':month,
+				'day':day
 			}
 			users_lst = list(users)[:-1] # everything but last one
 			for user in users_lst:
 				if user.first_name == to_name_case(first_name) \
 				and user.last_name == to_name_case(last_name):
 					flash('You have already registered for an account')
-					return render_template("unauth/signup.html")
+					return render_template("unauth/signup.html", months=months)
+			print(month,day,yr)
+			if month == 'month' or day == 'day' or yr == 'year':
+				flash('Please fill out birthday')
+				return render_template("unauth/signup.html", first_name=first_name, last_name=last_name, gender=gender, months=months, month=month, day=day, year=yr)
 			variables['half_user'] = signup1
 			write('vars.txt',variables)
 			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
@@ -119,11 +130,22 @@ def signup():
 			v = variables['half_user']
 			id = len(User.query.all())
 			print('user id is ',id)
+			monthsDict = {
+				'January':1, 'February':2, 'March':3,
+			 	'April':4, 'May':5, 'June':6, 
+			 	'July':7, 'August':8, 'September':9, 
+			 	'October':10, 'November':11, 'December':12
+			}
+			month = int(monthsDict[v['month']])
+			print(type(month))
+			birthday = datetime.datetime(year=int(v['year']), month=month, day=int(v['day']))
+			age = datetime.datetime.today().year - birthday.year
+			print(type(birthday))
 			user = User(id=id,
 						first_name=v['first_name'],
 			 			last_name=v['last_name'],
-			 			age=v['age'],
-			 			# birthday=birthday (db.Datetime) 
+			 			age=age,
+			 			birthday=birthday, #(db.Datetime) 
 			 			gender=v['gender'],
 			 			username=username,
 			 			password=encode(password),
@@ -139,8 +161,10 @@ def signup():
 
 			db.session.add(user)
 			db.session.commit()
+			user = User.query.get(id)
+			if user is not None:
+				login_user(user)
 			return redirect('/'+username+'/')
-	months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	return render_template('unauth/signup.html', months=months)
 
 

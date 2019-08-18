@@ -9,38 +9,64 @@
     <br>
     <!-- Login Form -->
     <form method="POST">
-      <input type="text" id="login" class="fadeIn second" name="first_name" placeholder="First Name" required>
-      <input type="text" id="last_name" class="fadeIn third" name="last_name" placeholder="Last Name" required> 
+      <input type="text" id="login" class="fadeIn second" name="first_name" value="{{first_name}}" placeholder="First Name" required>
+      <input type="text" id="last_name" class="fadeIn third" name="last_name" value="{{last_name}}" placeholder="Last Name" required> 
       <div id="age">
       	<label name="birthday">Birthday:</label>
-
         <select name="month" required>
-          <option value="month" selected hidden>month</option>
-          {% for month in months: %}
-            <option required>{{month}}</option>
+          <option value="month" selected hidden>Month</option>
+          {% if first_name:%}
+            {% if month != 'month': %}  <!-- saving previous inputs -->
+              <option value="{{month}}" selected>{{month}}</option>
+            {% endif %}
+          {% endif %}
+          {% for month in months: %}  <!-- generating values -->
+            <option value="{{month}}" required>{{month}}</option>
           {% endfor %}
         </select>
 
         <select name="day" required>
-          <option value="day" selected hidden>day</option>
-          {% for day in range(1,32): %}
-            <option required>{{day}}</option>
+          <option value="day" selected hidden>Day</option>
+          {% if first_name:%}
+            {% if day != 'day': %}  <!-- saving previous inputs -->
+              <option value="{{day}}" selected>{{day}}</option>
+            {% endif %}
+          {% endif %} 
+          {% for day in range(1,32): %} <!-- generating values -->
+            <option value="{{day}}" required>{{day}}</option>
           {% endfor %}
         </select>
 
         <select name="year" required>
-          <option value="year" selected hidden>year</option>
-          {% set year =  2015%}
+          <option value="year" selected hidden>Year</option>
+          {% if first_name:%}
+            {% if year != 'year': %}  <!-- saving previous inputs -->
+              <option value="{{year}}" selected>{{year}}</option>
+            {% endif %}
+          {% endif %}
+          {% set year =  2015%} <!-- generating values -->
           {% for year in range(1950,2015)|reverse %}
-            <option required>{{year}}</option>
+            <option required value="{{year}}">{{year}}</option>
           {% endfor %}
         </select>
       	
       </div>
       <br>
   		<label name = "gender">Gender:</label>
-  		<input type="radio" name="gender" value="male" required> Male
-  		<input type="radio" name="gender" value="female" required> Female
+      {% if not first_name: %} <!-- first time visiting page so gender hasn't yet been selected -->
+    		<input type="radio" name="gender" value="male" required> Male
+    		<input type="radio" name="gender" value="female" required> Female
+      {% endif %}
+      {% if first_name: %}<!-- coming to re-enter bday so a gender has already been selected -->
+        {% if gender == 'male': %}
+          <input type="radio" name="gender" value="male" required checked> Male
+          <input type="radio" name="gender" value="female" required> Female
+        {% endif %}
+        {% if gender == 'female': %}
+          <input type="radio" name="gender" value="male" required> Male
+          <input type="radio" name="gender" value="female" required checked> Female
+        {% endif %}
+      {% endif %}
   	  <br>
         <input type="submit" value="Continue">
         <div id="formFooter" style="margin-top:-10px">
