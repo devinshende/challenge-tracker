@@ -1,0 +1,62 @@
+{% extends "table_base.html" %}
+{% block title %} Leaderboard {% endblock %}
+{% block top %} {{header}} {% endblock %}
+{% block imghref %}/{% endblock %}
+{% block content %}
+<style type="text/css">
+	#divison { 
+		margin-bottom: 5px;
+	}
+
+</style>
+
+<br>
+<!-- <p>{{tables}}</p> -->
+{% if tables %}
+<div class="container">
+		<br>
+		{% for table in tables %}
+		<!-- Boys, Girls, Men, Women (or not?) -->
+		<h3 id="division">{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
+			{% if not table %}
+			<p id="no_entries">There are no entries for this division in {{header}}</p>
+			{% endif %}
+			{% if table %}
+			<table>
+				<thead>
+					<tr class="table-head">
+						<th>Place</th>
+						<th>Name</th>
+						<th>{{challenge_type}}</th>
+						<th>Comment</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in table %}
+						<tr>
+							<!-- place -->
+							<td>{{item[0]}}</td>
+							<!-- name -->
+							<td>{{item[1]}}</td> 
+							<!-- score -->
+							{% if challenge_type == 'time' %}
+							<td>{{item[2]}} seconds</td>
+							{% endif %}
+							<td>{{item[2]}}</td>
+							<!-- comment -->
+							<td>{{item[3]}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif%}
+			<br>
+			<br>
+		{% endfor %}
+ {% endif %}
+	{% if not tables %}
+	<p class="nothing" id="none">There are no competitors for that challenge</p>
+	{% endif %}
+	<a href="/leaderboard" class="btn">Pick a new challenge</a>
+</div>	
+{% endblock %}

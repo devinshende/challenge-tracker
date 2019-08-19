@@ -17,7 +17,7 @@ from flask_login import UserMixin, LoginManager, login_user, login_required, log
 from flask_admin import Admin
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
-from flask.ext.heroku import Heroku
+from flask_heroku import Heroku
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -75,9 +75,17 @@ class Suggestion(db.Model):
 	# def __repr__(self):
 		# return '<Challenge Entry %r>' % self.username
 
-admin = Admin(app)
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Suggestion, db.session))
+class MyModelView(ModelView):
+
+    def is_accessible(self):
+        # only shows home page when set to False
+        # shows normal admin page with full access when set to True
+        return True 
+
+
+admin = Admin(app, template_mode='bootstrap3') # template mode is styling
+admin.add_view(MyModelView(User, db.session))
+admin.add_view(MyModelView(Suggestion, db.session))
 #something with @action to accept challenges
 
 heroku = Heroku(app)

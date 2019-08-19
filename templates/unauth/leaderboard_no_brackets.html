@@ -1,0 +1,132 @@
+{% extends "table_base.html" %}
+{% block title %} Leaderboard {% endblock %}
+{% block top %} {{header}} {% endblock %}
+{% block imghref %}/{{username}}{% endblock %}
+{% block content %}
+
+<style type="text/css">
+	p {
+		display:inline;
+		margin-right:5px;
+	}
+	input[type="checkbox"] {
+		margin-bottom:-5px;
+		position: relative;
+		width: 40px;
+		height: 20px;
+		-webkit-appearance: none;
+		/* gray color for unchecked switch background */
+		background: #c6c6c6;
+		outline: none;
+		border-radius: 10px;
+		box-shadow: inset 0 0 2px rgba(0,0,0,0.4); 
+	}
+	input:checked[type="checkbox"] {
+		/* blue color for checked siwtch*/
+		background: #03a9f4;
+	}
+	/* white circle thingy on left side */
+	input[type="checkbox"]:before {
+		content: '';
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		border-radius: 10px;
+		top: 0;
+		left: 0;
+		background: #fff;
+		/* determines size of white circle 1=size of background */
+		transform: scale(1);
+		/* shadow around circle */
+		box-shadow: 0 1px 3px rgba(0,0,0.1);
+		transition: .4s;
+	}
+	/* circle on right side */
+	input:checked[type="checkbox"]:before {
+		left: 20px;
+	}
+</style>
+
+
+<br>
+{% if challenge_dict %}
+<div class="wrapper">
+	<div id="formContent">
+	<br>
+	<form method="POST">
+		<label for="challenge">Challenge: </label>
+		<select name="challenge" required="required" class="fadeIn second" id="select">
+			<option value="" hidden>Select Challenge</option>
+
+			<optgroup label="Time (seconds)">
+		    {% for item in challenge_dict['time'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+			</optgroup>
+
+		    <optgroup label="Laps">
+		    {% for item in challenge_dict['laps'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+			</optgroup>
+
+		    <optgroup label="Reps (in one minute)">
+		    {% for item in challenge_dict['reps'] %}
+		    	<option value="{{ item }}" required="required">{{item}}</option>
+		    {% endfor %}
+		    </optgroup>
+		</select>
+		<br>
+		<br>
+	    <!-- <div class="center"> -->
+	    	<p>Brackets:</p>
+	        <input type="checkbox" name="bracketswitch">
+	   	<!-- </div> -->
+	   	<br>
+	   	<br>
+		<input type="submit" class="fadeIn fourth" value="Load Leaderboard" id="submit">
+		</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+{% if not challenge_dict %}
+{% if data %}
+<div class="container">
+		<br>
+		<table>
+			<thead>
+				<tr class="table-head">
+					<th>Place</th>
+					<th>Name</th>
+					<th>{{challenge_type}}</th>
+					<th>Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in data %}
+					<tr>
+						<!-- place -->
+						<td>{{item[0]}}</td>
+						<!-- name -->
+						<td>{{item[1]}}</td> 
+						
+						<!-- score -->
+						{% if challenge_type == 'time' %}
+						<td>{{item[2]}} seconds</td>
+						{% endif %}
+						<td>{{item[2]}}</td>
+						<!-- comment -->
+						<td>{{item[3]}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+ {% endif %}
+	{% if not data %}
+	<div class="container"><p class="nothing">There are no competitors for that challenge</p></div>
+	{% endif %}
+	<a href="/leaderboard" class="btn">Pick a new challenge</a>
+</div>	
+{% endif %}
+{% endblock %}

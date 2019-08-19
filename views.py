@@ -265,6 +265,7 @@ def home(username):
 def leaderboard():
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
+		checked = request.form.get('bracketswitch')
 		selected_challenge_type = get_challenge_type(selected_challenge)
 		challenges = read_challenges()
 		data = []
@@ -272,28 +273,37 @@ def leaderboard():
 			if selected_challenge in usr_challenges_dict.keys():
 				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
 				data.append(
-					(get_full_name(user_id), entry.score, entry.format_date(), entry.comment)
+					[get_full_name(user_id), entry.score, entry.comment, user_id]
 				)
-		# `data` is a list containing tuples that have †he same four things
+		# `data` is a list containing lists that have †he same five things
 		'''
-		(
+		[
+			placement (1st 2nd 3rd),
 			full name of user,
 			score of challenge,
-			date of doing challenge,
-			comment about challenge
-		)
+			comment about challenge,
+			user id
+		]
 		'''
-		if selected_challenge_type in ['reps','laps']:
-			# sort it so highest score is first in `data`
-			# sort it lowest first then reverse list
-			sorted_data = sorted(data, key=lambda x:x[1])[::-1]
-		elif selected_challenge_type  == 'time':
-			# sort so lowest score is first in the `data`
-			sorted_data = sorted(data, key=lambda x:x[1])
-		return render_template('unauth/leaderboard.html', data=sorted_data, header=selected_challenge, \
-			challenge_type=to_name_case(selected_challenge_type) \
-			)
-	return render_template('unauth/leaderboard.html',challenge_dict=challenge_dict,header="Leaderboard")
+
+		if checked:
+			bn = [
+				'12 and under male',
+				'12 and under female',
+				'teen/adult male',
+				'teen/adult female'
+			]
+			brackets = get_brackets(data, selected_challenge_type)
+			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				brackets=brackets, bracket_names=bn)
+		else:
+			sorted_data = sort_data(data, selected_challenge_type)
+			print('no brackets')
+			return render_template('unauth/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				checked=repr(checked))
+	return render_template('unauth/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard")
 
 @app.route('/<username>/leaderboard',methods=['GET','POST'])
 @login_required
@@ -335,10 +345,10 @@ def userleaderboard(username):
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
 			print('no brackets')
-			return render_template('user/userleaderboard.html', data=sorted_data, header=selected_challenge, \
+			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				username=username,checked=repr(checked))
-	return render_template('user/userleaderboard.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
+	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
 
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
@@ -453,3 +463,10 @@ def profile(username):
 	age = user.age
 	gender = user.gender
 	return render_template('user/profile.html', first_name=first_name, last_name=last_name, age=age, gender=gender)
+
+
+@app.route('/admin')
+def admin():
+	return '<h1>hello!</h1>'
+
+
