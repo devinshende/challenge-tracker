@@ -54,6 +54,9 @@ class User(db.Model, UserMixin):
 	def __repr__(self):
 		return '<User %r>' % self.username
 
+	def get_profile_pic(self):
+		return '../static/profile_blank.jpg'
+
 app.jinja_env.globals.update(User=User)
 
 class Suggestion(db.Model):

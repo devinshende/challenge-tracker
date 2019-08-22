@@ -201,9 +201,30 @@
 		input[type=text]:placeholder {
 		  color: #cccccc;
 		}
+		#top {
+			display: grid;
+			grid-template-columns: 1fr 8fr 1fr;
+		}
+		#top span img {
+			width: 32px;
+			height: 32px;
+			float: right;
+		}
+		/*#top *{
+			width: 100%;
+			border: 2px solid green;
+		}*/
 	</style>
 	<div id="top">
+		<!-- the span is necessary in order to keep the h1 centered with the css grid -->
+		<span></span> 
 		<h1>{% block top %}{% endblock %}</h1>
+		{% if username %}
+			<span><img src="{{user.get_profile_pic()}}"></span>
+		{% endif %}
+		{% if not username %}
+			<span><img src="{% block profile_src %}{% endblock %}"></span>
+		{% endif %}
 	</div>
 	  {% with messages = get_flashed_messages() %}
 	      {% if messages %}

@@ -249,7 +249,9 @@ table tbody tr:hover{
 	  color: #cccccc;
 	}
 	</style>
-	<div id="top"><h1>{% block top %}{% endblock %}</h1></div>
+	<div id="top">
+		<h1>{% block top %}{% endblock %}</h1>
+	</div>
 	  {% with messages = get_flashed_messages() %}
 	      {% if messages %}
 	        {% for message in messages %}

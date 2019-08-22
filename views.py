@@ -259,7 +259,7 @@ def home(username):
 	if user is None:
 		abort(404)
 	name = user.first_name
-	return render_template('user/home.html', username=username, name=name)
+	return render_template('user/home.html', username=username, name=name, user=user)
 
 @app.route('/leaderboard',methods=['GET','POST'])
 def leaderboard():
@@ -462,7 +462,19 @@ def profile(username):
 	last_name = user.last_name
 	age = user.age
 	gender = user.gender
-	return render_template('user/profile.html', first_name=first_name, last_name=last_name, age=age, gender=gender)
+	return render_template('user/profile.html', editing=False, first_name=first_name, last_name=last_name, age=age, gender=gender, username=username)
+
+@app.route('/<username>/profile/edit')
+@login_required
+def edit_profile(username):
+	print('editing')
+	user = User.query.filter_by(username=username).first()
+	username = user.username
+	first_name = user.first_name
+	last_name = user.last_name
+	age = user.age
+	gender = user.gender
+	return render_template('user/profile_edit.html', editing=True, first_name=first_name, last_name=last_name, age=age, gender=gender, username=username)
 
 
 @app.route('/admin')

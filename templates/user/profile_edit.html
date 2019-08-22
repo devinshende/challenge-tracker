@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} Profile Page {% endblock %}
+{% block top %} Profile {% endblock %}
+{% block imghref %}/{{username}}/profile{% endblock %}
+{% block content %}
+<style type="text/css">
+	label {
+		display: block;
+		margin-top:10px;
+	}
+	#formContent {
+		width:60%
+	}
+</style>
+
+
+<div class="wrapper fadeInDown">
+	<div id="formContent">
+		<br>
+			<form method="POST">
+				<div class="main">					
+					<label name="first_name">First Name: </label>
+					<input type="text" value="{{first_name}}">
+					<label name="last_name">Last Name: </label>
+					<input type="text" value="{{last_name}}">
+					<label name="age">Age: </label>
+					<input type="text" value="{{age}}">
+					<label name="gender">Gender: </label>
+					<input type="text" value="{{gender}}">
+					<input type="submit" value="save">
+				<div id="formFooter">
+		    		<a href="/{{username}}/profile" style="display:block">cancel</a>   
+		    	</div>
+		    </form>
+  	</div>
+</div>
+
+
+
+
+
+{% endblock %}
