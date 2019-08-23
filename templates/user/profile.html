@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "user/user_base.html" %}
 {% block title %} Profile Page {% endblock %}
 {% block top %} Profile {% endblock %}
+<!-- don't add block links -->
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
 <style type="text/css">
@@ -9,7 +10,7 @@
 		box-shadow: 10px grey;
 		width:60%;
 	}
-	#profile {
+	.profpreview {
 		width: 75px;
 		height: 75px;
 		border: 2px solid #777;
@@ -20,14 +21,14 @@
 		/* -webkit for safari support */
 		/*-webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);*/
 	}
-	table {
+/*	table {
 		margin: 0 auto;
 		text-align: right;
 		border-spacing: 10px 5px;
-	}
+	}*/
 	table tr td:nth-of-type(even) {
-		margin-left: 20px;
-		text-align: left;
+		/*margin-left: 20px;*/
+		/*text-align: left;*/
 		font-style: italic;
 	}
 	table tr td:nth-of-type(odd) {
@@ -36,7 +37,7 @@
 </style>
 <div class="wrapper">
 	<div id="formContent">
-		<img id="profile" src="{{user.get_profile_pic()}}">
+		<img class="profpreview" src="{{user.get_profile_pic()}}">
 		<br>
 		<table>
 			<tr>

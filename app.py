@@ -61,7 +61,7 @@ class User(db.Model, UserMixin):
 		try:
 			return self.profile_pic
 		except:
-			return '../static/blank_profile.jpg'
+			return '../../static/blank_profile.jpg'
 
 	def format_bday(self):
 		# x = str(self.birthday.month) + ' ' + str(self.birthday.day) + ', ' + str(self.birthday.year)

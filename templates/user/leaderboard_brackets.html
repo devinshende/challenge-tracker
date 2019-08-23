@@ -1,6 +1,7 @@
-{% extends "table_base.html" %}
+{% extends "user/user_base.html" %}
 {% block title %} Leaderboard {% endblock %}
 {% block top %} {{header}} {% endblock %}
+{% block links %}<a href="/{{username}}/profile">Profile</a>{% endblock %}
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
 <style type="text/css">

@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "user/user_base.html" %}
 {% block title %} New Challenge {% endblock %}
 {% block top %} Personal Records {% endblock %}
+{% block links %}<a href="/{{username}}/profile">Profile</a>{% endblock %}
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
 	<br>

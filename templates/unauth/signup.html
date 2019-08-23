@@ -39,7 +39,7 @@
 
         <select name="year" required>
           <option value="year" selected hidden>Year</option>
-          {% if first_name:%}
+          {% if first_name %}
             {% if year != 'year' %}  <!-- saving previous inputs -->
               <option value="{{year}}" selected>{{year}}</option>
             {% endif %}
@@ -53,16 +53,16 @@
       </div>
       <br>
   		<label name = "gender">Gender:</label>
-      {% if not first_name: %} <!-- first time visiting page so gender hasn't yet been selected -->
+      {% if not first_name %} <!-- first time visiting page so gender hasn't yet been selected -->
     		<input type="radio" name="gender" value="male" required> Male
     		<input type="radio" name="gender" value="female" required> Female
       {% endif %}
-      {% if first_name: %}<!-- coming to re-enter bday so a gender has already been selected -->
-        {% if gender == 'male': %}
+      {% if first_name %}<!-- coming to re-enter bday so a gender has already been selected -->
+        {% if gender == 'male' %}
           <input type="radio" name="gender" value="male" required checked> Male
           <input type="radio" name="gender" value="female" required> Female
         {% endif %}
-        {% if gender == 'female': %}
+        {% if gender == 'female' %}
           <input type="radio" name="gender" value="male" required> Male
           <input type="radio" name="gender" value="female" required checked> Female
         {% endif %}
@@ -73,8 +73,6 @@
           <a href="/" style="display:block">cancel</a>   
         </div>
     </form>
-
-    <!-- Remind Passowrd -->
 
   </div>
 </div>

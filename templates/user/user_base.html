@@ -201,10 +201,52 @@
 		input[type=text]:placeholder {
 		  color: #cccccc;
 		}
-		#top {
-			display: grid;
-			grid-template-columns: 1fr 8fr 1fr;
-		}
+/*what once was table_base*/
+table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.table-head th { 
+	font-family: OpenSans-Regular;
+	font-size: 20px;
+	color: #eee;
+	line-height: 1.2;
+}
+
+table td, table th {
+	padding-left: 8px;
+}
+table thead tr {
+	height: 60px;
+	background-color: #262136;
+}
+table tbody tr {
+	height: 50px;
+}
+tbody tr {
+	background-color: #e4e4e4;
+}
+
+tbody tr:nth-child(even) {
+	background-color: #f5f5f5
+}
+table td, table th {
+	text-align: center;
+}
+table tbody tr:hover{
+	background-color: #DDE8E9;
+}
+#top {
+	display: grid;
+	grid-template-columns: 1fr 8fr 1fr;
+}
 /*		#top * {
 			width: 100%;
 			border: 2px solid green;
@@ -251,7 +293,7 @@
 			<div class="dropdown">
 				<img id="profile" src="{{user.get_profile_pic()}}">
 				<div class="dropdown-content">
-					<a href="/{{username}}/profile">Profile</a>
+					{% block links %}{% endblock %}
 					<a href="/{{username}}/logout">Logout</a>
 				</div>
 			</div>
@@ -268,7 +310,7 @@
 	        <br id="above_img">
 	      {% endif %}
 	    {% endwith %}
-	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../static/ninjapark-logo.jpg"></a>
+	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
 	<br>
     {% block content %}{% endblock %}
   </body>

@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "user/user_base.html" %}
 {% block title %} Profile Page {% endblock %}
 {% block top %} Profile {% endblock %}
+<!-- don't add block links -->
 {% block imghref %}/{{username}}/profile{% endblock %}
 {% block content %}
 <style type="text/css">
@@ -12,7 +13,6 @@
 		width:60%
 	}
 </style>
-
 <div class="wrapper fadeInDown">
 	<div id="formContent">
 		<br>
@@ -30,6 +30,8 @@
 					<input type="radio" name="gender" value="male"> Male
 					<input type="radio" name="gender" value="female" checked> Female
 				{% endif %}
+				
+				
 				<br>
 					<input type="submit" value="save">
 				<div id="formFooter">

@@ -308,6 +308,7 @@ def leaderboard():
 @app.route('/<username>/leaderboard',methods=['GET','POST'])
 @login_required
 def userleaderboard(username):
+	user = User.query.filter_by(username=username).first()
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
 		checked = request.form.get('bracketswitch')
@@ -341,20 +342,21 @@ def userleaderboard(username):
 			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
-				username=username, brackets=brackets, bracket_names=bn)
+				username=username, brackets=brackets, bracket_names=bn, user=user)
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
 			print('no brackets')
 			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
-				username=username,checked=repr(checked))
-	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard",username=username)
+				username=username,checked=repr(checked), user=user)
+	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard",username=username, user=user)
 
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
 @login_required
 def records_add(username):
 	global COMMENT
+	user = User.query.filter_by(username=username).first()
 	# entry(11.98,datetime.datetime.today(),'hand over hand')
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
@@ -397,15 +399,15 @@ def records_add(username):
 		return redirect('/'+username+'/records-view')
 	if verbose:
 		print('COMMENT: ',COMMENT)
-	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict,username=username,comment=COMMENT)
+	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict, user=user, username=username,comment=COMMENT)
 
 @app.route('/<username>/records-view')
 @login_required
 def records_view(username):
-	user_id = get_user_id(username)
+	user = User.query.filter_by(username=username).first()
 	challenges = read_challenges()
-	ch = challenges[user_id]
-	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username, ch=ch)
+	ch = challenges[user.id]
+	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username,user=user, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 @login_required
