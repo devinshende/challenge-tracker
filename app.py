@@ -31,6 +31,9 @@ app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
+
+# UPLOAD_FOLDER = '/database/profile_pics'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 db = SQLAlchemy(app)
@@ -55,7 +58,15 @@ class User(db.Model, UserMixin):
 		return '<User %r>' % self.username
 
 	def get_profile_pic(self):
-		return '../static/profile_blank.jpg'
+		try:
+			return self.profile_pic
+		except:
+			return '../static/blank_profile.jpg'
+
+	def format_bday(self):
+		# x = str(self.birthday.month) + ' ' + str(self.birthday.day) + ', ' + str(self.birthday.year)
+		x = self.birthday.strftime('%b %d, %Y')
+		return x
 
 app.jinja_env.globals.update(User=User)
 

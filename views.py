@@ -452,29 +452,33 @@ def admin_suggestions():
 @app.route('/table')
 def table():
 	return render_template('unauth/my_table.html')
-# 
 
 @app.route('/<username>/profile')
 @login_required
 def profile(username):
 	user = User.query.filter_by(username=username).first()
-	first_name = user.first_name
-	last_name = user.last_name
-	age = user.age
-	gender = user.gender
-	return render_template('user/profile.html', editing=False, first_name=first_name, last_name=last_name, age=age, gender=gender, username=username)
+	return render_template('user/profile.html', user=user, username=username)
 
-@app.route('/<username>/profile/edit')
+@app.route('/<username>/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile(username):
-	print('editing')
 	user = User.query.filter_by(username=username).first()
-	username = user.username
-	first_name = user.first_name
-	last_name = user.last_name
-	age = user.age
-	gender = user.gender
-	return render_template('user/profile_edit.html', editing=True, first_name=first_name, last_name=last_name, age=age, gender=gender, username=username)
+	if request.method == 'POST':
+		first_name 	= request.form.get( 'first_name' )
+		last_name 	= request.form.get( 'last_name'  )
+		age 		= request.form.get( 'age'        )
+		gender 		= request.form.get( 'gender'     )
+		if not gender:
+			gender = user.gender
+		user.first_name = first_name
+		user.last_name 	= last_name
+		user.age 		= age
+		user.gender 	= gender
+		# print(user.first_name, user.last_name, user.age, user.gender,sep='\n')
+		db.session.add(user)
+		db.session.commit()
+		return redirect('/'+username+'/profile')
+	return render_template('user/profile_edit.html', user=user, username=username)
 
 
 @app.route('/admin')

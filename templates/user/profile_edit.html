@@ -11,27 +11,58 @@
 	#formContent {
 		width:60%
 	}
+
+/*	#pic_file_choose {
+		margin: 10px auto;
+	}*/
 </style>
 
 
 <div class="wrapper fadeInDown">
 	<div id="formContent">
 		<br>
-			<form method="POST">
-				<div class="main">					
-					<label name="first_name">First Name: </label>
-					<input type="text" value="{{first_name}}">
-					<label name="last_name">Last Name: </label>
-					<input type="text" value="{{last_name}}">
-					<label name="age">Age: </label>
-					<input type="text" value="{{age}}">
-					<label name="gender">Gender: </label>
-					<input type="text" value="{{gender}}">
+		<!-- action="http://localhost:5000/{{username}}/profile/edit" -->
+		<!--  enctype="multipart/form-data"> -->
+			<!-- <form method="POST"> -->
+				<!-- <div class="main"> -->
+				<!-- <label name="first_name">First Name: </label>
+				<input type="text" value="{{user.first_name}}">
+				<label name="last_name">Last Name: </label>
+				<input type="text" value="{{user.last_name}}">
+				<label name="age">Age: </label>
+				<input type="text" value="{{user.age}}">
+				<label name="gender">Gender: </label>
+				<input type="radio" name="gender" value="male"> Male
+				<input type="radio" name="gender" value="female"> Female -->
+				
+				<!-- <div id="pic_file_choose"> 
+					<label name="image">Profile Image</label>
+						<input type="file" name="image" accept="image/*">
+					</div> -->
+				<!-- </div> -->
+		<!-- 			<br>
 					<input type="submit" value="save">
 				<div id="formFooter">
 		    		<a href="/{{username}}/profile" style="display:block">cancel</a>   
 		    	</div>
 		    </form>
+ -->
+		    	<form method="POST">
+					<label for="first_name">First Name: </label>
+					<input name="first_name" type="text" value="{{user.first_name}}">
+					<label for="last_name">Last Name: </label>
+					<input name="last_name" type="text" value="{{user.last_name}}">
+					<label for="age">Age: </label>
+					<input name="age" type="text" value="{{user.age}}"><br>
+					<label for="gender">Gender: </label>
+					<input name="gender" type="radio" name="gender" value="male"> Male
+					<input type="radio" name="gender" value="female"> Female
+					<br>
+						<input type="submit" value="save">
+					<div id="formFooter">
+		    			<a href="/{{username}}/profile" style="display:block">cancel</a>   
+			    	</div>
+			    </form>
   	</div>
 </div>
 

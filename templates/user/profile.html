@@ -9,17 +9,60 @@
 		box-shadow: 10px grey;
 		width:60%;
 	}
+	#profile {
+		width: 75px;
+		height: 75px;
+		border: 2px solid #777;
+		border-radius: 15%;
+		/* positive for width is right, positive for height is down */
+		/* first item is w-offset, then w-offset, then blur, spread, and color */
+	  	/*box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);*/
+		/* -webkit for safari support */
+		/*-webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);*/
+	}
+	table {
+		margin: 0 auto;
+		text-align: right;
+		border-spacing: 10px 5px;
+	}
+	table tr td:nth-of-type(even) {
+		margin-left: 20px;
+		text-align: left;
+		font-style: italic;
+	}
+	table tr td:nth-of-type(odd) {
+		font-weight: bold;
+	}
 </style>
 <div class="wrapper">
 	<div id="formContent">
-		<div><label name="first_name">First Name: </label><span>{{first_name}}</span></div>
-		<div><label name="last_name">Last Name: </label><span>{{last_name}}</span></div>
-		<div><label name="age">Age: </label><span>{{age}}</span></div>
-		<div><label name="gender">Gender: </label><span>{{gender}}</span></div>
+		<img id="profile" src="{{user.get_profile_pic()}}">
+		<br>
+		<table>
+			<tr>
+				<td>First Name</td>
+				<td>{{user.first_name}}</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>{{user.last_name}}</td>
+			</tr>
+			<tr>
+				<td>Age</td>
+				<td>{{user.age}}</td>
+			</tr>
+			<tr>
+				<td>Birthday</td>
+				<td>{{user.format_bday()}}</td>
+			</tr>
+			<tr>
+				<td>Gender</td>
+				<td>{{to_name_case(user.gender)}}</td>
+			</tr>
+		</table>
 	</div>
 </div>
 <a href="/{{username}}/profile/edit" class="btn">Edit Profile</a>
-
 
 
 {% endblock %}
