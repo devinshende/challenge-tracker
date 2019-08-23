@@ -21,11 +21,15 @@
 				<input name="first_name" type="text" value="{{user.first_name}}">
 				<label for="last_name">Last Name: </label>
 				<input name="last_name" type="text" value="{{user.last_name}}">
-				<label for="age">Age: </label>
-				<input name="age" type="text" value="{{user.age}}"><br>
 				<label for="gender">Gender: </label>
-				<input name="gender" type="radio" name="gender" value="male"> Male
-				<input type="radio" name="gender" value="female"> Female
+				{% if user.gender=='male'%}
+					<input type="radio" name="gender" value="male" checked> Male
+					<input type="radio" name="gender" value="female"> Female
+				{% endif %}
+				{% if user.gender=='female'%}
+					<input type="radio" name="gender" value="male"> Male
+					<input type="radio" name="gender" value="female" checked> Female
+				{% endif %}
 				<br>
 					<input type="submit" value="save">
 				<div id="formFooter">

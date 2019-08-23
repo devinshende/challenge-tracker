@@ -15,24 +15,24 @@
       	<label name="birthday">Birthday:</label>
         <select name="month" required>
           <option value="month" selected hidden>Month</option>
-          {% if first_name:%}
-            {% if month != 'month': %}  <!-- saving previous inputs -->
+          {% if first_name %}
+            {% if month != 'month' %}  <!-- saving previous inputs -->
               <option value="{{month}}" selected>{{month}}</option>
             {% endif %}
           {% endif %}
-          {% for month in months: %}  <!-- generating values -->
+          {% for month in months %}  <!-- generating values -->
             <option value="{{month}}" required>{{month}}</option>
           {% endfor %}
         </select>
 
         <select name="day" required>
           <option value="day" selected hidden>Day</option>
-          {% if first_name:%}
-            {% if day != 'day': %}  <!-- saving previous inputs -->
+          {% if first_name %}
+            {% if day != 'day' %}  <!-- saving previous inputs -->
               <option value="{{day}}" selected>{{day}}</option>
             {% endif %}
           {% endif %} 
-          {% for day in range(1,32): %} <!-- generating values -->
+          {% for day in range(1,32) %} <!-- generating values -->
             <option value="{{day}}" required>{{day}}</option>
           {% endfor %}
         </select>
@@ -40,11 +40,11 @@
         <select name="year" required>
           <option value="year" selected hidden>Year</option>
           {% if first_name:%}
-            {% if year != 'year': %}  <!-- saving previous inputs -->
+            {% if year != 'year' %}  <!-- saving previous inputs -->
               <option value="{{year}}" selected>{{year}}</option>
             {% endif %}
           {% endif %}
-          {% set year =  2015%} <!-- generating values -->
+          {% set year =  2015 %} <!-- generating values -->
           {% for year in range(1950,2015)|reverse %}
             <option required value="{{year}}">{{year}}</option>
           {% endfor %}

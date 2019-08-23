@@ -466,13 +466,11 @@ def edit_profile(username):
 	if request.method == 'POST':
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
-		age 		= request.form.get( 'age'        )
 		gender 		= request.form.get( 'gender'     )
 		if not gender:
 			gender = user.gender
 		user.first_name = first_name
 		user.last_name 	= last_name
-		user.age 		= age
 		user.gender 	= gender
 		# print(user.first_name, user.last_name, user.age, user.gender,sep='\n')
 		db.session.add(user)
