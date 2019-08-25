@@ -5,25 +5,13 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, challenge_dict
-from challenges import Entry, read_challenges, write_challenges
+from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS
+from challenges import Entry
 from pprint import pprint
-import datetime, pickle
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 
-# TODO
-'''
-normal leaderboard
-cmd f read('users.txt') and remove them
-completely delete user_mapping.txt and all references to it
-fix get_user_id and get_username in utils to use database
-
-long term
-refactor other database items like challenges and challenge_suggestions
-'''
-
-COMMENT = ''
 verbose = read('args.txt')['verbose']
 
 
@@ -53,15 +41,6 @@ def landing_page():
 	variables['logged_in'] = False # everything but this should be set to False
 	write('vars.txt',variables)
 	return render_template('unauth/landing_page.html') # kwargs are used for html
-
-@app.route('/api/<filename>')
-def api(filename):
-	if filename != 'challenges.pickle':
-		with open('database/'+filename,'r') as file:
-			data = file.read()
-	else:
-		data = read_challenges()
-	return str(data)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -128,7 +107,7 @@ def signup():
 
 			variables = read('vars.txt')
 			v = variables['half_user']
-			id = len(User.query.all())
+			id = User.query.all()[-1].id+1
 			print('user id is ',id)
 			monthsDict = {
 				'January':1, 'February':2, 'March':3,
@@ -138,8 +117,8 @@ def signup():
 			}
 			month = int(monthsDict[v['month']])
 			print(type(month))
-			birthday = datetime.datetime(year=int(v['year']), month=month, day=int(v['day']))
-			age = datetime.datetime.today().year - birthday.year
+			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
+			age = datetime.today().year - birthday.year
 			print(type(birthday))
 			user = User(id=id,
 						first_name=v['first_name'],
@@ -154,10 +133,6 @@ def signup():
 			print('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
-
-			challenges = read_challenges()
-			challenges[user.id] = {}
-			write_challenges(challenges)
 
 			db.session.add(user)
 			db.session.commit()
@@ -259,22 +234,27 @@ def home(username):
 	if user is None:
 		abort(404)
 	name = user.first_name
-	return render_template('user/home.html', username=username, name=name, user=user)
+	return render_template('user/home.html', username=username, user=user)
 
 @app.route('/leaderboard',methods=['GET','POST'])
 def leaderboard():
+	all_users = User.query.all()
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
 		checked = request.form.get('bracketswitch')
 		selected_challenge_type = get_challenge_type(selected_challenge)
-		challenges = read_challenges()
 		data = []
-		for user_id,usr_challenges_dict in challenges.items():
-			if selected_challenge in usr_challenges_dict.keys():
-				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
+		for user in all_users:
+			user_challenges = json_to_objects(user.challenges)
+			if selected_challenge in user_challenges.keys():
+				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
 				data.append(
-					[get_full_name(user_id), entry.score, entry.comment, user_id]
+					[get_full_name(user.id),
+					entry.score,
+					entry.comment,
+					user.id]
 				)
+
 		# `data` is a list containing lists that have †he same five things
 		'''
 		[
@@ -309,17 +289,21 @@ def leaderboard():
 @login_required
 def userleaderboard(username):
 	user = User.query.filter_by(username=username).first()
+	all_users = User.query.all()
 	if request.method == "POST":
 		selected_challenge = request.form.get('challenge')
 		checked = request.form.get('bracketswitch')
 		selected_challenge_type = get_challenge_type(selected_challenge)
-		challenges = read_challenges()
 		data = []
-		for user_id,usr_challenges_dict in challenges.items():
-			if selected_challenge in usr_challenges_dict.keys():
-				entry = get_best(usr_challenges_dict[selected_challenge], selected_challenge_type)
+		for user in all_users:
+			user_challenges = json_to_objects(user.challenges)
+			if selected_challenge in user_challenges.keys():
+				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
 				data.append(
-					[get_full_name(user_id), entry.score, entry.comment, user_id]
+					[get_full_name(user.id),
+					entry.score,
+					entry.comment,
+					user.id]
 				)
 		# `data` is a list containing lists that have †he same five things
 		'''
@@ -333,16 +317,10 @@ def userleaderboard(username):
 		'''
 
 		if checked:
-			bn = [
-				'12 and under male',
-				'12 and under female',
-				'teen/adult male',
-				'teen/adult female'
-			]
 			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
-				username=username, brackets=brackets, bracket_names=bn, user=user)
+				username=username, brackets=brackets, bracket_names=BRACKETS, user=user)
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
 			print('no brackets')
@@ -355,17 +333,14 @@ def userleaderboard(username):
 @app.route('/<username>/records-add',methods=['GET','POST'])
 @login_required
 def records_add(username):
-	global COMMENT
 	user = User.query.filter_by(username=username).first()
-	# entry(11.98,datetime.datetime.today(),'hand over hand')
+	# user = db.session.query(User).filter_by(username=username).first()
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
 		challenge_type = get_challenge_type(challenge)
 		score = request.form.get('time')
 		comment = request.form.get('comment')
-		COMMENT = comment
-		if verbose:
-			print(challenge_type)
+		# bad user input handling
 		if challenge_type == 'time':
 			try:
 				score = float(score)
@@ -378,51 +353,51 @@ def records_add(username):
 			except ValueError:
 				flash('Please only enter a whole number for ' + challenge_type)
 				return redirect('/'+username+'/records-add')
-		date = datetime.datetime.today()
-		en = Entry(score, date, comment)
+		en = Entry([score, datetime_to_string(datetime.today()), comment]).to_json()
 		user_id = get_user_id(username)
-
-		challenges = read_challenges()
+		challenges = user.challenges
 		try:
 			# there is already an entry for the challenge. append the entry to the list
 			if verbose:
-				print('adding challenge to dict for databse. Challenge is: '+ challenge) 
-			challenges[user_id][challenge].append(en)
+				print('adding challenge to dict for database. Challenge is: '+ challenge) 
+			challenges[challenge].append(en)
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
-			challenges[user_id][challenge] = [en]
-		if verbose:
-			print(COMMENT)
-			print(en)
-		write_challenges(challenges)
-		COMMENT = ''
+			challenges[challenge] = [en]
+		# this clears the dict for that user. It seemed to fix everything when it was not working
+		reset_user_challenges(username)
+		user.challenges = challenges
+		db.session.add(user)
+		db.session.commit()
 		return redirect('/'+username+'/records-view')
-	if verbose:
-		print('COMMENT: ',COMMENT)
-	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict, user=user, username=username,comment=COMMENT)
+	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict, user=user, username=username)
 
 @app.route('/<username>/records-view')
 @login_required
 def records_view(username):
 	user = User.query.filter_by(username=username).first()
-	challenges = read_challenges()
-	ch = challenges[user.id]
+	ch = json_to_objects(user.challenges)
 	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username,user=user, ch=ch)
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 @login_required
 def suggest_challenge(username):
+	user = User.query.filter_by(username=username).first()
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
 		challenge_name = request.form.get('challenge')
-		user_id = get_user_id(username)
+		s = Suggestion.query.filter_by(name=challenge_name).first()
+		print('\nS IS \n\n')
+		print(s == True)
+		if s:
+			flash(f'That Challenge was already suggested by {User.query.get(s[0].user_id).first_name}')
+			return render_template('user/new_challenge.html',username=username, user=user)
 		challenge = Suggestion(
-						id=len(Suggestion.query.all()),
+						id=Suggestion.query.all()[-1].id+1,
 						type=challenge_type,
 						name=challenge_name,
-						user_id=user_id
+						user_id=user.id
 					)
-		name = User.query.filter_by(username=username).first().first_name
 		send_emails = read('args.txt')['email']
 		if verbose: print('writing suggestion to database')
 		
@@ -436,8 +411,8 @@ def suggest_challenge(username):
 		else:
 			if verbose:
 				print('would be sending emails but that was set to False so not doing that.')
-		return render_template('user/home.html', username=username, name=name)
-	return render_template('user/new_challenge.html',username=username)
+		return render_template('user/home.html', username=username, user=user)
+	return render_template('user/new_challenge.html',username=username, user=user)
 
 @app.route('/siteadmin/')
 def admin_login():
@@ -479,10 +454,5 @@ def edit_profile(username):
 		db.session.commit()
 		return redirect('/'+username+'/profile')
 	return render_template('user/profile_edit.html', user=user, username=username)
-
-
-@app.route('/admin')
-def admin():
-	return '<h1>hello!</h1>'
 
 

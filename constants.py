@@ -12,7 +12,7 @@ challenge_dict = {
 		'Campus Board (up and down)',
 		'Floating Doors to Cliffhanger',
 		'Rope Climb'
-	], 
+	],
 
 	'laps':[
 		'Rings',
@@ -25,3 +25,10 @@ challenge_dict = {
 		'Quintuple Steps'
 	]
 }
+
+BRACKETS = [
+	'12 and under male',
+	'12 and under female',
+	'teen/adult male',
+	'teen/adult female'
+]

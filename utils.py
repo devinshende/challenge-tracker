@@ -1,5 +1,39 @@
 import os
 from constants import SECURITY_QUESTIONS, challenge_dict
+from challenges import Entry
+import datetime
+
+def json_to_objects(userchallenges):
+	ch = {}
+	# turn lists of [score, datetime_obj, comment] into Entry objects with all those things for ch
+	for challenge_name, entries in userchallenges.items():
+		ch[challenge_name] = []
+		for jsonentry in entries:
+			ch[challenge_name].append(Entry(jsonentry))
+	return ch
+
+def reset_user_challenges(username):
+	from app import db, User
+	user = User.query.filter_by(username=username).first()
+	user.challenges = {}
+	db.session.add(user)
+	db.session.commit()
+
+def datetime_to_string(date):
+	# 8.24.2019
+	try:
+		return f'{date.month}.{date.day}.{date.year}'
+	except:
+		if type(date) == datetime.datetime:
+			raise ValueError(f'input `{date}` is not a datetime object')
+		raise ValueError(f'bad input: `{date}`')
+
+def get_empty_challenges_dict():
+	chs = {}
+	for lst in challenge_dict.values():
+		for i in lst:
+			chs[i] = []
+	return chs
 
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
@@ -60,6 +94,8 @@ def id_to_question(ID):
 	return SECURITY_QUESTIONS[ID]
 
 def get_best(entry_list,ch_type):
+	if not entry_list:
+		return None
 	best_so_far = entry_list[0]
 	for entry in entry_list:
 		if ch_type == 'reps' or ch_type == 'laps':
@@ -74,8 +110,7 @@ def get_challenge_type(challenge):
 	for ch_type,lst in challenge_dict.items():
 		if challenge in lst:
 			return ch_type
-	else:
-		raise ValueError('that challenge ('+challenge+') is not in challenge_dict')
+	raise ValueError('that challenge `'+challenge+'` is not in challenge_dict')
 
 def get_brackets(data, selected_challenge_type):
 	from app import User

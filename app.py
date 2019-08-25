@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from pprint import pprint
 from termcolor import colored
-from datetime import datetime
+from datetime import datetime, date
 import ast
 import os
 import argparse
@@ -17,6 +17,7 @@ from flask_login import UserMixin, LoginManager, login_user, login_required, log
 from flask_admin import Admin
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.model import BaseModelView, typefmt
 from flask_heroku import Heroku
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
@@ -53,6 +54,7 @@ class User(db.Model, UserMixin):
 	password 	= db.Column(db.String(40), nullable=False)
 	security_question_id = db.Column(db.Integer, nullable=False)
 	security_question_ans = db.Column(db.String(50), nullable=False)
+	challenges 	= db.Column(db.PickleType, default={})
 
 	def __repr__(self):
 		return '<User %r>' % self.username
@@ -64,9 +66,8 @@ class User(db.Model, UserMixin):
 			return '../../static/blank_profile.jpg'
 
 	def format_bday(self):
-		# x = str(self.birthday.month) + ' ' + str(self.birthday.day) + ', ' + str(self.birthday.year)
-		x = self.birthday.strftime('%b %d, %Y')
-		return x
+		return self.birthday.strftime('%b %d, %Y')
+
 
 app.jinja_env.globals.update(User=User)
 
@@ -79,27 +80,47 @@ class Suggestion(db.Model):
 		return '<Suggestion %r>' % self.name
 
 # class Challenge(db.Model):
-	# look into many to many relationships (this might be required)
-	# User should have an attribute challenges which references this and that has entries for each challenge
-	# id = db.Column(db.Integer, primary_key=True)
-	# type = db.Column(db.String(10), nullable=False)
-	# name = db.Column(db.String(30), unique=True, nullable=False)
-	# user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+# 	# look into many to many relationships (this might be required)
+# 	# User should have an attribute challenges which references this and that has entries for each challenge
+# 	id = db.Column(db.Integer, primary_key=True)
+# 	# type = db.Column(db.String(10), nullable=False)
+# 	# name = db.Column(db.String(30), unique=True, nullable=False)
+# 	# user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+# 	devil_steps = db.Column(db.PickleType)
 
-	# def __repr__(self):
-		# return '<Challenge Entry %r>' % self.username
+# 	def __repr__(self):
+# 		return '<Challenge Entry %r>' % self.username
+
+def date_format(view, value):
+    return value.strftime('%b %d, %Y')
+
+MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
+MY_DEFAULT_FORMATTERS.update({
+        type(None): typefmt.null_formatter,
+        date: date_format
+    })
+
+class UserView(ModelView):
+	column_display_pk = True # controls whether id is (not) hidden
+	column_searchable_list = ('first_name','last_name')
+	column_exclude_list = ('password','security_question_id','security_question_ans')
+	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
 
 class MyModelView(ModelView):
-
-    def is_accessible(self):
-        # only shows home page when set to False
-        # shows normal admin page with full access when set to True
-        return True 
-
+	column_type_formatters = MY_DEFAULT_FORMATTERS
+	page_size = 10
+	column_display_pk = True
+	# column_labels = dict(first_name='Name ', last_name='Last Name')
+	# self.can_create=False
+	def is_accessible(self):
+		# only shows home page when set to False
+		# shows normal admin page with full access when set to True
+		return True
 
 admin = Admin(app, template_mode='bootstrap3') # template mode is styling
-admin.add_view(MyModelView(User, db.session))
+admin.add_view(UserView(User, db.session))
 admin.add_view(MyModelView(Suggestion, db.session))
+# admin.add_view(MyModelView(Challenge, db.session))
 #something with @action to accept challenges
 
 heroku = Heroku(app)

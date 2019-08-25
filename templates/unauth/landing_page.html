@@ -1,11 +1,30 @@
 {% extends "base.html" %}
 {% block title %} Challenge Tracker {% endblock %}
 {% block top %}Challenge Tracker{%endblock%}
-{% block imghref %}https://nwninjapark.com{%endblock%}
+{% block imghref %}https://www.nwninjapark.com{%endblock%}
 {% block content %}
+
+<script type="text/javascript">
+var imgLink = document.getElementById('imgLink')
+function confirm_move() {
+// 	if (confirm('Would you like to go to "nwninjapark.com"')) {
+// 	    //does automatically
+// 	} else {
+// 	    imgLink.setAttribute('href', 'https://www.google.com')
+// 	    console.log('switched href')
+// 	}
+// }
+	confirm("img clicked")
+	imgLink.setAttribute('href', 'https://www.google.com')
+}
+</script>
+
+<!-- <a id="imgLink" href="#" onclick="confirm_move()"><img src="../../static/ninjapark-logo.jpg" style="width:60px"></a> -->
 	<div class="container">
 		<a class="btn" href="/signup">Sign Up</a>
 		<a class="btn" href="/login">Login</a>
 		<a class="btn" href="/leaderboard">Leaderboard</a>
 	</div>
+
+
 {% endblock %}

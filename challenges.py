@@ -1,16 +1,21 @@
 import pickle, os
+from datetime import datetime
 
 class Entry(object):
 	"""class to store data about a user's time entry on a certain obstacle"""
-	def __init__(self, score, date, comment):
+	def __init__(self, initlist):
+		self.initlist = initlist
+		score, date, comment = initlist
 		if type(score) != float:
 			if type(score) != int:
 				raise ValueError('score must be of type float or int')
 		self.score = score
-		self.date = date
+		# 8.24.19
+		# self.date = date
+		d = date.split('.')
+		self.date = datetime(year=int(d[2]), month=int(d[0]), day=int(d[1]))
 		if repr(type(self.date)) != "<class 'datetime.datetime'>":
 			raise ValueError('date provided to entry() must be of class <class \'datetime.datetime\'>')
-		self.date_str = self.date.strftime("%B %dth, %Y")
 		self.comment = comment
 		if self.comment == None:
 			self.comment = ''
@@ -24,6 +29,9 @@ class Entry(object):
 	def format_date(self):
 		date = self.date.strftime("%B %d %Y")
 		return date
+
+	def to_json(self):
+		return self.initlist
 
 def write_challenges(data):
 	with open('database/challenges.pickle','wb') as file:

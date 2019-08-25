@@ -1,6 +1,6 @@
 {% extends "user/user_base.html" %}
 {% block title %} Home {% endblock %}
-{% block top %}Welcome, {{name}}{% endblock %}
+{% block top %}Welcome, {{user.first_name}}{% endblock %}
 {% block links %}<a href="/{{username}}/profile">Profile</a>{% endblock %}
 {% block content %}
 	<div class="container">
