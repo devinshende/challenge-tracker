@@ -5,6 +5,7 @@ SECURITY_QUESTIONS = [
 	"What school did you attend in kindergarten?"
 ]
 
+PROF_PICS_PATH = 'static/profile_pics'
 
 challenge_dict = {
 	'time':[

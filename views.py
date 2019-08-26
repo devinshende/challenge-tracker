@@ -1,11 +1,10 @@
 from app import *
-# from classes import User # User
 from utils import *
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS
+from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS, PROF_PICS_PATH
 from challenges import Entry
 from pprint import pprint
 from datetime import datetime
@@ -249,7 +248,8 @@ def leaderboard():
 			if selected_challenge in user_challenges.keys():
 				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
 				data.append(
-					[get_full_name(user.id),
+					[user.get_profile_pic(),
+					get_full_name(user.id),
 					entry.score,
 					entry.comment,
 					user.id]
@@ -300,7 +300,8 @@ def userleaderboard(username):
 			if selected_challenge in user_challenges.keys():
 				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
 				data.append(
-					[get_full_name(user.id),
+					[user.get_profile_pic(),
+					get_full_name(user.id),
 					entry.score,
 					entry.comment,
 					user.id]
@@ -310,6 +311,7 @@ def userleaderboard(username):
 		[
 			placement (1st 2nd 3rd),
 			full name of user,
+			user's profile picture,
 			score of challenge,
 			comment about challenge,
 			user id
@@ -327,7 +329,8 @@ def userleaderboard(username):
 			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				username=username,checked=repr(checked), user=user)
-	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard",username=username, user=user)
+	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict, header="Leaderboard", \
+		username=username, user=user)
 
 
 @app.route('/<username>/records-add',methods=['GET','POST'])
@@ -441,6 +444,21 @@ def profile(username):
 def edit_profile(username):
 	user = User.query.filter_by(username=username).first()
 	if request.method == 'POST':
+		# file uploading for profile pic
+		if 'photo' in request.files and request.files['photo'].filename != '':
+			# if filename == '' then the user didn't actually enter an image
+			filename = f'{user.id}.jpg'
+			if filename in os.listdir(PROF_PICS_PATH):
+				# user already has a profile pic. delete the old one then add the new one.
+				path = os.path.join(PROF_PICS_PATH, filename)
+				if verbose:
+					print(f'{user} has already entered a profile pic \nOverwriting it by removing {filename} from {PROF_PICS_PATH}')
+				os.remove(path)
+			if verbose:
+				print(f'saving uploaded profile pic as {filename}')
+			actual_name = photos.save(request.files['photo'], name=filename)
+			assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
+
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
 		gender 		= request.form.get( 'gender'     )
@@ -454,5 +472,4 @@ def edit_profile(username):
 		db.session.commit()
 		return redirect('/'+username+'/profile')
 	return render_template('user/profile_edit.html', user=user, username=username)
-
 

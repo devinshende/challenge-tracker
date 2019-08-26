@@ -9,7 +9,7 @@ import argparse
 # my imports
 from utils import *
 from mylib.cipher import encode, decode
-from constants import SECURITY_QUESTIONS
+from constants import SECURITY_QUESTIONS, PROF_PICS_PATH
 from challenges import Entry
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
@@ -19,6 +19,7 @@ from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
 from flask_heroku import Heroku
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -43,6 +44,10 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
+photos = UploadSet('photos',IMAGES)
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
+configure_uploads(app,photos)
+
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
 	first_name 	= db.Column(db.String(20), nullable=False)
@@ -60,10 +65,13 @@ class User(db.Model, UserMixin):
 		return '<User %r>' % self.username
 
 	def get_profile_pic(self):
-		try:
-			return self.profile_pic
-		except:
-			return '../../static/blank_profile.jpg'
+		filename = str(self.id) + '.jpg'
+		if filename in os.listdir(PROF_PICS_PATH):
+			path = os.path.join('../..',PROF_PICS_PATH,filename)
+		else:
+			path = '../../static/blank_profile.jpg'
+		print(f'profile pic source is {repr(path)}')
+		return path
 
 	def format_bday(self):
 		return self.birthday.strftime('%b %d, %Y')

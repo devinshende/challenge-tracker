@@ -26,6 +26,8 @@
 				<thead>
 					<tr class="table-head">
 						<th>Place</th>
+						<!-- Profile pic -->
+						<th></th>
 						<th>Name</th>
 						<th>{{challenge_type}}</th>
 						<th>Comment</th>
@@ -36,15 +38,17 @@
 						<tr>
 							<!-- place -->
 							<td>{{item[0]}}</td>
+							<!-- profile pic -->
+							<td><img src="{{item[1]}}" height="32px" width="32px"></td>
 							<!-- name -->
-							<td>{{item[1]}}</td> 
+							<td>{{item[2]}}</td> 
 							<!-- score -->
 							{% if challenge_type == 'time' %}
-							<td>{{item[2]}} seconds</td>
+							<td>{{item[3]}} seconds</td>
 							{% endif %}
-							<td>{{item[2]}}</td>
-							<!-- comment -->
 							<td>{{item[3]}}</td>
+							<!-- comment -->
+							<td>{{item[4]}}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
