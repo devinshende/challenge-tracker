@@ -429,10 +429,6 @@ def admin_suggestions():
 	suggestions = Suggestion.query.all()
 	return render_template('siteadmin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
 
-@app.route('/table')
-def table():
-	return render_template('unauth/my_table.html')
-
 @app.route('/<username>/profile')
 @login_required
 def profile(username):
