@@ -10,6 +10,7 @@ Flask-Security==3.0.0
 Flask-SQLAlchemy==2.4.0
 Flask-Uploads==0.2.1
 Flask-WTF==0.14.2
+gunicorn==19.9.0
 dask==1.1.4
 decorator==4.4.0
 itsdangerous==1.1.0
