@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Challenge Tracker {% endblock %}
+{% block top %}img {%endblock%}
+{% block imghref %}{%endblock%}
+{% block content %}
+<p>Hello there</p>
+<img src="{{user.get_profile_pic()}}">
+{% if username == 'hihi' %}
+<p>hasdfasdf</p>
+{% endif %}
+<p>{{user.get_profile_pic()}}</p>
+{% endblock %}

@@ -442,6 +442,7 @@ def edit_profile(username):
 	if request.method == 'POST':
 		# file uploading for profile pic
 		if 'photo' in request.files and request.files['photo'].filename != '':
+			print('you uploaded a photo!')
 			# if filename == '' then the user didn't actually enter an image
 			filename = f'{user.id}.jpg'
 			if filename in os.listdir(PROF_PICS_PATH):
@@ -468,4 +469,11 @@ def edit_profile(username):
 		db.session.commit()
 		return redirect('/'+username+'/profile')
 	return render_template('user/profile_edit.html', user=user, username=username)
+
+
+@app.route('/img')
+def imgview():
+	user = User.query.filter_by(username='hihi').first()
+	return render_template('img.html',user=user, username='hihiasdfasd')
+
 

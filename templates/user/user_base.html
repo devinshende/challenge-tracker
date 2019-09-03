@@ -309,7 +309,7 @@ table tbody tr:hover{
 	        <br id="above_img">
 	      {% endif %}
 	    {% endwith %}
-	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
+	<a href="{% block imghref %}{% endblock %}" title="{%block imghelp%}{%endblock%}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
 	<br>
     {% block content %}{% endblock %}
   </body>
