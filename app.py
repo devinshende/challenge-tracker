@@ -33,6 +33,7 @@ app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
+app.jinja_env.globals.update(len=len)
 
 # UPLOAD_FOLDER = '/database/profile_pics'
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
