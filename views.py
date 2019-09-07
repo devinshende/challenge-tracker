@@ -389,20 +389,16 @@ def suggest_challenge(username):
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
 		challenge_name = request.form.get('challenge')
-		s = Suggestion.query.filter_by(name=challenge_name).first()
-		print('\nS IS \n\n')
-		print(s == True)
-		if s:
-			flash(f'That Challenge was already suggested by {User.query.get(s[0].user_id).first_name}')
+		already_exists = Suggestion.query.filter_by(name=challenge_name).first()
+		if already_exists:
+			flash(f'That Challenge was already suggested by {User.query.get(already_exists.user_id).first_name}')
 			return render_template('user/new_challenge.html',username=username, user=user)
 		challenge = Suggestion(
-						id=Suggestion.query.all()[-1].id+1,
 						type=challenge_type,
 						name=challenge_name,
 						user_id=user.id
 					)
 		send_emails = read('args.txt')['email']
-		if verbose: print('writing suggestion to database')
 		
 		# save suggestion to database
 		db.session.add(challenge)

@@ -1,5 +1,5 @@
 Babel==2.6.0
-Flask==1.1.1
+Flask=1.0.0
 Flask-Admin==1.5.3
 Flask-BabelEx==0.9.3
 flask-heroku==0.1.9
