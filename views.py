@@ -472,4 +472,3 @@ def imgview():
 	user = User.query.filter_by(username='hihi').first()
 	return render_template('img.html',user=user, username='hihiasdfasd')
 
-

@@ -9,7 +9,7 @@ import argparse
 # my imports
 from utils import *
 from mylib.cipher import encode, decode
-from constants import SECURITY_QUESTIONS, PROF_PICS_PATH
+from constants import SECURITY_QUESTIONS, PROF_PICS_PATH, ADMIN_PASSWORD
 from challenges import Entry
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
@@ -18,6 +18,7 @@ from flask_admin import Admin
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
+from flask_admin.base import AdminIndexView, expose
 from flask_heroku import Heroku
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
@@ -26,7 +27,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 styling of table and layout
 handle bad input from users for the score field in form
 '''
-
+admin_authenticated = False
 app = Flask(__name__)
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
@@ -88,32 +89,24 @@ class Suggestion(db.Model):
 	def __repr__(self):
 		return '<Suggestion %r>' % self.name
 
-# class Challenge(db.Model):
-# 	# look into many to many relationships (this might be required)
-# 	# User should have an attribute challenges which references this and that has entries for each challenge
-# 	id = db.Column(db.Integer, primary_key=True)
-# 	# type = db.Column(db.String(10), nullable=False)
-# 	# name = db.Column(db.String(30), unique=True, nullable=False)
-# 	# user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-# 	devil_steps = db.Column(db.PickleType)
-
-# 	def __repr__(self):
-# 		return '<Challenge Entry %r>' % self.username
-
 def date_format(view, value):
-    return value.strftime('%b %d, %Y')
+	return value.strftime('%b %d, %Y')
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
 MY_DEFAULT_FORMATTERS.update({
-        type(None): typefmt.null_formatter,
-        date: date_format
-    })
+		type(None): typefmt.null_formatter,
+		date: date_format
+	})
 
 class UserView(ModelView):
 	column_display_pk = True # controls whether id is (not) hidden
 	column_searchable_list = ('first_name','last_name')
 	column_exclude_list = ('password','security_question_id','security_question_ans')
 	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
+	def is_accessible(self):
+		# only shows home page when set to False
+		# shows normal admin page with full access when set to True
+		return admin_authenticated
 
 class MyModelView(ModelView):
 	column_type_formatters = MY_DEFAULT_FORMATTERS
@@ -124,9 +117,31 @@ class MyModelView(ModelView):
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
-		return True
+		return admin_authenticated
 
-admin = Admin(app, template_mode='bootstrap3') # template mode is styling
+class MyHomeView(AdminIndexView):
+	@expose('/',methods=('GET','POST'))
+	def index(self):
+		global admin_authenticated
+		if admin_authenticated and not request.method == 'POST':
+			return render_template('admin/myhome.html')
+		if request.method == 'POST':
+			if admin_authenticated:
+				print('making it unallowed')
+				admin_authenticated = False
+				return render_template('admin/myhome.html',logging_in=True)
+			entered_password = request.form.get('password')
+			if entered_password == ADMIN_PASSWORD:
+				admin_authenticated = True	
+				return self.render('admin/myhome.html')
+			return "password: " + str(request.form.get('password')) + "\n is incorrect" + \
+			"<br><hr><a href='/admin'>try again</a>"
+		return self.render('admin/myhome.html',logging_in=True)
+
+admin = Admin(app, index_view=MyHomeView())
+
+
+# admin = Admin(app, template_mode='bootstrap3') # template mode is styling
 admin.add_view(UserView(User, db.session))
 admin.add_view(MyModelView(Suggestion, db.session))
 # admin.add_view(MyModelView(Challenge, db.session))

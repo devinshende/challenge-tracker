@@ -33,3 +33,6 @@ BRACKETS = [
 	'teen/adult male',
 	'teen/adult female'
 ]
+
+ADMIN_PASSWORD = 'ninjapark!'
+

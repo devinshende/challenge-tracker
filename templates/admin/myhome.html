@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Admin login</title>
+</head>
+<body>
+<style type="text/css">
+	body {
+		margin: 0
+	}
+	input[type="password"] {
+		font-size: 30px; 
+		margin: 30px;
+		padding: 10px;
+	}
+	input[type='submit'] {
+		font-size: 20px;
+		padding: 10px;
+		margin: 10px 0;
+		background-color: #222;
+		color: #eee;
+	}
+	nav {
+		float: left;
+		background-color: #5DBCD2;
+		width: 100%;
+		display: block;
+		padding: 20px;
+		margin-bottom: 10px;
+	}
+	nav * {
+		color: white;
+		font-size: 20px;
+		margin: 10px 40px;
+		text-decoration: none;
+		font-family: sans-serif;
+	}
+	.content {
+		font-size: 15px;
+		margin: 10px;
+	}
+
+</style>
+	{% if logging_in %}
+	<form method="POST">
+		<input type="password" name="password" placeholder="password">
+	</form>
+	{% else %}
+	<nav>
+		<a href="/admin/user">User</a>
+		<a href="/admin/suggestion">Suggestion</a>
+	</nav>
+	<div class="content">
+		<br>
+		<p>hello logged in admin</p>		
+		<form method="POST">
+			<input type="submit" name="logout" value="logout">
+		</form>
+		<a href="/">site home</a>
+		<br>
+		<br>
+		<br>
+		<p>we need ability to accept user suggested challenges</p>
+	</div>
+	{% endif %}
+</body>
+</html>
