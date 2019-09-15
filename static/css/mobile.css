@@ -1,0 +1,37 @@
+body {
+	/*background-color: yellow;*/
+}
+
+.logo {
+	margin: 0 auto;
+	/* doesn't work */
+	height: 150px;
+	display: flex;
+}
+
+h1 {
+	font-size: 1.2em;
+}
+
+a.btn {	
+	font-size: 20px;
+	width: 80%;
+	height: 100%;
+	
+	padding: 10px;
+	margin: 20px auto;
+	text-align: center;
+	display: block;
+	/* ninja park red from logo - #BF1D2D  */
+	color: white;
+	background-color: black;
+	/*background-color: #1d8ece;*/
+	border-radius: 15px;
+}
+
+.container {
+	/*border: 1px solid black;*/
+	height: 100%;
+	width: 40%;
+	margin: 0 auto;
+}

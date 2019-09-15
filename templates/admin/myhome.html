@@ -6,7 +6,7 @@
 <body>
 <style type="text/css">
 	body {
-		margin: 0
+		margin: 0;
 	}
 	input[type="password"] {
 		font-size: 30px; 
@@ -39,18 +39,17 @@
 		font-size: 15px;
 		margin: 10px;
 	}
-
 </style>
-	{% if logging_in %}
+	{% if not auth %}
 	<form method="POST">
 		<input type="password" name="password" placeholder="password">
 	</form>
 	{% else %}
+	<div class="content">
 	<nav>
 		<a href="/admin/user">User</a>
 		<a href="/admin/suggestion">Suggestion</a>
-	</nav>
-	<div class="content">
+	</nav>	
 		<br>
 		<p>hello logged in admin</p>		
 		<form method="POST">
@@ -62,6 +61,7 @@
 		<br>
 		<p>we need ability to accept user suggested challenges</p>
 	</div>
+
 	{% endif %}
 </body>
 </html>

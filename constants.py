@@ -1,3 +1,5 @@
+from mylib.cipher import decode
+
 SECURITY_QUESTIONS = [
 	"What was the name of your first pet?",
 	"What is your favorite number?",
@@ -34,5 +36,10 @@ BRACKETS = [
 	'teen/adult female'
 ]
 
-ADMIN_PASSWORD = 'ninjapark!'
+class Password(object):
+	def __init__(self, password):
+		self.decoded = decode(password)
+		self.encoded = password
+
+ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 

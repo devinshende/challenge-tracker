@@ -103,6 +103,7 @@ class UserView(ModelView):
 	column_searchable_list = ('first_name','last_name')
 	column_exclude_list = ('password','security_question_id','security_question_ans')
 	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
+	
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
@@ -114,6 +115,7 @@ class MyModelView(ModelView):
 	column_display_pk = True
 	# column_labels = dict(first_name='Name ', last_name='Last Name')
 	# self.can_create=False
+	
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
@@ -123,22 +125,28 @@ class MyHomeView(AdminIndexView):
 	@expose('/',methods=('GET','POST'))
 	def index(self):
 		global admin_authenticated
-		if admin_authenticated and not request.method == 'POST':
-			return render_template('admin/myhome.html')
 		if request.method == 'POST':
+			print('posting.')
 			if admin_authenticated:
-				print('making it unallowed')
+				# log them out
+				print('making it unallowed. they hit logout')
 				admin_authenticated = False
-				return render_template('admin/myhome.html',logging_in=True)
+				return render_template('admin/myhome.html',auth=admin_authenticated)
+			# they are entering the password
 			entered_password = request.form.get('password')
-			if entered_password == ADMIN_PASSWORD:
+			if entered_password == ADMIN_PASSWORD.decoded:
+				print('you are authenticated!')
 				admin_authenticated = True	
-				return self.render('admin/myhome.html')
-			return "password: " + str(request.form.get('password')) + "\n is incorrect" + \
+				return self.render('admin/myhome.html',auth=admin_authenticated)
+			return "password: \"" + str(request.form.get('password')) + "\"\n is incorrect" + \
 			"<br><hr><a href='/admin'>try again</a>"
-		return self.render('admin/myhome.html',logging_in=True)
+		else:
+			if admin_authenticated:
+				# normal home page
+				return render_template('admin/myhome.html',auth=admin_authenticated)
+		return self.render('admin/myhome.html',auth=admin_authenticated)
 
-admin = Admin(app, index_view=MyHomeView())
+admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
 
 
 # admin = Admin(app, template_mode='bootstrap3') # template mode is styling
