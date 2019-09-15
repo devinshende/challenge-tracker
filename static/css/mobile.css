@@ -1,5 +1,8 @@
-body {
-	background-color: yellow;
+#mobile {
+	display: inline;
+}
+#widescreen {
+	display: none;
 }
 
 .logo {
