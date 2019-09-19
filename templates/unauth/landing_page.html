@@ -27,7 +27,13 @@ function confirm_move() {
 		<h2 style="display: inline-block;">Display: </h2>
 		<p id="mobile">Mobile</p>
 		<p id="widescreen">Widescreen</p>
+		<h1 id='res' style="color:blue;" onclick="getResolution()">get screensize</h1>
 	</div>
-
-
+<script type="text/javascript">
+    function getResolution() {
+    	h1 = document.getElementById('res')
+        text = screen.width + "x" + screen.height
+        res.innerHTML = text
+    }
+</script>
 {% endblock %}
