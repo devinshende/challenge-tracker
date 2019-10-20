@@ -54,17 +54,23 @@
       <br>
   		<label name = "gender">Gender:</label>
       {% if not first_name %} <!-- first time visiting page so gender hasn't yet been selected -->
-    		<input type="radio" name="gender" value="male" required> Male
-    		<input type="radio" name="gender" value="female" required> Female
+    		<input class="form-radio" type="radio" name="gender" value="male" required>
+        <label class="radio-label" for="male">Male</label>
+    		<input class="form-radio" type="radio" name="gender" value="female" required>
+        <label class="radio-label" for="female">Female</label>
       {% endif %}
       {% if first_name %}<!-- coming to re-enter bday so a gender has already been selected -->
         {% if gender == 'male' %}
-          <input type="radio" name="gender" value="male" required checked> Male
-          <input type="radio" name="gender" value="female" required> Female
+          <input class="form-radio" type="radio" name="gender" value="male" required checked>
+          <label class="radio-label" for="male">Male</label>
+          <input class="form-radio" type="radio" name="gender" value="female" required> 
+          <label class="radio-label" for="female">Female</label>
         {% endif %}
         {% if gender == 'female' %}
-          <input type="radio" name="gender" value="male" required> Male
-          <input type="radio" name="gender" value="female" required checked> Female
+          <input class="form-radio" type="radio" name="gender" value="male" required>         
+          <label class="radio-label" for="male">Male</label>
+          <input class="form-radio" type="radio" name="gender" value="female" required checked>
+          <label class="radio-label" for="female">Female</label>
         {% endif %}
       {% endif %}
   	  <br>

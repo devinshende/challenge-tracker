@@ -19,45 +19,6 @@ label {
 	display: inline;
 }
 
-.form-radio {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	display: inline-block;
-	position: relative;
-	background-color: #f1f1f1;
-	color: #666;
-	top: 10px;
-	height: 30px;
-	width: 30px;
-	border: 0;
-	border-radius: 50px;
-	cursor: pointer;     
-	margin-right: 7px;
-	outline: none;
-}
-.form-radio:checked::before {
-	position: absolute;
-	font: 13px/1 'Open Sans', sans-serif;
-	left: 11px;
-	top: 7px;
-	content: '\02143';
-	transform: rotate(40deg);
-}
-.form-radio:hover {
-	background-color: #f7f7f7;
-}
-.form-radio:checked {
-	background-color: #f1f1f1;
-}
-label {
-	font: 15px/1.7 'Open Sans', sans-serif;
-	color: #333;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	cursor: pointer;
-}
-
 </style>
 <div class="wrapper fadeInDown">
 	<div id="formContent">
@@ -67,14 +28,18 @@ label {
 				<input name="first_name" type="text" value="{{user.first_name}}">
 				<label for="last_name">Last Name: </label>
 				<input name="last_name" type="text" value="{{user.last_name}}">
-				<label for="gender">Gender: </label>
+				<label for="gender">Gender: </label><br>
 				{% if user.gender=='male'%}
-					<input class="form-radio" type="radio" name="gender" value="male" checked> Male
-					<input class="form-radio" type="radio" name="gender" value="female"> Female
+					<input class="form-radio" type="radio" name="gender" value="male" checked>
+					<label class="radio-label" for="male">Male</label>
+					<input class="form-radio" type="radio" name="gender" value="female">
+					<label  class="radio-label" for="female">Female</label>
 				{% endif %}
 				{% if user.gender=='female'%}
-					<input type="radio" name="gender" value="male"> Male
-					<input type="radio" name="gender" value="female" checked> Female
+					<input class="form-radio" type="radio" name="gender" value="male">
+					<label class="radio-label" for="male">Male</label>
+					<input class="form-radio" type="radio" name="gender" value="female" checked>
+					<label class="radio-label" for="female">Female</label>
 				{% endif %}
 				<br>
 				<br>
@@ -125,7 +90,6 @@ label {
 			</div>
 			<br>
 				<input type="file" name="photo">
-
 				<br>
 					<input type="submit" value="save">
 				<div id="formFooter">
