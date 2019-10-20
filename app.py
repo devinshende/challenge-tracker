@@ -35,6 +35,8 @@ app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
 app.jinja_env.globals.update(len=len)
+from datetime import datetime
+app.jinja_env.globals.update(today=datetime.today)
 
 # UPLOAD_FOLDER = '/database/profile_pics'
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -77,6 +79,11 @@ class User(db.Model, UserMixin):
 
 	def format_bday(self):
 		return self.birthday.strftime('%b %d, %Y')
+
+	def get_age(self):
+		from datetime import datetime
+		age = datetime.today().year - self.birthday.year
+		return age
 
 
 app.jinja_env.globals.update(User=User)

@@ -4,14 +4,17 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS, PROF_PICS_PATH
+from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS, PROF_PICS_PATH, monthsDict
 from challenges import Entry
 from pprint import pprint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 
-verbose = read('args.txt')['verbose']
+try:
+	verbose = read('args.txt')['verbose']
+except KeyError:
+	verbose = False
 
 
 @app.route('/favicon.ico')
@@ -108,12 +111,6 @@ def signup():
 			v = variables['half_user']
 			id = User.query.all()[-1].id+1
 			print('user id is ',id)
-			monthsDict = {
-				'January':1, 'February':2, 'March':3,
-			 	'April':4, 'May':5, 'June':6, 
-			 	'July':7, 'August':8, 'September':9, 
-			 	'October':10, 'November':11, 'December':12
-			}
 			month = int(monthsDict[v['month']])
 			print(type(month))
 			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
@@ -455,16 +452,22 @@ def edit_profile(username):
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
 		gender 		= request.form.get( 'gender'     )
+		bday 		= request.form.get( 'day'       )
+		bmonth 		= request.form.get( 'month'     )
+		byear 		= request.form.get( 'year'     )
 		if not gender:
 			gender = user.gender
+		birthday = datetime(year=int(byear), month=int(bmonth), day=int(bday))
+		age = datetime.today().year - birthday.year
 		user.first_name = first_name
 		user.last_name 	= last_name
 		user.gender 	= gender
+		user.birthday = birthday
 		# print(user.first_name, user.last_name, user.age, user.gender,sep='\n')
 		db.session.add(user)
 		db.session.commit()
 		return redirect('/'+username+'/profile')
-	return render_template('user/profile_edit.html', user=user, username=username)
+	return render_template('user/profile_edit.html', user=user, username=username, months=monthsDict)
 
 
 @app.route('/img')

@@ -5,13 +5,59 @@
 {% block imghref %}/{{username}}/profile{% endblock %}
 {% block content %}
 <style type="text/css">
-	label {
-		display: block;
-		margin-top:10px;
-	}
-	#formContent {
-		width:60%
-	}
+label {
+	display: block;
+	margin-top:10px;
+}
+#formContent {
+	width:60%
+}
+.bdaypart {
+	margin-left: 10px;
+}
+.birthday div {
+	display: inline;
+}
+
+.form-radio {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	display: inline-block;
+	position: relative;
+	background-color: #f1f1f1;
+	color: #666;
+	top: 10px;
+	height: 30px;
+	width: 30px;
+	border: 0;
+	border-radius: 50px;
+	cursor: pointer;     
+	margin-right: 7px;
+	outline: none;
+}
+.form-radio:checked::before {
+	position: absolute;
+	font: 13px/1 'Open Sans', sans-serif;
+	left: 11px;
+	top: 7px;
+	content: '\02143';
+	transform: rotate(40deg);
+}
+.form-radio:hover {
+	background-color: #f7f7f7;
+}
+.form-radio:checked {
+	background-color: #f1f1f1;
+}
+label {
+	font: 15px/1.7 'Open Sans', sans-serif;
+	color: #333;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	cursor: pointer;
+}
+
 </style>
 <div class="wrapper fadeInDown">
 	<div id="formContent">
@@ -23,14 +69,61 @@
 				<input name="last_name" type="text" value="{{user.last_name}}">
 				<label for="gender">Gender: </label>
 				{% if user.gender=='male'%}
-					<input type="radio" name="gender" value="male" checked> Male
-					<input type="radio" name="gender" value="female"> Female
+					<input class="form-radio" type="radio" name="gender" value="male" checked> Male
+					<input class="form-radio" type="radio" name="gender" value="female"> Female
 				{% endif %}
 				{% if user.gender=='female'%}
 					<input type="radio" name="gender" value="male"> Male
 					<input type="radio" name="gender" value="female" checked> Female
 				{% endif %}
 				<br>
+				<br>
+			<!-- BIRTHDAY selector -->
+			<div class="birthday">
+				Birthday: <br><br>
+				<!-- Feb 3 2001 -->
+				<div>
+					<span class="bdaypart">Month</span>
+					<select name='month' id='monthddl'>
+					{% for month,num in months.items() %}
+						{% if num == user.birthday.month %}
+							<option class="option" value='{{num}}' selected>{{month}}</option>
+						{% endif %}
+						{% if num != user.birthday.month %}
+							<option class="option" value='{{num}}'>{{month}}</option>
+						{% endif %}
+					{% endfor %}
+					</select>
+				</div>
+				<div>
+					<span class="bdaypart">Day</span>
+					<select name='day' id='dayddl'>
+ 					{% for day in range (1,32) %}
+						{% if day == user.birthday.day %}
+							<option class="option" value='{{day}}' selected>{{day}}</option>
+						{% endif %}
+						{% if day != user.birthday.day %}
+							<option class="option" value='{{day}}'>{{day}}</option>
+						{% endif %}
+					{% endfor %}
+					</select>
+				</div>
+				<div>
+					<span class="bdaypart">Year</span>
+					<select name='year' id='blah'>
+					{% for year in range(today().year-4,1974,-1) %}
+						{% if year == user.birthday.year %}
+							<option class="option" value='{{year}}' selected>{{year}}</option>
+						{% endif %}
+						{% if year != user.birthday.year %}
+							<option class="option" value='{{year}}'>{{year}}</option>
+						{% endif %}
+					{% endfor %}	
+					<option class="option" value='1990'>1990</option>
+					</select>
+				</div>
+			</div>
+			<br>
 				<input type="file" name="photo">
 
 				<br>
