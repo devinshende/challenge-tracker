@@ -338,7 +338,9 @@ def records_add(username):
 	if request.method == "POST":
 		challenge = request.form.get('challenge')
 		challenge_type = get_challenge_type(challenge)
-		score = request.form.get('time')
+		score = request.form.get('score')
+		if score == None:
+			raise ValueError("look at line 344 in records_add in views.py - score is None")
 		comment = request.form.get('comment')
 		# bad user input handling
 		if challenge_type == 'time':
@@ -370,14 +372,35 @@ def records_add(username):
 		db.session.add(user)
 		db.session.commit()
 		return redirect('/'+username+'/records-view')
-	return render_template('user/personal_records_add.html',challenge_dict=challenge_dict, user=user, username=username)
+	return render_template('user/records/add.html',challenge_dict=challenge_dict, user=user, username=username)
 
 @app.route('/<username>/records-view')
 @login_required
 def records_view(username):
 	user = User.query.filter_by(username=username).first()
 	ch = json_to_objects(user.challenges)
-	return render_template('user/personal_records_view.html',challenge_dict=challenge_dict,username=username,user=user, ch=ch)
+	return render_template('user/records/view.html',challenge_dict=challenge_dict,username=username,user=user, ch=ch)
+
+@app.route('/<username>/records-delete', methods=['GET','POST'])
+@login_required
+def records_delete(username):
+	user = User.query.filter_by(username=username).first()
+	challenges = user.challenges
+	if request.method == "POST":
+		challenge_type = request.form.get("challenge")
+		try:
+			del challenges[challenge_type]
+			if verbose: print(f'after deleting {challenge_type}, challenges is now {challenges}')
+		except KeyError:
+			flash("unable to delete data for the challenge:"+challenge_type)
+		reset_user_challenges(user.username)
+		user.challenges = challenges
+		db.session.add(user)
+		db.session.commit()
+		return redirect('/'+user.username+'/records-view')
+	ch = json_to_objects(user.challenges)
+	return render_template('user/records/delete.html',challenge_dict=challenge_dict,username=username,user=user, ch=challenges)
+
 
 @app.route('/<username>/suggest-challenge',methods=['GET','POST'])
 @login_required

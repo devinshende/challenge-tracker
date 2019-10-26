@@ -23,6 +23,11 @@
 		.icon {
 			padding: 0 10px;
 		}
+		#records-delete {
+			display: block;
+			color: #444;
+			margin: 15px;
+		}
 	</style>
 	<br>
 
@@ -61,6 +66,8 @@
 	{% endif %}
 	{% if not ch %}
 		<div class="container"><p>No records added yet</p></div>
+	{% else %}
+	<a id="records-delete" href="/{{username}}/records-delete">Delete a record</a>
 	{% endif %}
 	<a href="/{{username}}/records-add" class="btn">Add New Record</a>
 </div>	

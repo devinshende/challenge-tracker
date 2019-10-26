@@ -1,0 +1,37 @@
+{% extends "user/user_base.html" %}
+{% block title %} Delete Challenge Data {% endblock %}
+{% block top %} Delete a Record {% endblock %}
+{% block links %}<a href="/{{username}}/profile">Profile</a>{% endblock %}
+{% block imghref %}/{{username}}/records-view{% endblock %}
+{% block content %}
+	<br>
+	<style type="text/css">
+		#form {
+			margin: 10px;
+		}
+		#form input[type="submit"] {
+			margin-top: 20px;
+		}
+
+
+	</style>
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+		<br>
+		<form id="form" method="POST">
+			<label for="challenge">Challenge: </label>
+			<select name="challenge" required="required" class="fadeIn second" id="select">
+				<option value="" hidden>Select Challenge</option>
+				{% for item in ch %}
+					<option value="{{ item }}" required="required">{{item}}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
+			<!-- CANCEL LINK -->
+			<!-- <div id="formFooter" style="margin-top:-10px">
+				<a href="/" style="display:block">cancel</a>   
+			</div> -->
+		</form>		          
+		</div>
+	<br>
+{% endblock %}
