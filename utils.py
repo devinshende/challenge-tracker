@@ -212,3 +212,34 @@ def add_places(sorted_data):
 	final_data = sorted_data
 	print(final_data)
 	return final_data
+
+
+def add_challenge(dict):
+	"""
+	params: dict
+	--> should contain 'type' key set to one of the categories of challenges (time, laps, reps)
+	--> and 'name' key with the name of the challenge
+	add_challenge({'type':'laps','name':'devil steps'})
+	"""
+	from constants import challenge_dict
+	import json
+	if dict['type'].lower() not in challenge_dict.keys():
+		raise ValueError(f"'{dict['type']}' is not a valid challenge type. Pick from {tuple(challenge_dict.keys())}")
+	# to name case
+	n = dict['name'].split(' ')
+	n = [to_name_case(word) for word in n]
+	n = ' '.join(n)
+	
+	if n in challenge_dict[dict['type']]:
+		print('repeat. oops')
+		return "repeat"
+
+	challenge_dict[dict['type']].append(
+		n
+	)
+
+	with open('database/challenges.json','w') as file:
+		file.write(json.dumps(challenge_dict))
+		return "success"
+
+

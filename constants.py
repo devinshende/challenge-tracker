@@ -1,4 +1,5 @@
 from mylib.cipher import decode
+import json
 
 SECURITY_QUESTIONS = [
 	"What was the name of your first pet?",
@@ -9,25 +10,30 @@ SECURITY_QUESTIONS = [
 
 PROF_PICS_PATH = 'static/profile_pics'
 
-challenge_dict = {
-	'time':[
-		'Devil Steps',
-		'Campus Board (up and down)',
-		'Floating Doors to Cliffhanger',
-		'Rope Climb'
-	],
 
-	'laps':[
-		'Rings',
-		'Campus Board',
-		'Balance Beam Slack Line'
-	],
+# challenge_dict = {
+# 	"time":[
+# 		"Devil Steps",
+# 		"Campus Board (up and down)",
+# 		"Floating Doors to Cliffhanger",
+# 		"Rope Climb"
+# 	],
 
-	'reps':[
-		'Warped Wall',
-		'Quintuple Steps'
-	]
-}
+# 	"laps":[
+# 		"Rings",
+# 		"Campus Board",
+# 		"Balance Beam Slack Line"
+# 	],
+
+# 	"reps":[
+# 		"Warped Wall",
+# 		"Quintuple Steps"
+# 	]
+# }
+
+with open('database/challenges.json','r') as file:
+	json_str = file.read()
+	challenge_dict = json.loads(json_str)
 
 BRACKETS = [
 	'12 and under male',
