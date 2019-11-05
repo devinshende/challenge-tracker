@@ -56,3 +56,4 @@ class Password(object):
 
 ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 
+

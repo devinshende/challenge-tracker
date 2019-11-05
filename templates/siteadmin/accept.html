@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} Accept Suggestion {% endblock %}
+{% block top %}Accept a Suggestion{% endblock %}
+{% block imghref %}/siteadmin{% endblock %}
+{% block content %}
+	<style type="text/css">
+		#form {
+			margin: 10px;
+		}
+		#form input[type="submit"] {
+			margin-top: 20px;
+		}
+	</style>
+<div class="container">
+	{% if json %}
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+		<br>
+		<form id="form" method="POST">
+			<label for="challenge">Accept: </label>
+			<select name="suggestion" required="required" class="fadeIn second" id="select">
+				<option value="" hidden>Select Suggestion</option>
+				{% for ch_s in json %}
+					<option value="{{ ch_s.name }}" required="required">{{ch_s.name}}</option>
+				{% endfor %}
+			</select>
+			<br>
+			<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
+		</form>		          
+	</div>
+	{% else %}
+		<div class="container">
+			<br>
+			<p class="nothing">No suggested challenges</p>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

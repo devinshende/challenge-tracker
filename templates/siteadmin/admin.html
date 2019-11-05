@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 {% block title %} Admin Home {% endblock %}
-{% block top %}Welcome, {{username}}{% endblock %}
-{% block imghref %}/siteadmin{% endblock %}
+{% block top %}Admin{% endblock %}
+{% block imghref %}/{% endblock %}
 {% block content %}
+	<style type="text/css">
+		#form {
+			margin: 10px;
+		}
+		#form input[type="submit"] {
+			margin-top: 20px;
+		}
+	</style>
 <div class="container">
 	{% if json %}
 	<br>
@@ -28,8 +36,9 @@
 				{% endfor %}
 		</tbody>
 	</table>
-	{% endif %}
-	{% if not json %}
+	<a class="btn" href="/siteadmin/delete">Delete a Suggestion</a>
+	<a class="btn" href="/siteadmin/accept">Accept a Suggestion</a>
+	{% else %}
 		<div class="container">
 			<br>
 			<p class="nothing">No suggested challenges</p>

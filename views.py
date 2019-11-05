@@ -433,17 +433,39 @@ def suggest_challenge(username):
 		return render_template('user/home.html', username=username, user=user)
 	return render_template('user/new_challenge.html',username=username, user=user)
 
-@app.route('/siteadmin/')
-def admin_login():
-	if verbose: print('Admin home page')
-	return render_template('siteadmin/admin_home.html',username='stillworkingonusername')
+@app.route('/siteadmin/accept', methods=['GET','POST'])
+def admin_accept():
+	if request.method == 'POST':
+		suggestion_to_accept = request.form.get('suggestion') 
+		if verbose: print('accepting ',suggestion_to_accept)
+		s = Suggestion.query.filter_by(name=suggestion_to_accept).first()
+		print(f'accepting {repr(s)} = {s}')
+		print({'type':s.type,'name':suggestion_to_accept})
+		t = s.type.lower()
+		if t == 'reps':
+			t = 'reps'
+		add_challenge({'type':t,'name':suggestion_to_accept})
+		# once it has been added, delete it from suggestions
+		db.session.delete(s)
+		db.session.commit()
+		return redirect('/siteadmin')
+	return render_template('siteadmin/accept.html',json=Suggestion.query.all())
 
-@app.route('/siteadmin/suggestions')
+@app.route('/siteadmin/delete', methods=['GET','POST'])
+def admin_delete():
+	if request.method == 'POST':
+		suggestion_to_delete = request.form.get('suggestion') 
+		if verbose: print('deleting ',suggestion_to_delete)
+		s = Suggestion.query.filter_by(name=suggestion_to_delete).first()
+		print(f'deleting {repr(s)} = {s}')
+		db.session.delete(s)
+		db.session.commit()
+		return redirect('/siteadmin')
+	return render_template('siteadmin/delete.html',json=Suggestion.query.all())
+
+@app.route('/siteadmin/')
 def admin_suggestions():
-	if verbose: print('Admin see suggestions page')
-	# suggestions=read('challenge_suggestions.txt')
-	suggestions = Suggestion.query.all()
-	return render_template('siteadmin/admin_suggestions.html',json=suggestions,username='stillworkingonusername')
+	return render_template('siteadmin/admin.html',json=Suggestion.query.all())
 
 @app.route('/<username>/profile')
 @login_required
