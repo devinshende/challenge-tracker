@@ -455,13 +455,34 @@ def admin_accept():
 def admin_delete():
 	if request.method == 'POST':
 		suggestion_to_delete = request.form.get('suggestion') 
-		if verbose: print('deleting ',suggestion_to_delete)
+		if verbose: print('deleting the suggestion',suggestion_to_delete)
 		s = Suggestion.query.filter_by(name=suggestion_to_delete).first()
 		print(f'deleting {repr(s)} = {s}')
 		db.session.delete(s)
 		db.session.commit()
 		return redirect('/siteadmin')
 	return render_template('siteadmin/delete.html',json=Suggestion.query.all())
+
+@app.route('/siteadmin/delete-ch', methods=['GET','POST'])
+def admin_delete_ch():
+	from constants import challenge_dict
+	print(challenge_dict)
+	if request.method == 'POST':
+		ch_to_delete = request.form.get('challenge') 
+		if verbose: print('deleting the challenge',ch_to_delete)
+		print('old challenge_dict\n\n',challenge_dict)
+		for lst in challenge_dict.values():
+			for item in lst:
+				print(item)
+				if item == ch_to_delete:
+					print('yay')
+					lst.remove(item)
+		print('new challenge_dict:\n\n')
+		print(challenge_dict)
+		return redirect('/siteadmin')
+	return render_template('siteadmin/delete-ch.html',
+		json=Suggestion.query.all(),
+		challenge_dict=challenge_dict)
 
 @app.route('/siteadmin/')
 def admin_suggestions():
