@@ -1,16 +1,15 @@
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
-from pprint import pprint
 from termcolor import colored
-from datetime import datetime, date
+from datetime import date
 import ast
 import os
 import argparse
 # my imports
-from utils import *
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, PROF_PICS_PATH, ADMIN_PASSWORD
 from challenges import Entry
+from utils import *
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
@@ -29,6 +28,7 @@ handle bad input from users for the score field in form
 '''
 admin_authenticated = False
 app = Flask(__name__)
+
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
@@ -36,6 +36,7 @@ app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
 app.jinja_env.globals.update(len=len)
 from datetime import datetime
+
 app.jinja_env.globals.update(today=datetime.today)
 
 # UPLOAD_FOLDER = '/database/profile_pics'

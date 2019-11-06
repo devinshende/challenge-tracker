@@ -13,7 +13,7 @@ def json_to_objects(userchallenges):
 	return ch
 
 def reset_user_challenges(username):
-	"this should be used from a python console. clears all the user's challenges data"	
+	"clears all the user's challenges data"	
 	from app import db, User
 	user = User.query.filter_by(username=username).first()
 	user.challenges = {}
@@ -29,13 +29,6 @@ def datetime_to_string(date):
 		if type(date) == datetime.datetime:
 			raise ValueError(f'input `{date}` is not a datetime object')
 		raise ValueError(f'bad input: `{date}`')
-
-# def get_empty_challenges_dict():
-# 	chs = {}
-# 	for lst in challenge_dict.values():
-# 		for i in lst:
-# 			chs[i] = []
-# 	return chs
 
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
@@ -187,7 +180,6 @@ def sort_data(data, selected_challenge_type):
 	# x.insert(index, item)
 	#adds placements and deals with ties
 
-
 def add_places(sorted_data):
 	"takes in `sorted_data` and returns modified `sorted_data` to have places for each competitor"
 	if not sorted_data:
@@ -212,7 +204,6 @@ def add_places(sorted_data):
 	final_data = sorted_data
 	print(final_data)
 	return final_data
-
 
 def add_challenge(dict):
 	"""
@@ -242,4 +233,33 @@ def add_challenge(dict):
 		file.write(json.dumps(challenge_dict))
 		return "success"
 
+def delete_all_of_ch(ch_name):
+	from app import User, db
+	"""
+	{"Campus Board (up and down)": [[4.0, "8.24.2019", ""], 
+	[10.0, "8.24.2019", ""], [2.2, "8.24.2019", ""], 
+	[4.0, "8.24.2019", ""], [4.0, "8.25.2019", ""]], 
+	"Warped Wall": [[3, "8.24.2019", ""], [23, "8.24.2019", "wow"], 
+	[10, "8.25.2019", ""]], "Devil Steps": [[19.2, "8.24.2019", ""], 
+	[13.0, "8.24.2019", ""], [4.0, "8.25.2019", ""]],
+	 "Quintuple Steps": [[3, "8.24.2019", ""]],
+	 "Floating Doors to Cliffhanger": [[40.0, "8.25.2019", ""]]}
 
+	"""
+	# from app import User
+	print('helloooo')
+	users = User.query.all()
+	for user in users:
+		if ch_name in user.challenges.keys():
+			challenges = user.challenges
+			print(f'bye bye "{ch_name}" for "{user.username}"')
+			try:
+				del challenges[ch_name]
+			except KeyError:
+				print("unable to delete data for the challenge:"+ch_name)
+			reset_user_challenges(user.username)
+			user.challenges = challenges
+			db.session.add(user)
+			db.session.commit()
+			print(f'now it is {user.challenges} - doesn\'t have the {ch_name}') 
+# delete_all_of_ch('Devil Steps')

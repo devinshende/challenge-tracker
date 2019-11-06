@@ -479,6 +479,7 @@ def admin_delete_ch():
 					lst.remove(item)
 		print('new challenge_dict:\n\n')
 		print(challenge_dict)
+		delete_all_of_ch(ch_to_delete)
 		return redirect('/siteadmin')
 	return render_template('siteadmin/delete-ch.html',
 		json=Suggestion.query.all(),
