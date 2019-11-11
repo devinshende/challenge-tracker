@@ -1,3 +1,6 @@
+DBENV = 'dev'
+# DBENV = 'prod'
+
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
 from termcolor import colored
@@ -29,6 +32,8 @@ handle bad input from users for the score field in form
 admin_authenticated = False
 app = Flask(__name__)
 
+
+
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
 app.jinja_env.globals.update(get_best=get_best)
@@ -41,8 +46,19 @@ app.jinja_env.globals.update(today=datetime.today)
 
 # UPLOAD_FOLDER = '/database/profile_pics'
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+
+if DBENV == 'dev':
+	# development mode
+	app.debug = True
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+	app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+else:
+	# production mode
+	app.debug = False
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://wcowsukvvbcixu:f469d73d4ff15e8e827136950649d1870834f9df6870cc679a61c9fdb3e437e3@ec2-54-243-44-102.compute-1.amazonaws.com:5432/d2e6lq83t6rpad'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
