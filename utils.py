@@ -265,12 +265,16 @@ def delete_all_of_ch(ch_name):
 
 def remove_security_question(question):
 	from constants import SECURITY_QUESTIONS
-	s = SECURITY_QUESTIONS.remove(question)
+	SECURITY_QUESTIONS.remove(question)
+	if type(SECURITY_QUESTIONS) != list:
+		raise ValueError('SECURITY_QUESTIONS is null')
 	with open('database/security_questions.json','w') as file:
-			file.write(json.dumps(s))
+			file.write(json.dumps({"list":SECURITY_QUESTIONS}))
 
 def add_security_question(question):
 	from constants import SECURITY_QUESTIONS
 	SECURITY_QUESTIONS.append(question)
+	if type(SECURITY_QUESTIONS) != list:
+		raise ValueError('SECURITY_QUESTIONS is null')
 	with open('database/security_questions.json','w') as file:
-			file.write(json.dumps(SECURITY_QUESTIONS))
+			file.write(json.dumps({"list":SECURITY_QUESTIONS}))
