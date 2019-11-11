@@ -1,5 +1,5 @@
-# DBENV = 'dev'
-DBENV = 'prod'
+DBENV = 'dev'
+# DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -29,10 +29,16 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 styling of table and layout
 handle bad input from users for the score field in form
 '''
-admin_authenticated = False
+def get_admin_auth():
+	return read('args.txt')['admin_auth']
+def write_admin_auth(TF):
+	if type(TF) != bool:
+		raise ValueError('please only enter a boolean value to write_admin_auth')
+	args = read('args.txt')
+	args['admin_auth'] = TF
+	write('args.txt',args)
+
 app = Flask(__name__)
-
-
 
 app.static_folder = 'static'
 app.secret_key = 'jsahgfdjshgfsdjgghayfdsajhsfdayda'
@@ -131,7 +137,7 @@ class UserView(ModelView):
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
-		return admin_authenticated
+		return get_admin_auth()
 
 class MyModelView(ModelView):
 	column_type_formatters = MY_DEFAULT_FORMATTERS
@@ -143,32 +149,31 @@ class MyModelView(ModelView):
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
-		return admin_authenticated
+		return get_admin_auth()
 
 class MyHomeView(AdminIndexView):
 	@expose('/',methods=('GET','POST'))
 	def index(self):
-		global admin_authenticated
 		if request.method == 'POST':
 			print('posting.')
-			if admin_authenticated:
+			if get_admin_auth():
 				# log them out
 				print('making it unallowed. they hit logout')
-				admin_authenticated = False
-				return render_template('admin/myhome.html',auth=admin_authenticated)
+				write_admin_auth(False)
+				return render_template('admin/myhome.html',auth=get_admin_auth())
 			# they are entering the password
 			entered_password = request.form.get('password')
 			if entered_password == ADMIN_PASSWORD.decoded:
 				print('you are authenticated!')
-				admin_authenticated = True	
-				return self.render('admin/myhome.html',auth=admin_authenticated)
+				write_admin_auth(True)
+				return self.render('admin/myhome.html',auth=get_admin_auth())
 			return "password: \"" + str(request.form.get('password')) + "\"\n is incorrect" + \
 			"<br><hr><a href='/admin'>try again</a>"
 		else:
-			if admin_authenticated:
+			if get_admin_auth():
 				# normal home page
-				return render_template('admin/myhome.html',auth=admin_authenticated)
-		return self.render('admin/myhome.html',auth=admin_authenticated)
+				return render_template('admin/myhome.html',auth=get_admin_auth())
+		return self.render('admin/myhome.html',auth=get_admin_auth())
 
 admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
 
@@ -191,7 +196,7 @@ if __name__ == '__main__':
 	parser.add_argument('-v','--verbose',action='store_true')
 	COMMENT = ''
 	args = parser.parse_args()
-	write('args.txt',{'email':args.email,'verbose':args.verbose})
+	write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
 	if args.verbose:
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 		print(' * Verbose:', colored('True','green'))

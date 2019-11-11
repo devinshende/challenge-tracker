@@ -10,6 +10,10 @@
 		#form input[type="submit"] {
 			margin-top: 20px;
 		}
+		#logout {
+			margin:0 25%;
+			width:50%;
+		}
 	</style>
 <div class="container">
 	{% if json %}
@@ -45,5 +49,10 @@
 		</div>
 	{% endif %}
 	<a class="btn" href="/siteadmin/delete-ch">Delete a Challenge</a>
+	<form method="POST">
+		<input id='logout' type="submit" name="logout" value="logout">
+	</form>
+	<br>
+	<br>
 </div>
 {% endblock %}

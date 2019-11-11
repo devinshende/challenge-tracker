@@ -488,9 +488,18 @@ def admin_delete_ch():
 		json=Suggestion.query.all(),
 		challenge_dict=challenge_dict)
 
-@app.route('/siteadmin/')
+@app.route('/siteadmin/',methods=['GET','POST'])
 def admin_suggestions():
-	return render_template('siteadmin/admin.html',json=Suggestion.query.all())
+	from app import get_admin_auth, write_admin_auth
+	if request.method == 'POST':
+		print('logging out')
+		write_admin_auth(False)
+		return redirect('/')
+	if get_admin_auth():
+		return render_template('siteadmin/admin.html',json=Suggestion.query.all())
+	else:
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
 
 @app.route('/<username>/profile')
 @login_required
