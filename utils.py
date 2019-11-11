@@ -262,4 +262,3 @@ def delete_all_of_ch(ch_name):
 			db.session.add(user)
 			db.session.commit()
 			print(f'now it is {user.challenges} - doesn\'t have the {ch_name}') 
-# delete_all_of_ch('Devil Steps')

@@ -10,6 +10,7 @@ from pprint import pprint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+import json
 
 try:
 	verbose = read('args.txt')['verbose']
@@ -477,6 +478,8 @@ def admin_delete_ch():
 				if item == ch_to_delete:
 					print('yay')
 					lst.remove(item)
+		with open('database/challenges.json','w') as file:
+			file.write(json.dumps(challenge_dict))
 		print('new challenge_dict:\n\n')
 		print(challenge_dict)
 		delete_all_of_ch(ch_to_delete)

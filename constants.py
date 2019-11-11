@@ -10,26 +10,28 @@ SECURITY_QUESTIONS = [
 
 PROF_PICS_PATH = 'static/profile_pics'
 
+'''
+DO NOT DELETE
+challenge_dict = {
+	"time":[
+		"Devil Steps",
+		"Campus Board (up and down)",
+		"Floating Doors to Cliffhanger",
+		"Rope Climb"
+	],
 
-# challenge_dict = {
-# 	"time":[
-# 		"Devil Steps",
-# 		"Campus Board (up and down)",
-# 		"Floating Doors to Cliffhanger",
-# 		"Rope Climb"
-# 	],
+	"laps":[
+		"Rings",
+		"Campus Board",
+		"Balance Beam Slack Line"
+	],
 
-# 	"laps":[
-# 		"Rings",
-# 		"Campus Board",
-# 		"Balance Beam Slack Line"
-# 	],
-
-# 	"reps":[
-# 		"Warped Wall",
-# 		"Quintuple Steps"
-# 	]
-# }
+	"reps":[
+		"Warped Wall",
+		"Quintuple Steps"
+	]
+}
+'''
 
 with open('database/challenges.json','r') as file:
 	json_str = file.read()
