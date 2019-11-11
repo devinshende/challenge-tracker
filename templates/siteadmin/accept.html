@@ -17,7 +17,7 @@
 		<div id="formContent">
 		<br>
 		<form id="form" method="POST">
-			<label for="challenge">Accept: </label>
+			<label for="suggestion">Accept: </label>
 			<select name="suggestion" required="required" class="fadeIn second" id="select">
 				<option value="" hidden>Select Suggestion</option>
 				{% for ch_s in json %}
@@ -26,7 +26,7 @@
 			</select>
 			<br>
 			<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
-		</form>		          
+		</form>
 	</div>
 	{% else %}
 		<div class="container">

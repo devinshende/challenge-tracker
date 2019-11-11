@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %} Add a Security Question {% endblock %}
+{% block top %}Admin{% endblock %}
+{% block imghref %}/siteadmin/securityq{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+		<br>
+		<form id="form" method="POST">
+			<label for="question">Security Question:</label>
+			<input type="text" name="question" placeholder="What is your favorite color?">
+			<br>
+			<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
+		</form>
+	</div>
+</div>
+{% endblock %}

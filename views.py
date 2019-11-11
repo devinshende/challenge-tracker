@@ -488,6 +488,27 @@ def admin_delete_ch():
 		json=Suggestion.query.all(),
 		challenge_dict=challenge_dict)
 
+@app.route('/siteadmin/securityq')
+def security_questions():
+	return render_template('siteadmin/questions/securityq.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS)
+
+@app.route('/siteadmin/securityq/add',methods=['GET','POST'])
+def security_question_add():
+	if request.method == 'POST':
+		q = request.form.get('question')
+		add_security_question(q)
+		return redirect('/siteadmin/securityq')
+	return render_template('siteadmin/questions/add.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS, add=True)
+ 
+@app.route('/siteadmin/securityq/remove',methods=['GET','POST'])
+def security_question_remove():
+	if request.method == 'POST':
+		q = request.form.get('question')
+		remove_security_question(q)
+		return redirect('/siteadmin/securityq')
+	return render_template('siteadmin/questions/remove.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS, remove=True)
+
+
 @app.route('/siteadmin/',methods=['GET','POST'])
 def admin_suggestions():
 	from app import get_admin_auth, write_admin_auth

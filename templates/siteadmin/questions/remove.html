@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} Remove a Security Question {% endblock %}
+{% block top %}Admin{% endblock %}
+{% block imghref %}/siteadmin/securityq{% endblock %}
+{% block content %}
+	<style type="text/css">
+		#form {
+			margin: 10px;
+		}
+		#form input[type="submit"] {
+			margin-top: 20px;
+		}
+		#form label {
+			margin-left: 10px;
+		}
+	</style>
+
+<div class="container">
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+			<form id="form" method="POST">
+				<br>
+				<label for="question">Delete: </label>
+				<select name="question" required="required" class="fadeIn second" id="select">
+					<option value="" hidden>Select security question</option>
+					{% for s in SECURITY_QUESTIONS %}
+						<option value="{{ s }}" required="required">{{s}}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
+			</form>
+		</div>
+	</div>	          
+</div>
+{% endblock %}

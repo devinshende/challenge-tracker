@@ -1,6 +1,11 @@
 from mylib.cipher import decode
 import json
 
+
+PROF_PICS_PATH = 'static/profile_pics'
+
+'''
+DO NOT DELETE
 SECURITY_QUESTIONS = [
 	"What was the name of your first pet?",
 	"What is your favorite number?",
@@ -8,10 +13,6 @@ SECURITY_QUESTIONS = [
 	"What school did you attend in kindergarten?"
 ]
 
-PROF_PICS_PATH = 'static/profile_pics'
-
-'''
-DO NOT DELETE
 challenge_dict = {
 	"time":[
 		"Devil Steps",
@@ -33,9 +34,14 @@ challenge_dict = {
 }
 '''
 
+
 with open('database/challenges.json','r') as file:
 	json_str = file.read()
 	challenge_dict = json.loads(json_str)
+
+with open('database/security_questions.json','r') as file:
+	json_str = file.read()
+	SECURITY_QUESTIONS = json.loads(json_str)['list']
 
 BRACKETS = [
 	'12 and under male',

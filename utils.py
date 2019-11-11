@@ -1,4 +1,4 @@
-import os
+import os, json
 from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry
 import datetime
@@ -262,3 +262,15 @@ def delete_all_of_ch(ch_name):
 			db.session.add(user)
 			db.session.commit()
 			print(f'now it is {user.challenges} - doesn\'t have the {ch_name}') 
+
+def remove_security_question(question):
+	from constants import SECURITY_QUESTIONS
+	s = SECURITY_QUESTIONS.remove(question)
+	with open('database/security_questions.json','w') as file:
+			file.write(json.dumps(s))
+
+def add_security_question(question):
+	from constants import SECURITY_QUESTIONS
+	SECURITY_QUESTIONS.append(question)
+	with open('database/security_questions.json','w') as file:
+			file.write(json.dumps(SECURITY_QUESTIONS))
