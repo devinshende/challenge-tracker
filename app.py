@@ -1,5 +1,5 @@
-DBENV = 'dev'
-# DBENV = 'prod'
+# DBENV = 'dev'
+DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -84,7 +84,7 @@ class User(db.Model, UserMixin):
 	gender 		= db.Column(db.String(6), nullable=False)
 	username 	= db.Column(db.String(20), unique=True, nullable=False)
 	password 	= db.Column(db.String(40), nullable=False)
-	security_question_id = db.Column(db.Integer, nullable=False)
+	security_question_id = db.Column(db.String(100), nullable=False)
 	security_question_ans = db.Column(db.String(50), nullable=False)
 	challenges 	= db.Column(db.PickleType, default={})
 
@@ -131,7 +131,7 @@ MY_DEFAULT_FORMATTERS.update({
 class UserView(ModelView):
 	column_display_pk = True # controls whether id is (not) hidden
 	column_searchable_list = ('first_name','last_name')
-	column_exclude_list = ('password','security_question_id','security_question_ans')
+	column_exclude_list = ('password','security_question_ans')
 	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
 	
 	def is_accessible(self):

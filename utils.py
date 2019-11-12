@@ -84,13 +84,13 @@ def get_full_name(user_id):
 def question_to_id(question):
 	"takes a security question and returns its id"
 	if question not in SECURITY_QUESTIONS:
-		print(f'{question} not in SECURITY_QUESTIONS')
+		raise ValueError(f'{question} not in SECURITY_QUESTIONS')
 	return SECURITY_QUESTIONS.index(question)
 
 def id_to_question(ID):
 	"takes a security question id and returns its string"
-	if ID > len(SECURITY_QUESTIONS):
-		print(f'{ID} is too big to be one of the accepted SECURITY_QUESTIONS')
+	if ID >= len(SECURITY_QUESTIONS):
+		raise ValueError(f'{ID} is too big to be one of the accepted SECURITY_QUESTIONS')
 	return SECURITY_QUESTIONS[ID]
 
 def get_best(entry_list,ch_type):
@@ -264,17 +264,28 @@ def delete_all_of_ch(ch_name):
 			print(f'now it is {user.challenges} - doesn\'t have the {ch_name}') 
 
 def remove_security_question(question):
-	from constants import SECURITY_QUESTIONS
+	from constants import load_security_questions
+	SECURITY_QUESTIONS = load_security_questions()
+	from app import User
 	SECURITY_QUESTIONS.remove(question)
 	if type(SECURITY_QUESTIONS) != list:
 		raise ValueError('SECURITY_QUESTIONS is null')
+	users = User.query.all()
+	for user in users:
+		user_q = user.security_question_id # called id but actually a string of the question itself
+		if user_q == question:
+			print(f'{user.username} has already used the security question "{question}". Overriding deleting that record.')
+			return False		
 	with open('database/security_questions.json','w') as file:
-			file.write(json.dumps({"list":SECURITY_QUESTIONS}))
+		file.write(json.dumps({"list":SECURITY_QUESTIONS}))
+		return True
 
 def add_security_question(question):
-	from constants import SECURITY_QUESTIONS
+	from constants import load_security_questions
+	SECURITY_QUESTIONS = load_security_questions()
 	SECURITY_QUESTIONS.append(question)
 	if type(SECURITY_QUESTIONS) != list:
 		raise ValueError('SECURITY_QUESTIONS is null')
 	with open('database/security_questions.json','w') as file:
-			file.write(json.dumps({"list":SECURITY_QUESTIONS}))
+		file.write(json.dumps({"list":SECURITY_QUESTIONS}))
+

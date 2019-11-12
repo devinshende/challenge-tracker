@@ -22,7 +22,7 @@
 				</script>
 			<label for="security_question">Security Question (pick one):</label>
 			<select name="security_question" required>
-				<option selected value="{{security_question_id}}" hidden>Pick One</option>
+				<option selected value="{{security_question}}" hidden>Pick One</option>
 				{% for choice in security_questions%}
 				<option value="{{choice}}" required>{{choice}}</option>
 				{% endfor %}

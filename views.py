@@ -95,9 +95,8 @@ def signup():
 			password = request.form.get('password')
 			confirm_password = request.form.get('confirm_password')
 			security_question = request.form.get('security_question')
-			security_question_id = question_to_id(security_question) # convert string of question to it's id in SECURITY_QUESTIONS
 			answer = request.form.get('answer')
-			security = {'id':security_question_id,'answer':encode(answer)}
+			security = {'question':security_question,'answer':encode(answer)}
 			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
 				if verbose:
@@ -106,11 +105,15 @@ def signup():
 					print(user.username == username)
 				if user.username == username:
 					flash('That username is already taken')
-					return render_template("signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question_id=security_question_id, answer=answer)
+					return render_template("signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
 
 			variables = read('vars.txt')
 			v = variables['half_user']
-			id = User.query.all()[-1].id+1
+			try:
+				id = User.query.all()[-1].id+1
+			except IndexError:
+				# in the case that they are the first user, it throws a IndexError list index out of range
+				id = 0
 			print('user id is ',id)
 			month = int(monthsDict[v['month']])
 			print(type(month))
@@ -125,7 +128,7 @@ def signup():
 			 			gender=v['gender'],
 			 			username=username,
 			 			password=encode(password),
-			 			security_question_id=security['id'],
+			 			security_question_id=security['question'],
 			 			security_question_ans=security['answer'])
 			print('user: ',user)
 			variables['half_user'] = None
@@ -180,8 +183,7 @@ def forgot_password():
 			if user is None:
 				flash('That username does not exist')
 				return redirect('/forgot-password')
-			question_id = user.security_question_id
-			question = id_to_question(question_id)
+			question = user.security_question_id
 			return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if not username and not password:
 			# security question step
@@ -195,8 +197,7 @@ def forgot_password():
 				if verbose: print('answers match!')
 				return render_template('unauth/forgot_password.html',success=True)
 			else:
-				question_id = user.security_question_id
-				question = id_to_question(question_id)
+				question = user.security_question_id
 				if verbose: 
 					print('answers do not match')
 					print('question is ',question)
@@ -436,6 +437,11 @@ def suggest_challenge(username):
 
 @app.route('/siteadmin/accept', methods=['GET','POST'])
 def admin_accept():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+
 	if request.method == 'POST':
 		suggestion_to_accept = request.form.get('suggestion') 
 		if verbose: print('accepting ',suggestion_to_accept)
@@ -454,6 +460,11 @@ def admin_accept():
 
 @app.route('/siteadmin/delete', methods=['GET','POST'])
 def admin_delete():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+
 	if request.method == 'POST':
 		suggestion_to_delete = request.form.get('suggestion') 
 		if verbose: print('deleting the suggestion',suggestion_to_delete)
@@ -467,7 +478,11 @@ def admin_delete():
 @app.route('/siteadmin/delete-ch', methods=['GET','POST'])
 def admin_delete_ch():
 	from constants import challenge_dict
-	print(challenge_dict)
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+
 	if request.method == 'POST':
 		ch_to_delete = request.form.get('challenge') 
 		if verbose: print('deleting the challenge',ch_to_delete)
@@ -490,10 +505,24 @@ def admin_delete_ch():
 
 @app.route('/siteadmin/securityq')
 def security_questions():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+
+	from constants import load_security_questions
+	SECURITY_QUESTIONS = load_security_questions()
 	return render_template('siteadmin/questions/securityq.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS)
 
 @app.route('/siteadmin/securityq/add',methods=['GET','POST'])
 def security_question_add():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+
+	from constants import load_security_questions
+	SECURITY_QUESTIONS = load_security_questions()
 	if request.method == 'POST':
 		q = request.form.get('question')
 		add_security_question(q)
@@ -502,15 +531,24 @@ def security_question_add():
  
 @app.route('/siteadmin/securityq/remove',methods=['GET','POST'])
 def security_question_remove():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to siteadmin')
+		return redirect('/admin')
+		
+	from constants import load_security_questions
+	SECURITY_QUESTIONS = load_security_questions()
 	if request.method == 'POST':
 		q = request.form.get('question')
-		remove_security_question(q)
+		status = remove_security_question(q)
+		if status == False:
+			flash('You cannot delete that security question because it is already in use by somebody')
 		return redirect('/siteadmin/securityq')
 	return render_template('siteadmin/questions/remove.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS, remove=True)
 
 
 @app.route('/siteadmin/',methods=['GET','POST'])
-def admin_suggestions():
+def siteadmin():
 	from app import get_admin_auth, write_admin_auth
 	if request.method == 'POST':
 		print('logging out')

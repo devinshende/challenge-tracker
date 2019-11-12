@@ -34,14 +34,17 @@ challenge_dict = {
 }
 '''
 
+def load_challenge_dict():
+	with open('database/challenges.json','r') as file:
+		json_str = file.read()
+		challenge_dict = json.loads(json_str)
+	return challenge_dict
 
-with open('database/challenges.json','r') as file:
-	json_str = file.read()
-	challenge_dict = json.loads(json_str)
-
-with open('database/security_questions.json','r') as file:
-	json_str = file.read()
-	SECURITY_QUESTIONS = json.loads(json_str)['list']
+def load_security_questions():
+	with open('database/security_questions.json','r') as file:
+		json_str = file.read()
+		SECURITY_QUESTIONS = json.loads(json_str)['list']
+	return SECURITY_QUESTIONS
 
 BRACKETS = [
 	'12 and under male',
@@ -64,4 +67,6 @@ class Password(object):
 
 ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 
+challenge_dict = load_challenge_dict()
+SECURITY_QUESTIONS = load_security_questions()
 
