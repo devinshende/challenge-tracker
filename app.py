@@ -1,5 +1,5 @@
-# DBENV = 'dev'
-DBENV = 'prod'
+DBENV = 'dev'
+# DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -23,6 +23,8 @@ from flask_admin.model import BaseModelView, typefmt
 from flask_admin.base import AdminIndexView, expose
 from flask_heroku import Heroku
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -75,6 +77,11 @@ photos = UploadSet('photos',IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
 configure_uploads(app,photos)
 
+# FLASK MIGRATE - for dealing with Database changes better
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db',MigrateCommand)
+ 
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
 	first_name 	= db.Column(db.String(20), nullable=False)
@@ -200,4 +207,5 @@ if __name__ == '__main__':
 	if args.verbose:
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 		print(' * Verbose:', colored('True','green'))
-	app.run()
+	# app.run()
+	manager.run()
