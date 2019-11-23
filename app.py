@@ -167,8 +167,8 @@ class MyHomeView(AdminIndexView):
 				print('you are authenticated!')
 				write_admin_auth(True)
 				return self.render('admin/myhome.html',auth=get_admin_auth())
-			return "password: \"" + str(request.form.get('password')) + "\"\n is incorrect" + \
-			"<br><hr><a href='/admin'>try again</a>"
+			flash(f"password: \"{request.form.get('password')}\" is incorrect")
+			return self.render('admin/myhome.html',auth=get_admin_auth())
 		else:
 			if get_admin_auth():
 				# normal home page
