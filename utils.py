@@ -289,3 +289,9 @@ def add_security_question(question):
 	with open('database/security_questions.json','w') as file:
 		file.write(json.dumps({"list":SECURITY_QUESTIONS}))
 
+def limit_input_size(name, max_size, item="name"):
+	from flask import flash
+	if name and len(name) > max_size:
+		flash(f'That {item} is too long. Please shorten it to less than {max_size} characters and try again')
+		return "redirect"
+	return False

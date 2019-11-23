@@ -59,7 +59,11 @@ def signup():
 				print('in signup 1')
 			first_name = request.form.get('first_name')
 			last_name = request.form.get('last_name')
-			# age = request.form.get('age')
+			if limit_input_size(name=first_name, max_size=20):
+				return redirect('/signup')
+			if limit_input_size(name=last_name, max_size=20):
+				return redirect('/signup')
+			age = request.form.get('age')
 			yr = request.form.get('year')
 			month = request.form.get('month')
 			day = request.form.get('day')
@@ -93,9 +97,17 @@ def signup():
 			# switching over to signup2 template
 			username = request.form.get('username')
 			password = request.form.get('password')
+			if limit_input_size(name=username, max_size=20, item="username"):
+				return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
+			if limit_input_size(name=password, max_size=40, item="password"):
+				return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
 			confirm_password = request.form.get('confirm_password')
 			security_question = request.form.get('security_question')
 			answer = request.form.get('answer')
+			if limit_input_size(name=answer, max_size=50, item="answer"):
+				print(f'username is {username}')
+				return render_template('unauth/signup2.html', username=username, password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question)
+
 			security = {'question':security_question,'answer':encode(answer)}
 			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
@@ -105,7 +117,7 @@ def signup():
 					print(user.username == username)
 				if user.username == username:
 					flash('That username is already taken')
-					return render_template("signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
+					return render_template("unauth/signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
 
 			variables = read('vars.txt')
 			v = variables['half_user']
@@ -204,6 +216,8 @@ def forgot_password():
 				flash('Incorrect Answer')
 				return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if password:
+			if limit_input_size(name=password, max_size=40, item="password"):
+				return redirect('/forgot-password')
 			# password step
 			variables = read('vars.txt')
 			username = variables['forgot_username']
@@ -411,6 +425,8 @@ def suggest_challenge(username):
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
 		challenge_name = request.form.get('challenge')
+		if limit_input_size(name=challenge_name, max_size=30):
+			return redirect(f'/{username}/suggest-challenge')
 		already_exists = Suggestion.query.filter_by(name=challenge_name).first()
 		if already_exists:
 			flash(f'That Challenge was already suggested by {User.query.get(already_exists.user_id).first_name}')
@@ -525,6 +541,8 @@ def security_question_add():
 	SECURITY_QUESTIONS = load_security_questions()
 	if request.method == 'POST':
 		q = request.form.get('question')
+		if limit_input_size(name=q, max_size=100, item="security question"):
+			return redirect('/siteadmin/securityq/add')
 		add_security_question(q)
 		return redirect('/siteadmin/securityq')
 	return render_template('siteadmin/questions/add.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS, add=True)
