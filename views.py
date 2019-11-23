@@ -443,8 +443,17 @@ def suggest_challenge(username):
 		db.session.commit()
 
 		if send_emails == True:
-			send_email_to_somebody('Challenge submission',repr(challenge_submission),'devin.s.shende@gmail.com')
-			send_email_to_somebody('Challenge submission',repr(challenge_submission),'ravi.sameer.shende@gmail.com')
+			body = f"""{user.first_name} {user.last_name} suggested a new challenge: 
+			{repr(challenge_name)}
+			of the type \"{challenge_type}\"
+
+			Thanks, 
+			- Ninja Park Tracker"""
+			try:
+				send_email_to_somebody('Challenge submission',body,'devin.s.shende@gmail.com')
+				send_email_to_somebody('Challenge submission',body,'ravi.sameer.shende@gmail.com')
+			except:
+				print('oopsies that didn\'t work to send the email')
 		else:
 			if verbose:
 				print('would be sending emails but that was set to False so not doing that.')

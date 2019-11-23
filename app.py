@@ -196,6 +196,9 @@ if __name__ == '__main__':
 	parser.add_argument('-v','--verbose',action='store_true')
 	COMMENT = ''
 	args = parser.parse_args()
+
+	# CHANGE THIS LINE TO STOP GETTING EMAILS
+	args.email = True
 	write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
 	if args.verbose:
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))

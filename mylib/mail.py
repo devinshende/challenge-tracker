@@ -7,8 +7,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 def send_email_to_somebody(subject,body,sendtoaddrs=None):
-	em_address = "@!}Kñdó@`P:=W:EoKoKWd1:=248"
-	em_password = "nJK!JlV;;í!107"
+	em_address = "é0I9WZ_é7júhóúK6969óZ4úh756"
+	em_password = "vCStCOQZZbt151"
 	# decode email address and password
 	address = decode(em_address)
 	psswd = decode(em_password)
@@ -28,7 +28,7 @@ def send_email_to_somebody(subject,body,sendtoaddrs=None):
 	try:
 		server.login(address, psswd)
 	except:
-		raise ValueError("You must have changed your password because login failed")
+		raise ValueError("Error sending email: You must have changed your password because login failed")
 	
 	text = msg.as_string()
 	server.sendmail(
