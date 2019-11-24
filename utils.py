@@ -33,7 +33,7 @@ def datetime_to_string(date):
 def to_name_case(name):
 	"converts name to have first letter uppercase and the rest lowercase"
 	if not name:
-		raise ValueError('you must enter a string for the name. '+str(name)+' is not a valid string')
+		raise ValueError('you must enter a string for the name. '+repr(name)+' is not a valid string')
 	first_letter = name[0]
 	rest_of_name = name[1:]
 	return first_letter.upper() + rest_of_name.lower()
@@ -218,17 +218,15 @@ def add_challenge(dict):
 		raise ValueError(f"'{dict['type']}' is not a valid challenge type. Pick from {tuple(challenge_dict.keys())}")
 	# to name case
 	n = dict['name'].split(' ')
-	n = [to_name_case(word) for word in n]
-	n = ' '.join(n)
-	
+	ch_name = []
+	for word in n:
+		if word != '':
+			ch_name.append(to_name_case(word))
+	n = ' '.join(ch_name)	
 	if n in challenge_dict[dict['type']]:
 		print('repeat. oops')
 		return "repeat"
-
-	challenge_dict[dict['type']].append(
-		n
-	)
-
+	challenge_dict[dict['type']].append(n)
 	with open('database/challenges.json','w') as file:
 		file.write(json.dumps(challenge_dict))
 		return "success"

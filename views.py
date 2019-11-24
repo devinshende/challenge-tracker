@@ -470,7 +470,7 @@ def admin_accept():
 		return redirect('/admin')
 
 	if request.method == 'POST':
-		suggestion_to_accept = request.form.get('suggestion') 
+		suggestion_to_accept = request.form.get('suggestion')
 		if verbose: print('accepting ',suggestion_to_accept)
 		s = Suggestion.query.filter_by(name=suggestion_to_accept).first()
 		print(f'accepting {repr(s)} = {s}')
