@@ -424,6 +424,8 @@ def suggest_challenge(username):
 	user = User.query.filter_by(username=username).first()
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
+		if challenge_type == 'Repetitions':
+			challenge_type = 'Reps'
 		challenge_name = request.form.get('challenge')
 		if limit_input_size(name=challenge_name, max_size=30):
 			return redirect(f'/{username}/suggest-challenge')
@@ -443,13 +445,13 @@ def suggest_challenge(username):
 		db.session.commit()
 
 		if send_emails == True:
-			body = f"""{user.first_name} {user.last_name} suggested a new challenge: 
-			{repr(challenge_name)}
-			of the type \"{challenge_type}\"
-
-			Thanks, 
-			- Ninja Park Tracker"""
 			try:
+				body = f"""{user.first_name} {user.last_name} suggested a new challenge: 
+				{repr(challenge_name)}
+				of the type \"{challenge_type}\"
+
+				Thanks, 
+				- Ninja Park Tracker"""
 				send_email_to_somebody('Challenge submission',body,'devin.s.shende@gmail.com')
 				send_email_to_somebody('Challenge submission',body,'ravi.sameer.shende@gmail.com')
 			except:
