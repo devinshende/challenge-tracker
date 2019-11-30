@@ -9,13 +9,13 @@
 {% if tables %}
 <div class="container">
 		<br>
-		{% for table in tables %}
+		{% for table_i in range(0,4) %}
 		<!-- Boys, Girls, Men, Women (or not?) -->
-		<h3 id="division">{{ to_name_case(bracket_names[tables.index(table)]) }}</h3>
-			{% if not table %}
+		<h3 id="division">{{ to_name_case(bracket_names[table_i]) }}</h3>
+			{% if not tables[table_i] %}
 			<p id="no_entries">There are no entries for this division in {{header}}</p>
 			{% endif %}
-			{% if table %}
+			{% if tables[table_i] %}
 			<table>
 				<thead>
 					<tr class="table-head">
@@ -28,7 +28,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for item in table %}
+					{% for item in tables[table_i] %}
 						<tr>
 							<!-- place -->
 							<td>{{item[0]}}</td>
@@ -37,12 +37,14 @@
 							<!-- name -->
 							<td>{{item[2]}}</td> 
 							<!-- score -->
-							{% if challenge_type == 'time' %}
+							{% if challenge_type.lower() == 'time' %}
 							<td>{{item[3]}} seconds</td>
+							{% else %}
+							<td>{{item[3]}}</td>
 							{% endif %}
-							<td>{{item[4]}}</td>
+
 							<!-- comment -->
-							<td>{{item[5]}}</td>
+							<td>{{item[4]}}</td>
 						</tr>
 					{% endfor %}
 				</tbody>

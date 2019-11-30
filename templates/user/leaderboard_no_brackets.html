@@ -116,14 +116,15 @@
 						<td><img src="{{item[1]}}" height="32px" width="32px"></td>
 						<!-- name -->
 						<td>{{item[2]}}</td> 
-						
 						<!-- score -->
-						{% if challenge_type == 'time' %}
+						{% if challenge_type.lower() == 'time' %}
 						<td>{{item[3]}} seconds</td>
+						{% else %}
+						<td>{{item[3]}}</td>
 						{% endif %}
-						<td>{{item[4]}}</td>
+
 						<!-- comment -->
-						<td>{{item[5]}}</td>
+						<td>{{item[4]}}</td>
 					</tr>
 				{% endfor %}
 			</tbody>

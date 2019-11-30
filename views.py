@@ -1,11 +1,10 @@
 from app import *
 from utils import *
-from constants import load_security_questions
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
-from constants import SECURITY_QUESTIONS, challenge_dict, BRACKETS, PROF_PICS_PATH, monthsDict
+from constants import *
 from challenges import Entry
 from pprint import pprint
 from datetime import datetime
@@ -283,16 +282,10 @@ def leaderboard():
 		'''
 
 		if checked:
-			bn = [
-				'12 and under male',
-				'12 and under female',
-				'teen/adult male',
-				'teen/adult female'
-			]
 			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
-				brackets=brackets, bracket_names=bn)
+				brackets=brackets, bracket_names=BRACKETS)
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
 			print('no brackets')
