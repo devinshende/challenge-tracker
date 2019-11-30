@@ -13,11 +13,7 @@
 		.angle:hover {
 			color:#777
 		}
-
 		.column3 {
-		
-		}
-		.column4 {
 			padding-right:10px;
 		}
 		.icon {
@@ -36,29 +32,20 @@
 	<table>
 		<thead>
 			<tr class="table-head">
-				<th class="column1"></th>
-				<th class="column2">Challenge</th>
-				<th class="column3">Score</th>
-				<th class="column4">Comment</th>
-				<th class="column5"></th>
+				<th class="column1">Challenge</th>
+				<th class="column2">Score</th>
+				<th class="column3">Comment</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for challenge in ch.keys()%}
 				<tr>
-					<td class="column1 icon">
-						{% if len(ch[challenge]) > 1 %}
-						<!-- <i class="angle fa fa-angle-right"> -->
-						{% else %}
-						{% endif %}
-					</td>
-					<td class="column2">{{challenge}}</td>
-					<td class="column3">
+					<td class="column1">{{challenge}}</td>
+					<td class="column2">
 						{{get_best(ch[challenge],get_challenge_type(challenge)).score}} 
 						{%if get_challenge_type(challenge) == 'time' %}secs{% endif %} 
 						{% if get_challenge_type(challenge) != 'time'%}{{get_challenge_type(challenge)}}{% endif %}</td>
-					<td class="column4">{{get_best(ch[challenge],get_challenge_type(challenge)).comment}}</td>
-					<!-- <td class="column4 icon"><i class="fa fa-trash"></td> -->
+					<td class="column3">{{get_best(ch[challenge],get_challenge_type(challenge)).comment}}</td>
 				</tr>
 			{% endfor %}
 		</tbody>
