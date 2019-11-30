@@ -122,6 +122,8 @@ def signup():
 
 			variables = read('vars.txt')
 			v = variables['half_user']
+			print('half user is ',v)
+			print('half user\'s month is ',v['month'])
 			try:
 				id = User.query.all()[-1].id+1
 			except IndexError:
