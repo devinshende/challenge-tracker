@@ -125,7 +125,7 @@ def signup():
 			print('half user is ',v)
 			print('half user\'s month is ',v['month'])
 			try:
-				id = len(User.query.all()[-1])
+				id = len(User.query.all())
 			except IndexError:
 				# in the case that they are the first user, it throws a IndexError list index out of range
 				id = 0
