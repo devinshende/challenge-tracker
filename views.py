@@ -1,5 +1,6 @@
 from app import *
 from utils import *
+from constants import load_security_questions
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
 from mylib.cipher import encode, decode
@@ -47,7 +48,7 @@ def landing_page():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-	# global user_so_far
+	SECURITY_QUESTIONS = load_security_questions()
 	months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	if request.method == 'POST':
 		users = User.query.all()
