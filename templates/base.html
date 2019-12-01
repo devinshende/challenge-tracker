@@ -23,10 +23,10 @@
 	        {% for message in messages %}
 	        <div id="error"><strong>{{message}}</strong></div>
 	        {% endfor %}
-	        <br id="above_img">
+	        <br>
 	      {% endif %}
 	    {% endwith %}
-	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
+	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../../static/ninjapark-logo.png"></a>
 	<br>
     {% block content %}{% endblock %}
   </body>

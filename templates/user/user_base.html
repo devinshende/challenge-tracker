@@ -7,7 +7,7 @@
 	<script src="https://kit.fontawesome.com/e3fb869c30.js"></script>
 </head>
 <body>
- 	<style type="text/css">
+	<style type="text/css">
 		body {
 			font-family: Raleway;
 			margin: 0;
@@ -44,7 +44,7 @@
 			margin: 0 auto;
 			border-radius: 20px;
 			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+			box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 		}
 
 		a.btn {
@@ -75,8 +75,8 @@
 		.container {
 			border-radius: 20px;
 			/*-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);*/
-		  	/*box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);*/
-		  	height: 100%;
+			/*box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);*/
+			height: 100%;
 			width: 40%;
 			margin: 0 auto;
 			/*background-color: lightgrey;*/
@@ -102,42 +102,39 @@
 			height:150px;
 			margin-top:30px;
 		}
-		#above_img {
-			line-height:100px;
-		}
 		.wrapper {
-		  display: flex;
-		  align-items: center;
-		  flex-direction: column; 
-		  justify-content: center;
-		  min-height: 100%;
-		  padding: 20px;
+			display: flex;
+			align-items: center;
+			flex-direction: column; 
+			justify-content: center;
+			min-height: 100%;
+			padding: 20px;
 		}
 		#formContent {
-		  -webkit-border-radius: 10px 10px 10px 10px;
-		  border-radius: 10px 10px 10px 10px;
-		  background: #fff;
-		  padding: 30px;
-		  width: 90%;
-		  max-width: 450px;
-		  position: relative;
-		  padding: 0px;
-		  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		  text-align: center;
+			-webkit-border-radius: 10px 10px 10px 10px;
+			border-radius: 10px 10px 10px 10px;
+			background: #fff;
+			padding: 30px;
+			width: 90%;
+			max-width: 450px;
+			position: relative;
+			padding: 0px;
+			-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+			box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+			text-align: center;
 		}
 		#formFooter {
-		  background-color: #f6f6f6;
-		  border-top: 1px solid #dce8f1;
-		  padding: 25px;
-		  text-align: center;
-		  -webkit-border-radius: 0 0 10px 10px;
-		  border-radius: 0 0 10px 10px;
-		  align-content:center;
+			background-color: #f6f6f6;
+			border-top: 1px solid #dce8f1;
+			padding: 25px;
+			text-align: center;
+			-webkit-border-radius: 0 0 10px 10px;
+			border-radius: 0 0 10px 10px;
+			align-content:center;
 		}
 		/* TABS */
 		h2.inactive {
-		  color: #cccccc;
+			color: #cccccc;
 		}
 		h2.active {
 		  color: #0d0d0d;
@@ -145,25 +142,25 @@
 		}
 		/* FORM TYPOGRAPHY*/
 		input[type=button], input[type=submit], input[type=reset], #cancel {
-		  background-color: black;
-		  border: none;
-		  color: white;
-		  padding: 15px 80px;
-		  text-align: center;
-		  text-decoration: none;
-		  display: inline-block;
-		  text-transform: uppercase;
-		  font-size: 13px;
-		  -webkit-box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
-		  box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
-		  -webkit-border-radius: 5px 5px 5px 5px;
-		  border-radius: 5px 5px 5px 5px;
-		  margin: 5px 20px 40px 20px;
-		  -webkit-transition: all 0.3s ease-in-out;
-		  -moz-transition: all 0.3s ease-in-out;
-		  -ms-transition: all 0.3s ease-in-out;
-		  -o-transition: all 0.3s ease-in-out;
-		  transition: all 0.3s ease-in-out;
+			background-color: black;
+			border: none;
+			color: white;
+			padding: 15px 80px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			text-transform: uppercase;
+			font-size: 13px;
+			-webkit-box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+			box-shadow: 0 10px 30px 0 rgba(70,70,70,0.6);
+			-webkit-border-radius: 5px 5px 5px 5px;
+			border-radius: 5px 5px 5px 5px;
+			margin: 5px 20px 40px 20px;
+			-webkit-transition: all 0.3s ease-in-out;
+			-moz-transition: all 0.3s ease-in-out;
+			-ms-transition: all 0.3s ease-in-out;
+			-o-transition: all 0.3s ease-in-out;
+			transition: all 0.3s ease-in-out;
 		}
 		input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, #cancel:hover, #submit:hover  {
 		  background-color: #646669;
@@ -342,16 +339,16 @@ table tbody tr:hover{
 			<span></span>
 		{% endif %}
 	</div>
-	  {% with messages = get_flashed_messages() %}
-	      {% if messages %}
-	        {% for message in messages %}
-	        <div id="error"><strong>{{message}}</strong></div>
-	        {% endfor %}
-	        <br id="above_img">
-	      {% endif %}
-	    {% endwith %}
-	<a href="{% block imghref %}{% endblock %}" title="{%block imghelp%}{%endblock%}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+			<div id="error"><strong>{{message}}</strong></div>
+			{% endfor %}
+			<br>
+		{% endif %}
+	{% endwith %}
+	<a href="{% block imghref %}{% endblock %}" title="{%block imghelp%}{%endblock%}" width=100%><img class='logo' src="../../static/ninjapark-logo.png"></a>
 	<br>
-    {% block content %}{% endblock %}
+	{% block content %}{% endblock %}
   </body>
 </html>

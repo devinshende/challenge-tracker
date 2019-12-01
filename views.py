@@ -123,11 +123,13 @@ def signup():
 			v = variables['half_user']
 			print('half user is ',v)
 			print('half user\'s month is ',v['month'])
-			try:
-				id = len(User.query.all())
-			except IndexError:
-				# in the case that they are the first user, it throws a IndexError list index out of range
-				id = 0
+			
+			max_uid = 0
+			for u in users:
+				if max_uid < u.id:
+					max_uid = u.id 
+			id = max_uid + 1
+			
 			print('user id is ',id)
 			month = int(monthsDict[v['month']])
 			print(type(month))
@@ -611,6 +613,7 @@ def edit_profile(username):
 				print(f'saving uploaded profile pic as {filename}')
 			actual_name = photos.save(request.files['photo'], name=filename)
 			assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
+			flash('refresh the page to see the updated profile picture')
 
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
