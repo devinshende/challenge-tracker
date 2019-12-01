@@ -1,4 +1,5 @@
 /* currently all these styles are in widescreen. */
+/*helloooooooo?*/
 body {
 	font-family: Raleway;
 	margin: 0;
@@ -240,7 +241,7 @@ table tbody tr:hover{
 .form-radio {
 	-webkit-appearance: none;
 	-moz-appearance: none;
-	appearance: none;
+	/*appearance: none;*/
 	display: inline-block;
 	position: relative;
 	background-color: #f1f1f1;
@@ -249,6 +250,8 @@ table tbody tr:hover{
 	height: 30px;
 	width: 30px;
 	border: 0;
+	-webkit-box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
+	box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
 	border-radius: 50px;
 	cursor: pointer;     
 	margin-right: 7px;
@@ -256,16 +259,20 @@ table tbody tr:hover{
 }
 .form-radio:checked::before {
 	position: absolute;
-	font: 13px/1 'Open Sans', sans-serif;
+	font: 13px;
 	left: 11px;
 	top: 7px;
 	content: '\02143';
 	transform: rotate(40deg);
 }
 .form-radio:hover {
+	-webkit-box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
+	box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
 	background-color: #f7f7f7;
 }
 .form-radio:checked {
+	-webkit-box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
+	box-shadow: 0 0px 0px 2px rgba(0,0,0,0.2);
 	background-color: #f1f1f1;
 }
 .radio-label {
