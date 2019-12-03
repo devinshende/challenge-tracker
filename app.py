@@ -1,5 +1,5 @@
-# DBENV = 'dev'
-DBENV = 'prod'
+DBENV = 'dev'
+# DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -21,7 +21,7 @@ from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
 from flask_admin.base import AdminIndexView, expose
-from flask_heroku import Heroku
+# from flask_heroku import Heroku
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
@@ -184,7 +184,7 @@ admin.add_view(MyModelView(Suggestion, db.session))
 # admin.add_view(MyModelView(Challenge, db.session))
 #something with @action to accept challenges
 
-heroku = Heroku(app)
+# heroku = Heroku(app)
 
 # this import must be after initialization of Flask(__name__)
 from views import *

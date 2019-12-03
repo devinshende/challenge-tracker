@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %} Challenge Suggestions {% endblock %}
+{% block top %}Suggested Challenges{% endblock %}
+{% block imghref %}/siteadmin/{% endblock %}
+{% block content %}
+<div class="container">
+	{% if json %}
+	<br>
+	<table>
+		<thead>
+			<tr class="table-head">
+				<th></th>
+				<th>Type of Challenge</th>
+				<th>Name of Challenge</th>
+				<th>Username of Suggestor</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+				{% for s in json %}
+				<tr>
+					<td><i class="angle fa fa-angle-right"></td>
+					<td>{{s.type}}</td>
+					<td>{{s.name}}</td>
+					<td>{{User.query.get(s.user_id).username}}</td>
+					<td><i class="fa fa-trash"></td>
+				</tr>
+				{% endfor %}
+		</tbody>
+	</table>
+	<a class="btn" href="/siteadmin/challenges/delete">Delete a Suggestion</a>
+	<a class="btn" href="/siteadmin/challenges/accept">Accept a Suggestion</a>
+	{% else %}
+		<div class="container">
+			<br>
+			<p class="nothing">No suggested challenges</p>
+		</div>
+	{% endif %}
+	<a class="btn" href="/siteadmin/challenges/delete-ch">Delete a Challenge</a>
+</div>
+{% endblock %}

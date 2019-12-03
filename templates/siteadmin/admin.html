@@ -3,52 +3,43 @@
 {% block top %}Admin{% endblock %}
 {% block imghref %}/admin{% endblock %}
 {% block content %}
-	<style type="text/css">
-/*	#form {
-		margin: 10px;
-	}
-	#form input[type="submit"] {
-		margin-top: 20px;
-	} */
-	#logout {
-		margin:0 25%;
-		width:50%;
-	}
-	</style>
+<style type="text/css">
+#logout {
+	margin:0 25%;
+	width:50%;
+/*}
+#notification {
+    height: 1.4em;
+    width: 1.4em;
+    margin: 0 90px -40px 115px;
+    background: red;
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    font-size: 26px;
+    color: white;
+    font-family: arial;
+}*/
+}
+#notification {
+    height: 1.4em;
+    width: 1.4em;
+    margin-bottom: -40px;
+    margin-left: 86px;
+    background: red;
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    font-size: 26px;
+    color: white;
+    font-family: arial;
+}
+
+
+</style>
 <div class="container">
-	{% if json %}
-	<br>
-	<table>
-		<thead>
-			<tr class="table-head">
-				<th></th>
-				<th>Type of Challenge</th>
-				<th>Name of Challenge</th>
-				<th>Username of Suggestor</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-				{% for s in json %}
-				<tr>
-					<td><i class="angle fa fa-angle-right"></td>
-					<td>{{s.type}}</td>
-					<td>{{s.name}}</td>
-					<td>{{User.query.get(s.user_id).username}}</td>
-					<td><i class="fa fa-trash"></td>
-				</tr>
-				{% endfor %}
-		</tbody>
-	</table>
-	<a class="btn" href="/siteadmin/delete">Delete a Suggestion</a>
-	<a class="btn" href="/siteadmin/accept">Accept a Suggestion</a>
-	{% else %}
-		<div class="container">
-			<br>
-			<p class="nothing">No suggested challenges</p>
-		</div>
-	{% endif %}
-	<a class="btn" href="/siteadmin/delete-ch">Delete a Challenge</a>
+	<div id="notification">{{scnum}}</div>
+	<a class="btn" href="/siteadmin/challenges">Suggested Challenges</a>
 	<a class="btn" href="/siteadmin/securityq">Security Questions</a>
 	<form method="POST">
 		<input id='logout' type="submit" name="logout" value="logout">
