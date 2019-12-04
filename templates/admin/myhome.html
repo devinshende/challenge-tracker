@@ -1,20 +1,47 @@
 {% extends "base.html" %}
-{% block title %} Admin Login {% endblock %}
-{% block top %}Admin Login{% endblock %}
+{% block title %} Admin Home {% endblock %}
+{% block top %}Admin{% endblock %}
 {% block imghref %}/{% endblock %}
 {% block content %}
 <style type="text/css">
-		#form {
-			margin: 10px;
-		}
-		#form input[type="submit"] {
-			margin-top: 20px;
-		}
-		#logout {
-			margin:0 25%;
-			width:50%;
-		}
+#form {
+	margin: 10px;
+}
+#form input[type="submit"] {
+	margin-top: 20px;
+}
+#logout {
+	margin:0 25%;
+	width:50%;
+}
+/*#notification {
+	height: 1.4em;
+	width: 1.4em;
+	margin: 0 90px -40px 115px;
+	background: red;
+	border-radius: 50%;
+	text-align: center;
+	position: relative;
+	font-size: 26px;
+	color: white;
+	font-family: arial;
+}*/
+
+#notification {
+	height: 1.4em;
+	width: 1.4em;
+	margin-bottom: -40px;
+	margin-left: 86px;
+	background: red;
+	border-radius: 50%;
+	text-align: center;
+	position: relative;
+	font-size: 26px;
+	color: white;
+	font-family: arial;
+}
 </style>
+<!-- login page -->
 	{% if not auth %}
 	<div class="container">
 		<div class="wrapper fadeInDown">
@@ -29,13 +56,15 @@
 		</div>
 	</div>
 	</form>
+<!-- home page -->
 	{% else %}
 	<div class="container">
-		<a class="btn" href="/siteadmin">Site admin</a>
-		<a class="btn" href="/admin/user">Database</a>
-		<br>
+		<!-- <div id="notification">{{n_suggested_chs}}</div> -->
+		<a class="btn" href="/siteadmin/challenges">Suggested Challenges</a>
+		<a class="btn" href="/siteadmin/securityq">Security Questions</a>
+		<a class="btn" href="/admin/user">Users</a>
 		<form method="POST">
-			<input type="submit" id='logout' name="logout" value="logout">
+			<input id='logout' type="submit" name="logout" value="logout">
 		</form>
 		<br>
 		<br>

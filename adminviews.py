@@ -1,18 +1,5 @@
 from views import *
 
-@app.route('/siteadmin/',methods=['GET','POST'])
-def siteadmin():
-	# from app import get_admin_auth, write_admin_auth
-	# if request.method == 'POST':
-	# 	print('logging out')
-	# 	write_admin_auth(False)
-	# 	return redirect('/')
-	# if get_admin_auth():
-	return render_template('siteadmin/admin.html',scnum=len(Suggestion.query.all()))
-	# else:
-		# flash('please sign in here and then return to siteadmin')
-		# return redirect('/admin')
-
 @app.route('/siteadmin/challenges')
 def challenge_suggestions():
 	from app import get_admin_auth

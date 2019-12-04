@@ -1,5 +1,5 @@
-DBENV = 'dev'
-# DBENV = 'prod'
+# DBENV = 'dev'
+DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -133,7 +133,9 @@ class UserView(ModelView):
 	column_searchable_list = ('first_name','last_name')
 	column_exclude_list = ('password','security_question_ans')
 	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
-	
+	can_delete = False
+	can_create = False
+
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
@@ -164,15 +166,18 @@ class MyHomeView(AdminIndexView):
 			# they are entering the password
 			entered_password = request.form.get('password')
 			if entered_password == ADMIN_PASSWORD.decoded:
+				# let them in. The password entered is correct
 				print('you are authenticated!')
 				write_admin_auth(True)
-				return self.render('admin/myhome.html',auth=get_admin_auth())
+				return self.render('admin/myhome.html',auth=True, n_suggested_chs=len(Suggestion.query.all()))
+			# don't let them in: the password entered is incorrect
 			flash(f"password: \"{request.form.get('password')}\" is incorrect")
-			return self.render('admin/myhome.html',auth=get_admin_auth())
+			return self.render('admin/myhome.html',auth=False)
 		else:
 			if get_admin_auth():
-				# normal home page
-				return render_template('admin/myhome.html',auth=get_admin_auth())
+				# they are authenticated but did not just submit the login form. Let them in
+				return render_template('admin/myhome.html',auth=True, n_suggested_chs=len(Suggestion.query.all()))
+		# admin login screen
 		return self.render('admin/myhome.html',auth=get_admin_auth())
 
 admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
@@ -180,9 +185,8 @@ admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
 
 # admin = Admin(app, template_mode='bootstrap3') # template mode is styling
 admin.add_view(UserView(User, db.session))
-admin.add_view(MyModelView(Suggestion, db.session))
-# admin.add_view(MyModelView(Challenge, db.session))
-#something with @action to accept challenges
+# Unnecessary with site admin being a thing
+# admin.add_view(MyModelView(Suggestion, db.session))
 
 # heroku = Heroku(app)
 
