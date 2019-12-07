@@ -293,3 +293,9 @@ def limit_input_size(name, max_size, item="name"):
 		flash(f'That {item} is too long. Please shorten it to less than {max_size} characters and try again')
 		return "redirect"
 	return False
+
+def delete_user(user):
+	from flask import flash
+	flash(f"Warning: deleting user {user.username}!")
+	cprint(f"deleting user {user.username}","red")
+

@@ -66,14 +66,9 @@ a.btn {
 	color:black;
 }
 .container {
-	/*-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);*/
-	/*box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);*/
 	height: 100%;
 	width: 40%;
 	margin: 0 auto;
-	/*background-color: lightgrey;*/
-	/*align-items:center;
-	justify-content: center;*/
 }
 .field {
 	width: 50%;

@@ -14,31 +14,41 @@
 	margin:0 25%;
 	width:50%;
 }
-/*#notification {
-	height: 1.4em;
-	width: 1.4em;
-	margin: 0 90px -40px 115px;
-	background: red;
-	border-radius: 50%;
-	text-align: center;
-	position: relative;
-	font-size: 26px;
+.btncontainer {
+	width:200px;
 	color: white;
-	font-family: arial;
-}*/
-
+	display: block; 
+	position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+	padding: 0; /*padding for the notification*/
+}
+.button {
+	text-decoration: none;
+	font-size: 30px;
+	width: 200px;
+	height: 100%;
+	padding: 10px;
+	margin: 20px auto;
+	text-align: center;
+	display: block;
+	/* ninja park red from logo - #BF1D2D  */
+	color: white;
+	background-color: black;
+	/*background-color: #1d8ece;*/
+	border-radius: 15px;
+	position: relative;
+}
 #notification {
-	height: 1.4em;
-	width: 1.4em;
-	margin-bottom: -40px;
-	margin-left: 86px;
-	background: red;
+	background-color: #fa3e3e;
 	border-radius: 50%;
+	height:30px;
+	width: 30px;
 	text-align: center;
-	position: relative;
-	font-size: 26px;
 	color: white;
-	font-family: arial;
+	font-size: 20px;
+	position:absolute;
+	top:-10px;
+	left:-10px;
+	z-index:10; /*bring it in front of button. 10 for good measure*/
 }
 </style>
 <!-- login page -->
@@ -59,8 +69,10 @@
 <!-- home page -->
 	{% else %}
 	<div class="container">
-		<!-- <div id="notification">{{n_suggested_chs}}</div> -->
-		<a class="btn" href="/siteadmin/challenges">Suggested Challenges</a>
+		<div class="btncontainer">
+			<span id="notification">{{n_suggested_chs}}</span>
+			<a class="button" href="/siteadmin/challenges">Suggested Challenges</a>
+		</div>
 		<a class="btn" href="/siteadmin/securityq">Security Questions</a>
 		<a class="btn" href="/admin/user">Users</a>
 		<form method="POST">
