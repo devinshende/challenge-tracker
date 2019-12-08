@@ -94,11 +94,14 @@ def id_to_question(ID):
 	return SECURITY_QUESTIONS[ID]
 
 def get_best(entry_list,ch_type):
+	from challenges import Entry
 	"gets the best entry (scorewise based on `ch_type`) out of an `entry_list`"
-	if not entry_list:
+	if not entry_list or type(entry_list) != list:
 		return None
 	best_so_far = entry_list[0]
 	for entry in entry_list:
+		if type(entry) != Entry:
+			raise ValueError(f'{entry} is not of type Entry')
 		if ch_type == 'reps' or ch_type == 'laps':
 			if entry.score > best_so_far.score:
 				best_so_far = entry

@@ -23,7 +23,7 @@ img.profpic {
 <div class="container" id="grid"> 
 	{% for user in users %}
 	<div>
-		<img class="profpic" src="{{user.get_profile_pic()}}">
+		<a href="/siteadmin/{{user.username}}"><img class="profpic" src="{{user.get_profile_pic()}}"></a>
 		<p>{{user.username}}</p>
 	</div>
 	{% endfor %}

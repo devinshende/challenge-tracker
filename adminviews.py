@@ -130,3 +130,14 @@ def imgview():
 	users = User.query.all()
 	return render_template('siteadmin/img.html',users=users)
 
+@app.route('/siteadmin/<username>/')
+def userview(username):
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to that page')
+		return redirect('/admin')
+
+	user = User.query.filter_by(username=username).first()
+	ch = json_to_objects(user.challenges)
+	return render_template('siteadmin/user.html',user=user,ch=ch)
+
