@@ -471,6 +471,7 @@ def profile(username):
 @app.route('/<username>/profile/edit', methods=['GET','POST'])
 @login_required
 def edit_profile(username):
+	from app import DBENV
 	user = User.query.filter_by(username=username).first()
 	if request.method == 'POST':
 		# file uploading for profile pic
@@ -486,9 +487,12 @@ def edit_profile(username):
 				os.remove(path)
 			if verbose:
 				print(f'saving uploaded profile pic as {filename}')
-			actual_name = photos.save(request.files['photo'], name=filename)
-			assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
-			flash('refresh the page to see the updated profile picture')
+			if DBENV == 'prod':
+				actual_name = photos.save(request.files['photo'], name=filename)
+				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
+				flash('refresh the page to see the updated profile picture')
+			else:
+				flash('refusing to upload that image cause this is dev mode')
 
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )

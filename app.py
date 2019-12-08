@@ -1,5 +1,5 @@
-DBENV = 'dev'
-# DBENV = 'prod'
+# DBENV = 'dev'
+DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -92,10 +92,12 @@ class User(db.Model, UserMixin):
 		return '<User %r>' % self.username
 
 	def get_profile_pic(self):
+		path = None
 		filename = str(self.id) + '.jpg'
 		if filename in os.listdir(PROF_PICS_PATH):
-			path = os.path.join('../..',PROF_PICS_PATH,filename)
-		else:
+			if DBENV != 'dev':
+				path = os.path.join('../..',PROF_PICS_PATH,filename)
+		if not path:
 			path = '../../static/blank_profile.jpg'
 		print(f'profile pic source is {repr(path)}')
 		return path
