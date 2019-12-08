@@ -71,7 +71,9 @@
 	{% else %}
 	<div class="container">
 		<div class="btncontainer">
-			<span id="notification">{{n_suggested_chs}}</span>
+			{% if n_suggested_chs != 0 %}
+				<span id="notification">{{n_suggested_chs}}</span>
+			{% endif %}
 			<a class="button" href="/siteadmin/challenges">Suggested Challenges</a>
 		</div>
 		<a class="btn" href="/siteadmin/securityq">Security Questions</a>
