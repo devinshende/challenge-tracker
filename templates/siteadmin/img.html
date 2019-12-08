@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %} Profile Pics {% endblock %}
+{% block top %}Profile Pics {%endblock%}
+{% block imghref %}/admin{%endblock%}
+{% block content %}
+<style type="text/css">
+#grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-row-gap: 20px;
+	grid-column-gap: 20px;
+}
+#grid div p {
+	text-align: center;
+	margin:0;
+	font-size: 1.4em;
+}
+img.profpic {
+	width: 100%
+}
+</style>
+
+<div class="container" id="grid"> 
+	{% for user in users %}
+	<div>
+		<img class="profpic" src="{{user.get_profile_pic()}}">
+		<p>{{user.username}}</p>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

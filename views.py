@@ -509,10 +509,3 @@ def edit_profile(username):
 		db.session.commit()
 		return redirect('/'+username+'/profile')
 	return render_template('user/profile_edit.html', user=user, username=username, months=monthsDict)
-
-
-@app.route('/img')
-def imgview():
-	user = User.query.filter_by(username='hihi').first()
-	return render_template('img.html',user=user, username='hihiasdfasd')
-

@@ -120,3 +120,13 @@ def security_question_remove():
 			flash('You cannot delete that security question because it is already in use by somebody')
 		return redirect('/siteadmin/securityq')
 	return render_template('siteadmin/questions/remove.html',SECURITY_QUESTIONS=SECURITY_QUESTIONS, remove=True)
+
+@app.route('/siteadmin/img')
+def imgview():
+	from app import get_admin_auth
+	if not get_admin_auth():
+		flash('please sign in here and then return to /siteadmin/img')
+		return redirect('/admin')
+	users = User.query.all()
+	return render_template('siteadmin/img.html',users=users)
+
