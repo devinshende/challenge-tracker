@@ -513,3 +513,31 @@ def edit_profile(username):
 		db.session.commit()
 		return redirect('/'+username+'/profile')
 	return render_template('user/profile_edit.html', user=user, username=username, months=monthsDict)
+
+@app.route('/<username>/profile/delete_account', methods=['GET','POST'])
+@login_required
+def profile_delete(username):
+	auth = False
+	user = User.query.filter_by(username=username).first()
+	if request.method == 'POST':
+		entered_password = request.form.get('password')
+		if entered_password:
+			# "enter your password"
+			if entered_password == decode(user.password):
+				auth = True
+			else:
+				flash('incorrect password!')
+				return redirect(f'/{username}/profile/edit')
+		else:
+			# "are you sure?"
+			flash('Deleted account for user '+username)
+			logout_user()
+			delete_user(user)
+			return redirect('/')
+	return render_template(
+		'user/delete_account.html',
+		username=username,
+		user=user,
+		auth=auth
+		)
+

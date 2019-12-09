@@ -18,6 +18,16 @@ label {
 .birthday div {
 	display: inline;
 }
+#delete {
+	color: #BF1D2D;
+	font-size: 1em;
+	text-decoration: none;
+}
+#danger {
+	padding: 10px;
+	background: rgba(0,0,0,.9);
+	border-radius: 10px;
+}
 
 </style>
 <div class="wrapper fadeInDown">
@@ -98,6 +108,10 @@ label {
 					<a href="/{{username}}/profile" style="display:block">cancel</a>   
 				</div>
 			</form>
+	</div>
+	<br>
+	<div id="danger">
+		<strong><a id="delete" href="/{{username}}/profile/delete_account">Delete Account</a></strong>
 	</div>
 </div>
 

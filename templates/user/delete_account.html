@@ -1,0 +1,46 @@
+{% extends "user/user_base.html" %}
+{% block title %} Delete Account {% endblock %}
+{% block top %} Delete Account {% endblock %}
+<!-- don't add block links -->
+{% block imghref %}/{{username}}/profile/edit{% endblock %}
+{% block content %}
+
+<style type="text/css">
+	label {
+		display: block;
+	}
+</style>
+
+{% if not auth %}
+<div class="wrapper fadeInDown">
+	<div id="formContent">
+		<br>
+		<form method="POST">
+			<label for="password">Enter your password</label>
+			<input type="password" name="password" placeholder="password" required>
+			<input type="submit" id="submit-btn" class="fadeIn fourth" value="Log In">
+			<div id="formFooter">
+				<a href="/{{username}}/profile/edit" style="display:block">cancel</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+
+{% if auth %}
+<div class="wrapper fadeInDown">
+	<div id="formContent">
+		<br>
+		<form method="POST">
+			<label for="password">Are you sure?</label>
+			<input type="submit" id="submit-btn" class="fadeIn fourth" value="yes">
+			<div id="formFooter">
+				<a href="/{{username}}/profile/edit" style="display:block">cancel</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+
+
+{% endblock %}

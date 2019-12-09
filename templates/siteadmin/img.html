@@ -21,6 +21,7 @@ img.profpic {
 </style>
 
 <div class="container" id="grid"> 
+	<br>
 	{% for user in users %}
 	<div>
 		<a href="/siteadmin/{{user.username}}"><img class="profpic" src="{{user.get_profile_pic()}}"></a>

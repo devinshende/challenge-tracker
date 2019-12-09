@@ -298,7 +298,18 @@ def limit_input_size(name, max_size, item="name"):
 	return False
 
 def delete_user(user):
+	from app import User, db, DBENV
 	from flask import flash
-	flash(f"Warning: deleting user {user.username}!")
+	from termcolor import cprint
+	import os
 	cprint(f"deleting user {user.username}","red")
-
+	prof_pic_src = user.get_profile_pic()
+	if DBENV == 'prod':
+		if os.path.exists(prof_pic_src) and prof_pic_src != '../../static/blank_profile.jpg':
+			print("\n\n\n\n", "-"*10,
+				f"removing user {user} and profile pic {prof_pic_src}",
+				"-"*10)
+			os.remove(prof_pic_src)
+	user = User.query.get(user.id)
+	db.session.delete(user)
+	db.session.commit()
