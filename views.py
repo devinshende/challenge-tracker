@@ -475,7 +475,8 @@ def edit_profile(username):
 	user = User.query.filter_by(username=username).first()
 	if request.method == 'POST':
 		# file uploading for profile pic
-		if 'photo' in request.files and request.files['photo'].filename != '':
+		photo_obj = request.files['photo']
+		if 'photo' in request.files and photo_obj.filename != '':
 			print('you uploaded a photo!')
 			# if filename == '' then the user didn't actually enter an image
 			filename = f'{user.id}.jpg'
@@ -488,7 +489,7 @@ def edit_profile(username):
 			if verbose:
 				print(f'saving uploaded profile pic as {filename}')
 			if DBENV == 'prod':
-				actual_name = photos.save(request.files['photo'], name=filename)
+				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
 				flash('refresh the page to see the updated profile picture')
 			else:
