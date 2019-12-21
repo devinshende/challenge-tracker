@@ -109,7 +109,14 @@
 			</thead>
 			<tbody>
 				{% for item in data %}
-					<tr>
+						
+						<!-- if user in table is equal to logged in user, then make the background light blue, else just leave it be. -->
+						{% if item[2] == user.first_name + ' ' + user.last_name %} 
+							<tr style="background: lightblue;">
+						{% else %}
+							<tr>
+						{% endif %}
+
 						<!-- place -->
 						<td>{{item[0]}}</td>
 						<!-- profile pic -->
@@ -118,9 +125,9 @@
 						<td>{{item[2]}}</td> 
 						<!-- score -->
 						{% if challenge_type.lower() == 'time' %}
-						<td>{{item[3]}} seconds</td>
+							<td>{{item[3]}} seconds</td>
 						{% else %}
-						<td>{{item[3]}}</td>
+							<td>{{item[3]}}</td>
 						{% endif %}
 
 						<!-- comment -->
