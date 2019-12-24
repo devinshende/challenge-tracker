@@ -1,1 +1,1 @@
-{'email': True, 'verbose': False, 'admin_auth': False}
+{'email': True, 'verbose': False, 'admin_auth': True}

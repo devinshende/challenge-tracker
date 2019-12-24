@@ -210,8 +210,6 @@ if __name__ == '__main__':
 	if args.verbose:
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 		print(' * Verbose:', colored('True','green'))
-	print(figlet_format('challenge tracker',font='bulbhead'))
-	print(figlet_format(' admin',))
-	print(figlet_format(' profile',font='bulbhead'))
-	print(figlet_format(' records',font='block'))
+	# fonts: bulbhead, slant, computer
+	print(figlet_format('challenge tracker'))
 	app.run()

@@ -553,15 +553,8 @@ def profile_delete(username):
 				return redirect(f'/{username}/profile/edit')
 		else:
 			# "are you sure?"
-			flash('Deleted account for user '+username)
-
-#          _     _   _   _     _     _ 
-#  __ _  __| | __| | | |_| |__ (_)___| |
-# / _` |/ _` |/ _` | | __| '_ \| / __| |
-#| (_| | (_| | (_| | | |_| | | | \__ \_|
-# \__,_|\__,_|\__,_|  \__|_| |_|_|___(_)
-                                       
-			# RIGHT HERE!!!!  os.remove(user.get_profile_pic())
+			flash('Deleted account for user '+username)        
+			os.remove('static/profile_pics/'+str(user.id)+'.jpg')
 			logout_user()
 			delete_user(user)
 			return redirect('/')
