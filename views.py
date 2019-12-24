@@ -17,11 +17,17 @@ try:
 except KeyError:
 	verbose = False
 
+#   __ _           _          _          __  __ 
+#  / _| | __ _ ___| | __  ___| |_ _   _ / _|/ _|
+# | |_| |/ _` / __| |/ / / __| __| | | | |_| |_ 
+# |  _| | (_| \__ \   <  \__ \ |_| |_| |  _|  _|
+# |_| |_|\__,_|___/_|\_\ |___/\__|\__,_|_| |_|  
 
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
@@ -35,7 +41,12 @@ def internal_error(error):
 def load_user(user_id):
     return User.query.get(user_id)
 
-# routes in the app
+#                          _   _     
+#  _   _ _ __   __ _ _   _| |_| |__  
+# | | | | '_ \ / _` | | | | __| '_ \ 
+# | |_| | | | | (_| | |_| | |_| | | |
+#  \__,_|_| |_|\__,_|\__,_|\__|_| |_|  
+
 @app.route('/')
 def landing_page():
 	variables = read('vars.txt')
@@ -158,7 +169,6 @@ def signup():
 			return redirect('/'+username+'/')
 	return render_template('unauth/signup.html', months=months)
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == "POST":
@@ -185,7 +195,65 @@ def login():
 			return render_template('unauth/login.html', username=username)
 	return render_template('unauth/login.html')
 
-@app.route('/forgot-password',methods=['GET','POST'])
+@app.route('/leaderboard', methods=['GET','POST'])
+def leaderboard():
+	all_users = User.query.all()
+	if request.method == "POST":
+		selected_challenge = request.form.get('challenge')
+		checked = request.form.get('bracketswitch')
+		selected_challenge_type = get_challenge_type(selected_challenge)
+		data = []
+		for user in all_users:
+			user_challenges = json_to_objects(user.challenges)
+			if selected_challenge in user_challenges.keys():
+				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
+				data.append(
+					[user.get_profile_pic(),
+					get_full_name(user.id),
+					entry.score,
+					entry.comment,
+					user.id]
+				)
+
+		# `data` is a list containing lists that have †he same five things
+		'''
+		[
+			placement (1st 2nd 3rd),
+			full name of user,
+			score of challenge,
+			comment about challenge,
+			user id
+		]
+		'''
+
+		if checked:
+			brackets = get_brackets(data, selected_challenge_type)
+			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				brackets=brackets, bracket_names=BRACKETS)
+		else:
+			sorted_data = sort_data(data, selected_challenge_type)
+			print('no brackets')
+			return render_template('unauth/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				checked=repr(checked))
+	return render_template('unauth/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard")
+
+#  _   _ ___  ___ _ __ 
+# | | | / __|/ _ \ '__|
+# | |_| \__ \  __/ |   
+#  \__,_|___/\___|_|   
+
+@app.route('/<username>/')
+@login_required
+def home(username):
+	user = User.query.filter_by(username=username).first()
+	if user is None:
+		abort(404)
+	name = user.first_name
+	return render_template('user/home.html', username=username, user=user)
+
+@app.route('/forgot-password', methods=['GET','POST'])
 def forgot_password():
 	if request.method == 'POST':
 		username = request.form.get('username')
@@ -243,108 +311,12 @@ def logout(username):
 	logout_user()
 	return redirect('/')
 
-@app.route('/<username>/')
-@login_required
-def home(username):
-	user = User.query.filter_by(username=username).first()
-	if user is None:
-		abort(404)
-	name = user.first_name
-	return render_template('user/home.html', username=username, user=user)
+#		____  ____  ___  _____  ____  ____   ___ 
+#		(  _ \( ___)/ __)(  _  )(  _ \(  _ \ / __)
+#		 )   / )__)( (__  )(_)(  )   / )(_) )\__ \
+#		(_)\_)(____)\___)(_____)(_)\_)(____/ (___/
 
-@app.route('/leaderboard',methods=['GET','POST'])
-def leaderboard():
-	all_users = User.query.all()
-	if request.method == "POST":
-		selected_challenge = request.form.get('challenge')
-		checked = request.form.get('bracketswitch')
-		selected_challenge_type = get_challenge_type(selected_challenge)
-		data = []
-		for user in all_users:
-			user_challenges = json_to_objects(user.challenges)
-			if selected_challenge in user_challenges.keys():
-				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
-				data.append(
-					[user.get_profile_pic(),
-					get_full_name(user.id),
-					entry.score,
-					entry.comment,
-					user.id]
-				)
-
-		# `data` is a list containing lists that have †he same five things
-		'''
-		[
-			placement (1st 2nd 3rd),
-			full name of user,
-			score of challenge,
-			comment about challenge,
-			user id
-		]
-		'''
-
-		if checked:
-			brackets = get_brackets(data, selected_challenge_type)
-			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
-				challenge_type=to_name_case(selected_challenge_type), \
-				brackets=brackets, bracket_names=BRACKETS)
-		else:
-			sorted_data = sort_data(data, selected_challenge_type)
-			print('no brackets')
-			return render_template('unauth/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
-				challenge_type=to_name_case(selected_challenge_type), \
-				checked=repr(checked))
-	return render_template('unauth/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard")
-
-@app.route('/<username>/leaderboard',methods=['GET','POST'])
-@login_required
-def userleaderboard(username):
-	user = User.query.filter_by(username=username).first()
-	all_users = User.query.all()
-	if request.method == "POST":
-		selected_challenge = request.form.get('challenge')
-		checked = request.form.get('bracketswitch')
-		selected_challenge_type = get_challenge_type(selected_challenge)
-		data = []
-		for user in all_users:
-			user_challenges = json_to_objects(user.challenges)
-			if selected_challenge in user_challenges.keys():
-				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
-				data.append(
-					[user.get_profile_pic(),
-					get_full_name(user.id),
-					entry.score,
-					entry.comment,
-					user.id]
-				)
-		# `data` is a list containing lists that have †he same five things
-		'''
-		[
-			placement (1st 2nd 3rd),
-			full name of user,
-			user's profile picture,
-			score of challenge,
-			comment about challenge,
-			user id
-		]
-		'''
-
-		if checked:
-			brackets = get_brackets(data, selected_challenge_type)
-			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
-				challenge_type=to_name_case(selected_challenge_type), \
-				username=username, brackets=brackets, bracket_names=BRACKETS, user=user)
-		else:
-			sorted_data = sort_data(data, selected_challenge_type)
-			print('no brackets')
-			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
-				challenge_type=to_name_case(selected_challenge_type), \
-				username=username,checked=repr(checked), user=user)
-	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict, header="Leaderboard", \
-		username=username, user=user)
-
-
-@app.route('/<username>/records-add',methods=['GET','POST'])
+@app.route('/<username>/records-add', methods=['GET','POST'])
 @login_required
 def records_add(username):
 	user = User.query.filter_by(username=username).first()
@@ -415,8 +387,7 @@ def records_delete(username):
 	ch = json_to_objects(user.challenges)
 	return render_template('user/records/delete.html',challenge_dict=challenge_dict,username=username,user=user, ch=challenges)
 
-
-@app.route('/<username>/suggest-challenge',methods=['GET','POST'])
+@app.route('/<username>/suggest-challenge', methods=['GET','POST'])
 @login_required
 def suggest_challenge(username):
 	user = User.query.filter_by(username=username).first()
@@ -460,7 +431,57 @@ def suggest_challenge(username):
 		return render_template('user/home.html', username=username, user=user)
 	return render_template('user/new_challenge.html',username=username, user=user)
 
-from adminviews import *
+@app.route('/<username>/leaderboard', methods=['GET','POST'])
+@login_required
+def userleaderboard(username):
+	user = User.query.filter_by(username=username).first()
+	all_users = User.query.all()
+	if request.method == "POST":
+		selected_challenge = request.form.get('challenge')
+		checked = request.form.get('bracketswitch')
+		selected_challenge_type = get_challenge_type(selected_challenge)
+		data = []
+		for user in all_users:
+			user_challenges = json_to_objects(user.challenges)
+			if selected_challenge in user_challenges.keys():
+				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
+				data.append(
+					[user.get_profile_pic(),
+					get_full_name(user.id),
+					entry.score,
+					entry.comment,
+					user.id]
+				)
+		# `data` is a list containing lists that have †he same five things
+		'''
+		[
+			placement (1st 2nd 3rd),
+			full name of user,
+			user's profile picture,
+			score of challenge,
+			comment about challenge,
+			user id
+		]
+		'''
+
+		if checked:
+			brackets = get_brackets(data, selected_challenge_type)
+			return render_template('user/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				username=username, brackets=brackets, bracket_names=BRACKETS, user=user)
+		else:
+			sorted_data = sort_data(data, selected_challenge_type)
+			print('no brackets')
+			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
+				challenge_type=to_name_case(selected_challenge_type), \
+				username=username,checked=repr(checked), user=user)
+	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict, header="Leaderboard", \
+		username=username, user=user)
+
+# 		 ____  ____  _____  ____  ____  __    ____ 
+# 		(  _ \(  _ \(  _  )( ___)(_  _)(  )  ( ___)
+# 		 )___/ )   / )(_)(  )__)  _)(_  )(__  )__) 
+# 		(__)  (_)\_)(_____)(__)  (____)(____)(____)
 
 @app.route('/<username>/profile')
 @login_required
@@ -491,6 +512,7 @@ def edit_profile(username):
 			if DBENV == 'prod':
 				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
+				crop_img(filename)
 				flash('refresh the page to see the updated profile picture')
 			else:
 				flash('refusing to upload that image cause this is dev mode')
@@ -532,6 +554,14 @@ def profile_delete(username):
 		else:
 			# "are you sure?"
 			flash('Deleted account for user '+username)
+
+#          _     _   _   _     _     _ 
+#  __ _  __| | __| | | |_| |__ (_)___| |
+# / _` |/ _` |/ _` | | __| '_ \| / __| |
+#| (_| | (_| | (_| | | |_| | | | \__ \_|
+# \__,_|\__,_|\__,_|  \__|_| |_|_|___(_)
+                                       
+			# RIGHT HERE!!!!  os.remove(user.get_profile_pic())
 			logout_user()
 			delete_user(user)
 			return redirect('/')
@@ -541,4 +571,13 @@ def profile_delete(username):
 		user=user,
 		auth=auth
 		)
+
+ #           _           _       
+ #   __ _  __| |_ __ ___ (_)_ __  
+ #  / _` |/ _` | '_ ` _ \| | '_ \ 
+ # | (_| | (_| | | | | | | | | | |
+ #  \__,_|\__,_|_| |_| |_|_|_| |_|
+
+from adminviews import *
+
 

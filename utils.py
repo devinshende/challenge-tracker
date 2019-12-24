@@ -2,6 +2,7 @@ import os, json
 from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry
 import datetime
+from PIL import Image
 
 def json_to_objects(userchallenges):
 	"turns lists of [score, datetime_obj, comment] into Entry objects with all those things"
@@ -245,7 +246,6 @@ def delete_all_of_ch(ch_name):
 	[13.0, "8.24.2019", ""], [4.0, "8.25.2019", ""]],
 	 "Quintuple Steps": [[3, "8.24.2019", ""]],
 	 "Floating Doors to Cliffhanger": [[40.0, "8.25.2019", ""]]}
-
 	"""
 	# from app import User
 	print('helloooo')
@@ -313,3 +313,20 @@ def delete_user(user):
 	user = User.query.get(user.id)
 	db.session.delete(user)
 	db.session.commit()
+
+def crop_img(filename):
+	if type(filename) != str:
+		raise ValueError(f'filename must be a string like "1.jpg". {filename} is not a string')
+	im = Image.open('static/profile_pics/'+filename)
+	w, h = im.size
+	smallest_dim = min(w,h)
+	c_x = w//2 
+	c_y = h//2
+	crop_tuple = (
+		c_x - smallest_dim//2,
+		c_y - smallest_dim//2, 
+		c_x + smallest_dim//2, 
+		c_y + smallest_dim//2
+	)
+	cropped_img = im.crop(crop_tuple).convert('RGB')
+	cropped_img.save('static/profile_pics/'+filename,"JPEG")

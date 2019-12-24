@@ -3,8 +3,8 @@
 {% block top %}Profile Pics {%endblock%}
 {% block imghref %}/admin{%endblock%}
 {% block content %}
-<meta content="width=device-width, initial-scale=1" name="viewport" />
-
+<!-- <meta content="width=device-width, initial-scale=1" name="viewport" />
+ -->
 <style type="text/css">
 #grid {
 	display: grid;
@@ -32,12 +32,13 @@
 .profile {
 	padding: 0;
 	width: 100%;
-	height: 100%;
-	overflow: hidden;
 	border-radius: 15%;
 	border: none;
 	cursor: pointer;
-	float: right;
+	margin: 1px;
+}
+.profile:hover {
+  box-shadow: 0 0 4px 3px rgba(0, 140, 186, 0.5);
 }
 </style>
 

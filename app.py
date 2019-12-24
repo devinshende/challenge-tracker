@@ -8,6 +8,7 @@ from datetime import date
 import ast
 import os
 import argparse
+from pyfiglet import figlet_format
 # my imports
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, PROF_PICS_PATH, ADMIN_PASSWORD
@@ -209,4 +210,8 @@ if __name__ == '__main__':
 	if args.verbose:
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 		print(' * Verbose:', colored('True','green'))
+	print(figlet_format('challenge tracker',font='bulbhead'))
+	print(figlet_format(' admin',))
+	print(figlet_format(' profile',font='bulbhead'))
+	print(figlet_format(' records',font='block'))
 	app.run()
