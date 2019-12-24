@@ -311,7 +311,7 @@ def logout(username):
 	logout_user()
 	return redirect('/')
 
-#		____  ____  ___  _____  ____  ____   ___ 
+#		 ____  ____  ___  _____  ____  ____   ___ 
 #		(  _ \( ___)/ __)(  _  )(  _ \(  _ \ / __)
 #		 )   / )__)( (__  )(_)(  )   / )(_) )\__ \
 #		(_)\_)(____)\___)(_____)(_)\_)(____/ (___/
@@ -513,7 +513,7 @@ def edit_profile(username):
 				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
 				crop_img(filename)
-				flash('refresh the page to see the updated profile picture')
+				flash('You may need to refresh the page to see the updated profile picture')
 			else:
 				flash('refusing to upload that image cause this is dev mode')
 
@@ -565,11 +565,11 @@ def profile_delete(username):
 		auth=auth
 		)
 
- #           _           _       
- #   __ _  __| |_ __ ___ (_)_ __  
- #  / _` |/ _` | '_ ` _ \| | '_ \ 
- # | (_| | (_| | | | | | | | | | |
- #  \__,_|\__,_|_| |_| |_|_|_| |_|
+#            _           _       
+#   __ _  __| |_ __ ___ (_)_ __  
+#  / _` |/ _` | '_ ` _ \| | '_ \  
+# | (_| | (_| | | | | | | | | | |
+#  \__,_|\__,_|_| |_| |_|_|_| |_|
 
 from adminviews import *
 
