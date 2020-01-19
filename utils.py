@@ -3,6 +3,7 @@ from constants import SECURITY_QUESTIONS, challenge_dict
 from challenges import Entry
 import datetime
 from PIL import Image
+from flask import flash
 
 def json_to_objects(userchallenges):
 	"turns lists of [score, datetime_obj, comment] into Entry objects with all those things"
@@ -291,7 +292,6 @@ def add_security_question(question):
 		file.write(json.dumps({"list":SECURITY_QUESTIONS}))
 
 def limit_input_size(name, max_size, item="name"):
-	from flask import flash
 	if name and len(name) > max_size:
 		flash(f'That {item} is too long. Please shorten it to less than {max_size} characters and try again')
 		return "redirect"
@@ -330,3 +330,11 @@ def crop_img(filename):
 	)
 	cropped_img = im.crop(crop_tuple).convert('RGB')
 	cropped_img.save('static/profile_pics/'+filename,"JPEG")
+
+
+def check_negative(user_input):
+	if int(user_input)<0:
+		flash('Input must be a positive number')
+		return "redirect"
+	return False
+

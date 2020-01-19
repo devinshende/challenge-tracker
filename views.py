@@ -75,6 +75,8 @@ def signup():
 			if limit_input_size(name=last_name, max_size=20):
 				return redirect('/signup')
 			age = request.form.get('age')
+			if check_negative(age) != False:
+				return redirect('/signup')
 			yr = request.form.get('year')
 			month = request.form.get('month')
 			day = request.form.get('day')
@@ -325,6 +327,8 @@ def records_add(username):
 		challenge = request.form.get('challenge')
 		challenge_type = get_challenge_type(challenge)
 		score = request.form.get('score')
+		if check_negative(score) != False:
+				return redirect('/'+username+'/records-add')
 		if score == None:
 			raise ValueError("look at line 344 in records_add in views.py - score is None")
 		comment = request.form.get('comment')
