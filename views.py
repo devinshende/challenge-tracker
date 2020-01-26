@@ -126,9 +126,7 @@ def signup():
 			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
 				if verbose:
-					print(user)
-					print('username: ',user.username)
-					print(user.username == username)
+					print(f'{user}\nusername: {user.username} \nshould be true:{user.username==username}')
 				if user.username == username:
 					flash('That username is already taken')
 					return render_template("unauth/signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
@@ -423,13 +421,21 @@ def suggest_challenge(username):
 		if send_emails == True:
 			try:
 				body = f"""{user.first_name} {user.last_name} suggested a new challenge: 
-				{repr(challenge_name)}
-				of the type \"{challenge_type}\"
+	{repr(challenge_name)}
+	of type {repr(challenge_type)}"
+ 
+	click here to accept the challenge: 
+	http://ninjapark-tracker.herokuapp.com/admin
 
-				Thanks, 
-				- Ninja Park Tracker"""
-				send_email_to_somebody('Challenge submission',body,'devin.s.shende@gmail.com')
-				send_email_to_somebody('Challenge submission',body,'ravi.sameer.shende@gmail.com')
+	- Ninja Park Tracker"""
+				send_email_to_somebody(
+					'Challenge submission: '+str(challenge_name),
+					body,
+					'devin.s.shende@gmail.com')
+				send_email_to_somebody(
+					'Challenge submission: '+str(challenge_name),
+					body,
+					'ravi.sameer.shende@gmail.com')
 			except:
 				cprint('Error sending email','red')
 		
@@ -536,7 +542,6 @@ def edit_profile(username):
 		user.last_name 	= last_name
 		user.gender 	= gender
 		user.birthday = birthday
-		# print(user.first_name, user.last_name, user.age, user.gender,sep='\n')
 		db.session.add(user)
 		db.session.commit()
 		return redirect('/'+username+'/profile')

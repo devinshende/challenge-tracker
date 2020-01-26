@@ -80,7 +80,6 @@ def get_full_name(user_id):
 	from app import User
 	user = User.query.get(user_id)
 	assert user is not None, f'there is no user for the user_id {user_id}'
-	print(user)
 	return user.first_name + ' ' + user.last_name
 
 def question_to_id(question):
