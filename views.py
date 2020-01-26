@@ -75,9 +75,6 @@ def signup():
 				return redirect('/signup')
 			if limit_input_size(name=last_name, max_size=20):
 				return redirect('/signup')
-			age = request.form.get('age')
-			if check_negative(age) != False:
-				return redirect('/signup')
 			yr = request.form.get('year')
 			month = request.form.get('month')
 			day = request.form.get('day')
@@ -132,22 +129,19 @@ def signup():
 					return render_template("unauth/signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
 
 			variables = read('vars.txt')
-			v = variables['half_user']
-			print('half user is ',v)
-			print('half user\'s month is ',v['month'])
-			
+			v = variables['half_user']			
 			max_uid = 0
 			for u in users:
 				if max_uid < u.id:
 					max_uid = u.id 
 			id = max_uid + 1
 			
-			print('user id is ',id)
+			if verbose:
+				print('user id is ',id)
 			month = int(monthsDict[v['month']])
-			print(type(month))
 			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
 			age = datetime.today().year - birthday.year
-			print(type(birthday))
+			if verbose: print(type(birthday))
 			user = User(id=id,
 						first_name=v['first_name'],
 			 			last_name=v['last_name'],
@@ -158,7 +152,7 @@ def signup():
 			 			password=encode(password),
 			 			security_question_id=security['question'],
 			 			security_question_ans=security['answer'])
-			print('user: ',user)
+			if verbose: print('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
 
@@ -564,7 +558,9 @@ def profile_delete(username):
 		else:
 			# "are you sure?"
 			flash('Deleted account for user '+username)        
-			os.remove('static/profile_pics/'+str(user.id)+'.jpg')
+			path = 'static/profile_pics/'+str(user.id)+'.jpg'
+			if os.path.exists(path): 
+				os.remove(path)
 			logout_user()
 			delete_user(user)
 			return redirect('/')

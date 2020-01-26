@@ -211,5 +211,6 @@ if __name__ == '__main__':
 		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 		print(' * Verbose:', colored('True','green'))
 	# fonts: bulbhead, slant, computer
+	print(figlet_format('NW Ninja Park',font="slant"))
 	print(figlet_format('challenge tracker'))
 	app.run()

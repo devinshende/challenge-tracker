@@ -40,7 +40,7 @@ def admin_delete():
 		suggestion_to_delete = request.form.get('suggestion') 
 		if verbose: print('deleting the suggestion',suggestion_to_delete)
 		suggestion = Suggestion.query.filter_by(name=suggestion_to_delete).first()
-		print(f'deleting {repr(suggestion)} = {suggestion}')
+		print(f'deleting {repr(suggestion)} from db')
 		db.session.delete(suggestion)
 		db.session.commit()
 		return redirect('/siteadmin/challenges')
