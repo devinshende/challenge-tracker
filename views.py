@@ -1,7 +1,7 @@
 from app import *
 from utils import *
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort, jsonify
 from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
 from constants import *
@@ -568,6 +568,10 @@ def profile_delete(username):
 		user=user,
 		auth=auth
 		)
+
+@app.route('/refresh')
+def refresh():
+	return jsonify({'success':True})
 
 #            _           _       
 #   __ _  __| |_ __ ___ (_)_ __  
