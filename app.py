@@ -1,5 +1,5 @@
-# DBENV = 'dev'
-DBENV = 'prod'
+DBENV = 'dev'
+# DBENV = 'prod'
 
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
@@ -12,7 +12,7 @@ from pyfiglet import figlet_format
 # my imports
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, PROF_PICS_PATH, ADMIN_PASSWORD
-from challenges import Entry
+from challenges import *
 from utils import *
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
@@ -47,6 +47,7 @@ app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
 app.jinja_env.globals.update(len=len)
+app.jinja_env.globals.update(ChallengeTypes=ChallengeTypes)
 from datetime import datetime
 
 app.jinja_env.globals.update(today=datetime.today)
@@ -100,7 +101,6 @@ class User(db.Model, UserMixin):
 				path = os.path.join('../..',PROF_PICS_PATH,filename)
 		if not path:
 			path = '../../static/blank_profile.jpg'
-		print(f'profile pic source is {repr(path)}')
 		return path
 
 	def format_bday(self):

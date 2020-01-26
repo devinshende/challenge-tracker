@@ -43,7 +43,7 @@
 							<!-- name -->
 							<td>{{item[2]}}</td> 
 							<!-- score -->
-							{% if challenge_type.lower() == 'time' %}
+							{% if challenge_type.lower() == ChallengeTypes.time %}
 							<td>{{item[3]}} seconds</td>
 							{% else %}
 							<td>{{item[3]}}</td>

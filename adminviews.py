@@ -16,17 +16,15 @@ def admin_accept():
 		return redirect('/admin')
 
 	if request.method == 'POST':
-		suggestion_to_accept = request.form.get('suggestion')
+		suggestion_to_accept = str(request.form.get('suggestion'))
 		if verbose: print('accepting ',suggestion_to_accept)
-		s = Suggestion.query.filter_by(name=suggestion_to_accept).first()
-		print(f'accepting {repr(s)} = {s}')
-		print({'type':s.type,'name':suggestion_to_accept})
-		t = s.type.lower()
-		if t == 'reps':
-			t = 'reps'
-		add_challenge({'type':t,'name':suggestion_to_accept})
+		suggestion = Suggestion.query.filter_by(name=suggestion_to_accept).first()
+		assert suggestion
+		s_type = suggestion.type.lower()
+		assert s_type in dir(ChallengeTypes), "The suggested type is not a valid type"
+		add_challenge({'type':s_type,'name':suggestion_to_accept})
 		# once it has been added, delete it from suggestions
-		db.session.delete(s)
+		db.session.delete(suggestion)
 		db.session.commit()
 		return redirect('/siteadmin/challenges')
 	return render_template('siteadmin/challenges/accept.html',json=Suggestion.query.all())
@@ -41,16 +39,17 @@ def admin_delete():
 	if request.method == 'POST':
 		suggestion_to_delete = request.form.get('suggestion') 
 		if verbose: print('deleting the suggestion',suggestion_to_delete)
-		s = Suggestion.query.filter_by(name=suggestion_to_delete).first()
-		print(f'deleting {repr(s)} = {s}')
-		db.session.delete(s)
+		suggestion = Suggestion.query.filter_by(name=suggestion_to_delete).first()
+		print(f'deleting {repr(suggestion)} = {suggestion}')
+		db.session.delete(suggestion)
 		db.session.commit()
 		return redirect('/siteadmin/challenges')
 	return render_template('siteadmin/challenges/delete.html',json=Suggestion.query.all())
 
 @app.route('/siteadmin/challenges/delete-ch', methods=['GET','POST'])
 def admin_delete_ch():
-	from constants import challenge_dict
+	from constants import load_challenge_dict
+	challenge_dict = load_challenge_dict()
 	from app import get_admin_auth
 	if not get_admin_auth():
 		flash('please sign in here and then return to siteadmin')

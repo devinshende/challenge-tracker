@@ -1,6 +1,6 @@
 import os, json
-from constants import SECURITY_QUESTIONS, challenge_dict
-from challenges import Entry
+from constants import SECURITY_QUESTIONS, load_challenge_dict
+from challenges import *
 import datetime
 from PIL import Image
 from flask import flash
@@ -104,16 +104,17 @@ def get_best(entry_list,ch_type):
 	for entry in entry_list:
 		if type(entry) != Entry:
 			raise ValueError(f'{entry} is not of type Entry')
-		if ch_type == 'reps' or ch_type == 'laps':
+		if ch_type == ChallengeTypes.reps or ch_type == ChallengeTypes.laps:
 			if entry.score > best_so_far.score:
 				best_so_far = entry
-		elif ch_type == 'time':
+		elif ch_type == ChallengeTypes.time:
 			if entry.score < best_so_far.score:
 				best_so_far = entry
 	return best_so_far
 
 def get_challenge_type(challenge):
 	"returns type of challenge that the string `challenge` is"
+	challenge_dict = load_challenge_dict()
 	for ch_type,lst in challenge_dict.items():
 		if challenge in lst:
 			return ch_type
@@ -163,11 +164,11 @@ def get_brackets(data, selected_challenge_type):
 def sort_data(data, selected_challenge_type):
 	"sorts data and then adds placements"
 	#sorts data based on score
-	if selected_challenge_type in ['reps','laps']:
+	if selected_challenge_type in [ChallengeTypes.reps, ChallengeTypes.laps]:
 		# sort it so highest score is first in `data`
 		# sort it lowest first then reverse list
 		sorted_data = sorted(data, key=lambda x:x[1])[::-1]
-	elif selected_challenge_type  == 'time':
+	elif selected_challenge_type  == ChallengeTypes.time:
 		# sort so lowest score is first in the `data`
 		sorted_data = sorted(data, key=lambda x:x[1])
 	return add_places(sorted_data)
@@ -191,16 +192,13 @@ def add_places(sorted_data):
 		return None
 	prev_score = sorted_data[0][1]
 	prev_place = 1
-	print(sorted_data[0])
 	sorted_data[0].insert(0, prev_place)
 	for item in sorted_data[1:]:
-		print(f'\nprev_place is {prev_place}')
-		print(f'\tprev_score: {prev_score}\n\tcurrent score: {item[1]}')
 		if prev_score == item[1]:
-			print(f'scores match. setting place for {item[0]} to {prev_place}')
+			# print(f'scores match. setting place for {item[0]} to {prev_place}')
 			place = prev_place
 		else:
-			print(f'scores do not match. setting place for {item[0]} to {prev_place+1}')
+			# print(f'scores do not match. setting place for {item[0]} to {prev_place+1}')
 			place = prev_place + 1
 		sorted_data[sorted_data.index(item)].insert(0, place)
 		prev_score = item[2] # 2 for score because new item was inserted
@@ -213,25 +211,22 @@ def add_places(sorted_data):
 def add_challenge(dict):
 	"""
 	params: dict
-	--> should contain 'type' key set to one of the categories of challenges (time, laps, reps)
+	--> should contain 'type' key set to one of the ChallengeTypes (ChallengeTypes.reps)
 	--> and 'name' key with the name of the challenge
-	add_challenge({'type':'laps','name':'devil steps'})
+	add_challenge({'type':ChallengeTypes.laps,'name':'devil steps'})
 	"""
-	from constants import challenge_dict
 	import json
+	challenge_dict = load_challenge_dict()
+
 	if dict['type'].lower() not in challenge_dict.keys():
 		raise ValueError(f"'{dict['type']}' is not a valid challenge type. Pick from {tuple(challenge_dict.keys())}")
-	# to name case
-	n = dict['name'].split(' ')
-	ch_name = []
-	for word in n:
-		if word != '':
-			ch_name.append(to_name_case(word))
-	n = ' '.join(ch_name)	
-	if n in challenge_dict[dict['type']]:
-		print('repeat. oops')
+	
+	name = to_name_case(dict['name'])
+	if name in challenge_dict[dict['type']]:
+		print('challenge to be added has already been added. REPEAT')
 		return "repeat"
-	challenge_dict[dict['type']].append(n)
+	
+	challenge_dict[dict['type']].append(name)
 	with open('database/challenges.json','w') as file:
 		file.write(json.dumps(challenge_dict))
 		return "success"

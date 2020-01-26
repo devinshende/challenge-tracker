@@ -67,6 +67,4 @@ class Password(object):
 
 ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 
-challenge_dict = load_challenge_dict()
 SECURITY_QUESTIONS = load_security_questions()
-

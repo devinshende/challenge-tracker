@@ -59,19 +59,19 @@
 			<option value="" hidden>Select Challenge</option>
 
 			<optgroup label="Time (seconds)">
-		    {% for item in challenge_dict['time'] %}
+		    {% for item in challenge_dict[ChallengeTypes.time] %}
 		    	<option value="{{ item }}" required="required">{{item}}</option>
 		    {% endfor %}
 			</optgroup>
 
 		    <optgroup label="Laps">
-		    {% for item in challenge_dict['laps'] %}
+		    {% for item in challenge_dict[ChallengeTypes.laps] %}
 		    	<option value="{{ item }}" required="required">{{item}}</option>
 		    {% endfor %}
 			</optgroup>
 
 		    <optgroup label="Reps (in one minute)">
-		    {% for item in challenge_dict['reps'] %}
+		    {% for item in challenge_dict[ChallengeTypes.reps] %}
 		    	<option value="{{ item }}" required="required">{{item}}</option>
 		    {% endfor %}
 		    </optgroup>
@@ -115,7 +115,7 @@
 						<!-- name -->
 						<td>{{item[2]}}</td> 
 						<!-- score -->
-						{% if challenge_type.lower() == 'time' %}
+						{% if challenge_type.lower() == ChallengeTypes.time %}
 						<td>{{item[3]}} seconds</td>
 						{% else %}
 						<td>{{item[3]}}</td>

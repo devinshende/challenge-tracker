@@ -11,6 +11,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 import json
+from termcolor import cprint
 
 try:
 	verbose = read('args.txt')['verbose']
@@ -239,7 +240,7 @@ def leaderboard():
 			return render_template('unauth/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				checked=repr(checked))
-	return render_template('unauth/leaderboard_no_brackets.html',challenge_dict=challenge_dict,header="Leaderboard")
+	return render_template('unauth/leaderboard_no_brackets.html',challenge_dict=load_challenge_dict(),header="Leaderboard")
 
 #  _   _ ___  ___ _ __ 
 # | | | / __|/ _ \ '__|
@@ -333,17 +334,17 @@ def records_add(username):
 			raise ValueError("look at line 344 in records_add in views.py - score is None")
 		comment = request.form.get('comment')
 		# bad user input handling
-		if challenge_type == 'time':
+		if challenge_type == ChallengeTypes.time:
 			try:
 				score = float(score)
 			except ValueError:
-				flash('Please enter a number for score')
+				flash('Please enter a number for your time')
 				return redirect('/'+username+'/records-add')
-		if challenge_type in ['reps', 'laps']:
+		if challenge_type in [ChallengeTypes.reps, ChallengeTypes.laps]:
 			try:
 				score = int(score)
 			except ValueError:
-				flash('Please only enter a whole number for ' + challenge_type)
+				flash('Please enter a whole number for ' + challenge_type)
 				return redirect('/'+username+'/records-add')
 		en = Entry([score, datetime_to_string(datetime.today()), comment]).to_json()
 		user_id = get_user_id(username)
@@ -362,14 +363,14 @@ def records_add(username):
 		db.session.add(user)
 		db.session.commit()
 		return redirect('/'+username+'/records-view')
-	return render_template('user/records/add.html',challenge_dict=challenge_dict, user=user, username=username)
+	return render_template('user/records/add.html',challenge_dict=load_challenge_dict(), user=user, username=username)
 
 @app.route('/<username>/records-view')
 @login_required
 def records_view(username):
 	user = User.query.filter_by(username=username).first()
 	ch = json_to_objects(user.challenges)
-	return render_template('user/records/view.html',challenge_dict=challenge_dict,username=username,user=user, ch=ch)
+	return render_template('user/records/view.html',challenge_dict=load_challenge_dict(),username=username,user=user, ch=ch)
 
 @app.route('/<username>/records-delete', methods=['GET','POST'])
 @login_required
@@ -389,7 +390,7 @@ def records_delete(username):
 		db.session.commit()
 		return redirect('/'+user.username+'/records-view')
 	ch = json_to_objects(user.challenges)
-	return render_template('user/records/delete.html',challenge_dict=challenge_dict,username=username,user=user, ch=challenges)
+	return render_template('user/records/delete.html',challenge_dict=load_challenge_dict(),username=username,user=user, ch=challenges)
 
 @app.route('/<username>/suggest-challenge', methods=['GET','POST'])
 @login_required
@@ -397,15 +398,17 @@ def suggest_challenge(username):
 	user = User.query.filter_by(username=username).first()
 	if request.method == "POST":
 		challenge_type = request.form.get('type')
-		if challenge_type == 'Repetitions':
-			challenge_type = 'Reps'
-		challenge_name = request.form.get('challenge')
+		challenge_name = request.form.get('challenge_name')
+
+		# force challenge names to be less than 30 characters
 		if limit_input_size(name=challenge_name, max_size=30):
 			return redirect(f'/{username}/suggest-challenge')
+		
 		already_exists = Suggestion.query.filter_by(name=challenge_name).first()
 		if already_exists:
 			flash(f'That Challenge was already suggested by {User.query.get(already_exists.user_id).first_name}')
 			return render_template('user/new_challenge.html',username=username, user=user)
+		
 		challenge = Suggestion(
 						type=challenge_type,
 						name=challenge_name,
@@ -428,11 +431,9 @@ def suggest_challenge(username):
 				send_email_to_somebody('Challenge submission',body,'devin.s.shende@gmail.com')
 				send_email_to_somebody('Challenge submission',body,'ravi.sameer.shende@gmail.com')
 			except:
-				print('oopsies that didn\'t work to send the email')
-		else:
-			if verbose:
-				print('would be sending emails but that was set to False so not doing that.')
-		return render_template('user/home.html', username=username, user=user)
+				cprint('Error sending email','red')
+		
+		return render_template('user/home.html', username=username, user=user) # redirect home after submitting
 	return render_template('user/new_challenge.html',username=username, user=user)
 
 @app.route('/<username>/leaderboard', methods=['GET','POST'])
@@ -479,7 +480,7 @@ def userleaderboard(username):
 			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				username=username,checked=repr(checked), user=user)
-	return render_template('user/leaderboard_no_brackets.html',challenge_dict=challenge_dict, header="Leaderboard", \
+	return render_template('user/leaderboard_no_brackets.html',challenge_dict=load_challenge_dict(), header="Leaderboard", \
 		username=username, user=user)
 
 # 		 ____  ____  _____  ____  ____  __    ____ 
