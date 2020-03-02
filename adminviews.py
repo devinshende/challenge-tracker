@@ -22,7 +22,7 @@ def admin_accept():
 		assert suggestion
 		s_type = suggestion.type.lower()
 		assert s_type in dir(ChallengeTypes), "The suggested type is not a valid type"
-		add_challenge({'type':s_type,'name':to_name_case(suggestion_to_accept)})
+		add_challenge({'type':s_type,'name':suggestion_to_accept})
 		# once it has been added, delete it from suggestions
 		db.session.delete(suggestion)
 		db.session.commit()
