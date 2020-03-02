@@ -505,8 +505,12 @@ def edit_profile(username):
 		# file uploading for profile pic
 		photo_obj = request.files['photo']
 		if 'photo' in request.files and photo_obj.filename != '':
-			print('you uploaded a photo!')
 			# if filename == '' then the user didn't actually enter an image
+			file_ext = photo_obj.content_type.split('/')[1]
+			print(file_ext)
+			if file_ext not in ['jpg','jpeg','png']:
+				flash(f"'.{file_ext}' is not a supported image format. Please upload a .jpg, .jpeg, or .png file")
+				return redirect(f'/{username}/profile/edit')
 			filename = f'{user.id}.jpg'
 			if filename in os.listdir(PROF_PICS_PATH):
 				# user already has a profile pic. delete the old one then add the new one.
@@ -517,10 +521,12 @@ def edit_profile(username):
 			if verbose:
 				print(f'saving uploaded profile pic as {filename}')
 			if DBENV == 'prod':
+				print(photo_obj)
+				print(repr(photo_obj.content_type))
 				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
 				crop_img(filename)
-				flash('You may need to refresh the page to see the updated profile picture')
+				flash('Upload Successful! to see the new image, hit cmd + shift + r')
 			else:
 				flash('refusing to upload that image cause this is dev mode')
 
