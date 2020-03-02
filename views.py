@@ -320,10 +320,12 @@ def records_add(username):
 		challenge = request.form.get('challenge')
 		challenge_type = get_challenge_type(challenge)
 		score = request.form.get('score')
-		if check_negative(score) != False:
+		if type(score) in [int, float]:
+			if check_negative(score) != False:
 				return redirect('/'+username+'/records-add')
 		if score == None:
-			raise ValueError("look at line 344 in records_add in views.py - score is None")
+			# THIS HAPPENED BECAUSE THERE WAS NO SCORE ENTERED
+			raise ValueError("look at line 328 in records_add in views.py - score is None")
 		comment = request.form.get('comment')
 		# bad user input handling
 		if challenge_type == ChallengeTypes.time:

@@ -213,4 +213,5 @@ if __name__ == '__main__':
 	# fonts: bulbhead, slant, computer
 	print(figlet_format('NW Ninja Park',font="slant"))
 	print(figlet_format('challenge tracker'))
+	print(' * DBENV: ', colored(DBENV, 'cyan'))
 	app.run()
