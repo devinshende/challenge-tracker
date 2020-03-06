@@ -1,9 +1,28 @@
 import os, json
-from constants import SECURITY_QUESTIONS, load_challenge_dict
+from constants import SECURITY_QUESTIONS, load_challenge_dict, TC_COLORS
 from challenges import *
 import datetime
 from PIL import Image
 from flask import flash
+from pyfiglet import figlet_format
+from termcolor import colored
+
+def read(file_name,type='dict'):
+	"returns data from `file_name` in the database"
+	with open(os.path.join('database',file_name), 'r') as file:
+		x = file.read()
+	try:
+		return eval(x) # gets dictionary of string
+	except:
+		if type=='dict':
+			return {}
+		if type=='list':
+			return []
+
+try:
+	verbose = read('args.txt')['verbose']
+except KeyError:
+	verbose = False
 
 def json_to_objects(userchallenges):
 	"turns lists of [score, datetime_obj, comment] into Entry objects with all those things"
@@ -39,18 +58,6 @@ def to_name_case(name):
 	first_letter = name[0]
 	rest_of_name = name[1:]
 	return first_letter.upper() + rest_of_name.lower()
-
-def read(file_name,type='dict'):
-	"returns data from `file_name` in the database"
-	with open(os.path.join('database',file_name), 'r') as file:
-		x = file.read()
-	try:
-		return eval(x) # gets dictionary of string
-	except:
-		if type=='dict':
-			return {}
-		if type=='list':
-			return []
 
 def write(file_name, data):
 	"writes `data` to `file_name` in database"
@@ -331,4 +338,19 @@ def check_negative(user_input):
 		flash('Input must be a positive number')
 		return "redirect"
 	return False
+
+def debug(*messages,color=None,figlet=False):
+	if verbose:
+		message = ''
+		for i in list(messages):
+			message += str(i) + ' '
+		if figlet:
+			message = figlet_format(message,font='bubble')
+		if color and str(color).lower() not in TC_COLORS: 
+			raise ValueError(f'{color} is not a valid color to print. The list of colors you can use are \n{TC_COLORS}')
+		else:
+			message = colored(message,color=color)
+		print('\t',message)
+
+
 

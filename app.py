@@ -206,12 +206,15 @@ if __name__ == '__main__':
 
 	# CHANGE THIS LINE TO STOP GETTING EMAILS
 	args.email = True
+
 	write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
-	if args.verbose:
-		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
-		print(' * Verbose:', colored('True','green'))
 	# fonts: bulbhead, slant, computer
+	# http://www.figlet.org/examples.html
 	print(figlet_format('NW Ninja Park',font="slant"))
 	print(figlet_format('challenge tracker'))
 	print(' * DBENV: ', colored(DBENV, 'cyan'))
+	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+	print(' * Verbose:', colored('True','green'))
 	app.run()
+
+	

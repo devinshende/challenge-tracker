@@ -68,3 +68,15 @@ class Password(object):
 ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 
 SECURITY_QUESTIONS = load_security_questions()
+
+TC_COLORS = [
+	"grey",
+	"red",
+	"green",
+	"yellow",
+	"blue",
+	"magenta",
+	"cyan",
+	"white"
+]
+

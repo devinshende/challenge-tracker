@@ -1,4 +1,5 @@
 from views import *
+from utils import debug
 
 @app.route('/siteadmin/challenges')
 def challenge_suggestions():
@@ -17,7 +18,7 @@ def admin_accept():
 
 	if request.method == 'POST':
 		suggestion_to_accept = str(request.form.get('suggestion'))
-		if verbose: print('accepting ',suggestion_to_accept)
+		debug('accepting ',suggestion_to_accept)
 		suggestion = Suggestion.query.filter_by(name=suggestion_to_accept).first()
 		assert suggestion
 		s_type = suggestion.type.lower()
@@ -38,9 +39,9 @@ def admin_delete():
 
 	if request.method == 'POST':
 		suggestion_to_delete = request.form.get('suggestion') 
-		if verbose: print('deleting the suggestion',suggestion_to_delete)
+		debug('deleting the suggestion',suggestion_to_delete)
 		suggestion = Suggestion.query.filter_by(name=suggestion_to_delete).first()
-		print(f'deleting {repr(suggestion)} from db')
+		debug(f'deleting {repr(suggestion)} from db')
 		db.session.delete(suggestion)
 		db.session.commit()
 		return redirect('/siteadmin/challenges')
@@ -57,18 +58,18 @@ def admin_delete_ch():
 
 	if request.method == 'POST':
 		ch_to_delete = request.form.get('challenge') 
-		if verbose: print('deleting the challenge',ch_to_delete)
-		print('old challenge_dict\n\n',challenge_dict)
+		debug('deleting the challenge',ch_to_delete)
+		debug('old challenge_dict\n\n',challenge_dict)
 		for lst in challenge_dict.values():
 			for item in lst:
-				print(item)
+				debug(item)
 				if item == ch_to_delete:
-					print('yay')
+					debug('yay')
 					lst.remove(item)
 		with open('database/challenges.json','w') as file:
 			file.write(json.dumps(challenge_dict))
-		print('new challenge_dict:\n\n')
-		print(challenge_dict)
+		debug('new challenge_dict:\n\n')
+		debug(challenge_dict)
 		delete_all_of_ch(ch_to_delete)
 		return redirect('/siteadmin/challenges')
 	return render_template('siteadmin/challenges/delete-ch.html',

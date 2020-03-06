@@ -11,7 +11,6 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 import json
-from termcolor import cprint
 
 try:
 	verbose = read('args.txt')['verbose']
@@ -67,8 +66,6 @@ def signup():
 		first_name = request.form.get('first_name')
 		if first_name:
 			# signup1
-			if verbose:
-				print('in signup 1')
 			first_name = request.form.get('first_name')
 			last_name = request.form.get('last_name')
 			if limit_input_size(name=first_name, max_size=20):
@@ -94,7 +91,7 @@ def signup():
 				and user.last_name == to_name_case(last_name):
 					flash('You have already registered for an account')
 					return render_template("unauth/signup.html", months=months)
-			print(month,day,yr)
+			debug('date: ',month,day,yr)
 			if month == 'month' or day == 'day' or yr == 'year':
 				flash('Please fill out birthday')
 				return render_template("unauth/signup.html", first_name=first_name, last_name=last_name, gender=gender, months=months, month=month, day=day, year=yr)
@@ -102,9 +99,7 @@ def signup():
 			write('vars.txt',variables)
 			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
 		else:
-			# signup2
-			if verbose:
-				print('in signup2')
+			debug('signup part 2')
 			# switching over to signup2 template
 			username = request.form.get('username')
 			password = request.form.get('password')
@@ -116,14 +111,13 @@ def signup():
 			security_question = request.form.get('security_question')
 			answer = request.form.get('answer')
 			if limit_input_size(name=answer, max_size=50, item="answer"):
-				print(f'username is {username}')
+				debug(f'username is {username}')
 				return render_template('unauth/signup2.html', username=username, password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question)
 
 			security = {'question':security_question,'answer':encode(answer)}
 			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
-				if verbose:
-					print(f'{user}\nusername: {user.username} \nshould be true:{user.username==username}')
+				debug(f'{user}\nusername: {user.username} \nshould be true:{user.username==username}')
 				if user.username == username:
 					flash('That username is already taken')
 					return render_template("unauth/signup2.html", password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question, answer=answer)
@@ -136,12 +130,12 @@ def signup():
 					max_uid = u.id 
 			id = max_uid + 1
 			
-			if verbose:
-				print('user id is ',id)
+			
+			debug('user id is ',id)
 			month = int(monthsDict[v['month']])
 			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
 			age = datetime.today().year - birthday.year
-			if verbose: print(type(birthday))
+			debug(type(birthday))
 			user = User(id=id,
 						first_name=v['first_name'],
 			 			last_name=v['last_name'],
@@ -152,7 +146,7 @@ def signup():
 			 			password=encode(password),
 			 			security_question_id=security['question'],
 			 			security_question_ans=security['answer'])
-			if verbose: print('user: ',user)
+			debug('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
 
@@ -183,7 +177,7 @@ def login():
 			variables = read('vars.txt')
 			# variables['logged_in'] = True
 			write('vars.txt',variables)
-			if verbose: print('you are logged in')
+			debug('you are logged in')
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
 			flash('Incorrect Password')
@@ -228,7 +222,7 @@ def leaderboard():
 				brackets=brackets, bracket_names=BRACKETS)
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
-			print('no brackets')
+			debug('no brackets')
 			return render_template('unauth/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				checked=repr(checked))
@@ -273,13 +267,13 @@ def forgot_password():
 			entered_answer = request.form.get('answer')
 			actual_answer = decode(user.security_question_ans)
 			if entered_answer.lower() == actual_answer.lower(): # case insensitive
-				if verbose: print('answers match!')
+				debug('answers match!')
 				return render_template('unauth/forgot_password.html',success=True)
 			else:
 				question = user.security_question_id
-				if verbose: 
-					print('answers do not match')
-					print('question is ',question)
+				 
+				debug('answers do not match')
+				debug('question is ',question)
 				flash('Incorrect Answer')
 				return render_template('unauth/forgot_password.html', username=username, security_question=question)
 		if password:
@@ -288,7 +282,7 @@ def forgot_password():
 			# password step
 			variables = read('vars.txt')
 			username = variables['forgot_username']
-			if verbose: print('new password is ',password)
+			debug('new password is ',password)
 			user = User.query.filter_by(username=username).first()
 			user.password = encode(password)
 			db.session.add(user)
@@ -297,7 +291,7 @@ def forgot_password():
 			write('vars.txt',variables)
 			return redirect('/'+username+'/')
 		else:
-			print('something went wrong')
+			debug('something went wrong')
 	return render_template('unauth/forgot_password.html')
 
 @app.route('/<username>/logout')
@@ -345,8 +339,7 @@ def records_add(username):
 		challenges = user.challenges
 		try:
 			# there is already an entry for the challenge. append the entry to the list
-			if verbose:
-				print('adding challenge to dict for database. Challenge is: '+ challenge) 
+			debug(f'adding entry for "{challenge}" to personal records...') 
 			challenges[challenge].append(en)
 		except KeyError:
 			# there is no entry for that challenge yet. Create a list for it and add the entry
@@ -356,6 +349,7 @@ def records_add(username):
 		user.challenges = challenges
 		db.session.add(user)
 		db.session.commit()
+		debug('record added')
 		return redirect('/'+username+'/records-view')
 	return render_template('user/records/add.html',challenge_dict=load_challenge_dict(), user=user, username=username)
 
@@ -375,13 +369,13 @@ def records_delete(username):
 		challenge_type = request.form.get("challenge")
 		try:
 			del challenges[challenge_type]
-			if verbose: print(f'after deleting {challenge_type}, challenges is now {challenges}')
 		except KeyError:
 			flash("unable to delete data for the challenge:"+challenge_type)
 		reset_user_challenges(user.username)
 		user.challenges = challenges
 		db.session.add(user)
 		db.session.commit()
+		debug(f'Deleted challenge "{challenge_type}"',color='yellow')
 		return redirect('/'+user.username+'/records-view')
 	ch = json_to_objects(user.challenges)
 	return render_template('user/records/delete.html',challenge_dict=load_challenge_dict(),username=username,user=user, ch=challenges)
@@ -430,10 +424,10 @@ def suggest_challenge(username):
 					'devin.s.shende@gmail.com')
 				send_email_to_somebody(
 					'Challenge submission: '+str(challenge_name),
-					body,
+					int,
 					'ravi.sameer.shende@gmail.com')
 			except:
-				cprint('Error sending email','red')
+				debug('Error sending email',color='red',figlet=True)
 		
 		return render_template('user/home.html', username=username, user=user) # redirect home after submitting
 	return render_template('user/new_challenge.html',username=username, user=user)
@@ -478,7 +472,6 @@ def userleaderboard(username):
 				username=username, brackets=brackets, bracket_names=BRACKETS, user=user)
 		else:
 			sorted_data = sort_data(data, selected_challenge_type)
-			print('no brackets')
 			return render_template('user/leaderboard_no_brackets.html', data=sorted_data, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				username=username,checked=repr(checked), user=user)
@@ -507,7 +500,6 @@ def edit_profile(username):
 		if 'photo' in request.files and photo_obj.filename != '':
 			# if filename == '' then the user didn't actually enter an image
 			file_ext = photo_obj.content_type.split('/')[1]
-			print(file_ext)
 			if file_ext not in ['jpg','jpeg','png']:
 				flash(f"'.{file_ext}' is not a supported image format. Please upload a .jpg, .jpeg, or .png file")
 				return redirect(f'/{username}/profile/edit')
@@ -515,20 +507,20 @@ def edit_profile(username):
 			if filename in os.listdir(PROF_PICS_PATH):
 				# user already has a profile pic. delete the old one then add the new one.
 				path = os.path.join(PROF_PICS_PATH, filename)
-				if verbose:
-					print(f'{user} has already entered a profile pic \nOverwriting it by removing {filename} from {PROF_PICS_PATH}')
+				
+				debug(f'{user} has already entered a profile pic. Overwriting old file by removing {filename} from {PROF_PICS_PATH}')
 				os.remove(path)
-			if verbose:
-				print(f'saving uploaded profile pic as {filename}')
+			
+				debug(f'saving uploaded profile pic as {filename}')
 			if DBENV == 'prod':
-				print(photo_obj)
-				print(repr(photo_obj.content_type))
+				debug('photo extension:',repr(photo_obj.content_type))
 				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
 				crop_img(filename)
 				flash('Upload Successful! to see the new image, hit cmd + shift + r')
 			else:
 				flash('refusing to upload that image cause this is dev mode')
+				debug('refusing to upload that image cause this is dev mode', color='red', figlet=True)
 
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
@@ -578,10 +570,6 @@ def profile_delete(username):
 		user=user,
 		auth=auth
 		)
-
-@app.route('/refresh')
-def refresh():
-	return jsonify({'success':True})
 
 #            _           _       
 #   __ _  __| |_ __ ___ (_)_ __  
