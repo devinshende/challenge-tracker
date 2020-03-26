@@ -498,6 +498,7 @@ def edit_profile(username):
 		# file uploading for profile pic
 		photo_obj = request.files['photo']
 		if 'photo' in request.files and photo_obj.filename != '':
+			debug('they uploaded an image!')
 			# if filename == '' then the user didn't actually enter an image
 			file_ext = photo_obj.content_type.split('/')[1]
 			if file_ext not in ['jpg','jpeg','png']:
@@ -514,6 +515,7 @@ def edit_profile(username):
 				debug(f'saving uploaded profile pic as {filename}')
 			if DBENV == 'prod':
 				debug('photo extension:',repr(photo_obj.content_type))
+				debug(f'saving profile pic as {filename}')
 				actual_name = photos.save(photo_obj, name=filename)
 				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
 				crop_img(filename)
@@ -521,7 +523,8 @@ def edit_profile(username):
 			else:
 				flash('refusing to upload that image cause this is dev mode')
 				debug('refusing to upload that image cause this is dev mode', color='red', figlet=True)
-
+		else:
+			debug('photo didn\'t change')
 		first_name 	= request.form.get( 'first_name' )
 		last_name 	= request.form.get( 'last_name'  )
 		gender 		= request.form.get( 'gender'     )

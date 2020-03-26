@@ -200,21 +200,21 @@ if __name__ == '__main__':
 	# if user types --email at the end of python3 app.py, then it will be set to true
 	# if user doesn't say --email, it will be set to false
 	parser.add_argument('-e','--email',action='store_true')
-	parser.add_argument('-v','--verbose',action='store_true')
+	# parser.add_argument('-v','--verbose',action='store_true')
 	COMMENT = ''
 	args = parser.parse_args()
 
 	# CHANGE THIS LINE TO STOP GETTING EMAILS
 	args.email = True
 
-	write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
+	write('args.txt',{'email':args.email,'verbose':True,'admin_auth':False})
 	# fonts: bulbhead, slant, computer
 	# http://www.figlet.org/examples.html
 	print(figlet_format('NW Ninja Park',font="slant"))
 	print(figlet_format('challenge tracker'))
 	print(' * DBENV: ', colored(DBENV, 'cyan'))
 	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
-	print(' * Verbose:', colored('True','green'))
+	# print(' * Verbose:', colored(str(args.verbose),'green' if args.email else 'red'))
 	app.run()
 
 	
