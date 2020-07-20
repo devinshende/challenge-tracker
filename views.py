@@ -496,44 +496,42 @@ def edit_profile(username):
 	user = User.query.filter_by(username=username).first()
 	if request.method == 'POST':
 		# file uploading for profile pic
-		photo_obj = request.files['photo']
-		if 'photo' in request.files and photo_obj.filename != '':
-			debug('they uploaded an image!')
-			# if filename == '' then the user didn't actually enter an image
-			file_ext = photo_obj.content_type.split('/')[1]
-			if file_ext not in ['jpg','jpeg','png']:
-				flash(f"'.{file_ext}' is not a supported image format. Please upload a .jpg, .jpeg, or .png file")
-				return redirect(f'/{username}/profile/edit')
-			filename = f'{user.id}.jpg'
-			if filename in os.listdir(PROF_PICS_PATH):
-				# user already has a profile pic. delete the old one then add the new one.
-				path = os.path.join(PROF_PICS_PATH, filename)
+		# photo_obj = request.files['photo']
+		# if 'photo' in request.files and photo_obj.filename != '':
+		# 	debug('they uploaded an image!')
+		# 	# if filename == '' then the user didn't actually enter an image
+		# 	file_ext = photo_obj.content_type.split('/')[1]
+		# 	if file_ext not in ['jpg','jpeg','png']:
+		# 		flash(f"'.{file_ext}' is not a supported image format. Please upload a .jpg, .jpeg, or .png file")
+		# 		return redirect(f'/{username}/profile/edit')
+		# 	filename = f'{user.id}.jpg'
+		# 	if filename in os.listdir(PROF_PICS_PATH):
+		# 		# user already has a profile pic. delete the old one then add the new one.
+		# 		path = os.path.join(PROF_PICS_PATH, filename)
 				
-				debug(f'{user} has already entered a profile pic. Overwriting old file by removing {filename} from {PROF_PICS_PATH}')
-				os.remove(path)
+		# 		debug(f'{user} has already entered a profile pic. Overwriting old file by removing {filename} from {PROF_PICS_PATH}')
+		# 		os.remove(path)
 			
-				debug(f'saving uploaded profile pic as {filename}')
-			if DBENV == 'prod':
-				debug('photo extension:',repr(photo_obj.content_type))
-				debug(f'saving profile pic as {filename}')
-				actual_name = photos.save(photo_obj, name=filename)
-				assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
-				crop_img(filename)
-				flash('Upload Successful! to see the new image, hit cmd + shift + r')
-			else:
-				flash('refusing to upload that image cause this is dev mode')
-				debug('refusing to upload that image cause this is dev mode', color='red', figlet=True)
-		else:
-			debug('photo didn\'t change')
-		first_name 	= request.form.get( 'first_name' )
-		last_name 	= request.form.get( 'last_name'  )
-		gender 		= request.form.get( 'gender'     )
-		bday 		= request.form.get( 'day'       )
-		bmonth 		= request.form.get( 'month'     )
-		byear 		= request.form.get( 'year'     )
+		# 		debug(f'saving uploaded profile pic as {filename}')
+		# 	if DBENV == 'prod':
+		# 		debug('photo extension:',repr(photo_obj.content_type))
+		# 		debug(f'saving profile pic as {filename}')
+		# 		actual_name = photos.save(photo_obj, name=filename)
+		# 		assert filename == actual_name, f'filenames did not match: {filename} and {actual_name}'
+		# 		crop_img(filename)
+		# 		flash('Upload Successful! to see the new image, hit cmd + shift + r')
+		# 	else:
+		# 		flash('refusing to upload that image cause this is dev mode')
+		# 		debug('refusing to upload that image cause this is dev mode', color='red', figlet=True)
+		debug('no photo uploaded')
+		first_name 	 = request.form.get( 'first_name' )
+		last_name 	 = request.form.get( 'last_name'  )
+		gender 		 = request.form.get( 'gender'     )
+		birthday_str = request.form.get( 'birthday'   )
 		if not gender:
 			gender = user.gender
-		birthday = datetime(year=int(byear), month=int(bmonth), day=int(bday))
+		birthday = datetime. strptime(birthday_str, '%Y-%m-%d')
+		debug(f'birthday is {birthday}')
 		age = datetime.today().year - birthday.year
 		user.first_name = first_name
 		user.last_name 	= last_name

@@ -23,7 +23,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
 from flask_admin.base import AdminIndexView, expose
 # from flask_heroku import Heroku
-from flask_uploads import UploadSet, configure_uploads, IMAGES
+# from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
@@ -73,9 +73,9 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
-photos = UploadSet('photos',IMAGES)
+# photos = UploadSet('photos',IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
-configure_uploads(app,photos)
+# configure_uploads(app,photos)
 
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
