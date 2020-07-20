@@ -1,6 +1,13 @@
 # DBENV = 'dev'
 DBENV = 'prod'
 
+
+# UNFINISHED BUSINESS FOR PERSONAL RECORDS
+'''
+styling of table and layout
+handle bad input from users for the score field in form
+'''
+
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
 from termcolor import colored
@@ -22,14 +29,9 @@ from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
 from flask_admin.base import AdminIndexView, expose
-# from flask_heroku import Heroku
-# from flask_uploads import UploadSet, configure_uploads, IMAGES
+from flask_script import Manager
+from flask_migrate import MigrateCommand, Migrate
 
-# UNFINISHED BUSINESS FOR PERSONAL RECORDS
-'''
-styling of table and layout
-handle bad input from users for the score field in form
-'''
 def get_admin_auth():
 	return read('args.txt')['admin_auth']
 def write_admin_auth(TF):
@@ -75,17 +77,19 @@ login_manager.init_app(app)
 
 # photos = UploadSet('photos',IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
+app.config['FLASK_APP_FILE'] = 'app.py'
 # configure_uploads(app,photos)
 
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
-	first_name 	= db.Column(db.String(20), nullable=False)
-	last_name 	= db.Column(db.String(20), nullable=False)
+	first_name 	= db.Column(db.String(40), nullable=False)
+	last_name 	= db.Column(db.String(40), nullable=False)
 	age 		= db.Column(db.Integer, nullable=False)
 	birthday	= db.Column(db.DateTime, nullable=False)
-	gender 		= db.Column(db.String(6), nullable=False)
+	gender 		= db.Column(db.String(15), nullable=False)
 	username 	= db.Column(db.String(20), unique=True, nullable=False)
 	password 	= db.Column(db.String(40), nullable=False)
+	profile 	= db.Column(db.String(20), default='1')
 	security_question_id = db.Column(db.String(100), nullable=False)
 	security_question_ans = db.Column(db.String(50), nullable=False)
 	challenges 	= db.Column(db.PickleType, default={})
@@ -130,6 +134,11 @@ MY_DEFAULT_FORMATTERS.update({
 		type(None): typefmt.null_formatter,
 		date: date_format
 	})
+
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
+
 
 class UserView(ModelView):
 	column_display_pk = True # controls whether id is (not) hidden
@@ -196,25 +205,28 @@ admin.add_view(UserView(User, db.session))
 # this import must be after initialization of Flask(__name__)
 from views import *
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
+	# parser = argparse.ArgumentParser()
+
 	# if user types --email at the end of python3 app.py, then it will be set to true
 	# if user doesn't say --email, it will be set to false
-	parser.add_argument('-e','--email',action='store_true')
+	
+	# parser.add_argument('-e','--email',action='store_true')
 	# parser.add_argument('-v','--verbose',action='store_true')
 	COMMENT = ''
-	args = parser.parse_args()
+	# args = parser.parse_args()
 
 	# CHANGE THIS LINE TO STOP GETTING EMAILS
-	args.email = True
+	# args.email = True
 
-	write('args.txt',{'email':args.email,'verbose':True,'admin_auth':False})
+	# write('args.txt',{'email':args.email,'verbose':True,'admin_auth':False})
 	# fonts: bulbhead, slant, computer
 	# http://www.figlet.org/examples.html
 	print(figlet_format('NW Ninja Park',font="slant"))
 	print(figlet_format('challenge tracker'))
 	print(' * DBENV: ', colored(DBENV, 'cyan'))
-	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+	# print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 	# print(' * Verbose:', colored(str(args.verbose),'green' if args.email else 'red'))
-	app.run()
+	manager.run()
+	# app.run()
 
 	
