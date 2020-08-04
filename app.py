@@ -1,7 +1,6 @@
 DBENV = 'dev'
 # DBENV = 'prod'
 
-
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
 '''
 styling of table and layout
@@ -82,6 +81,11 @@ login_manager.init_app(app)
 # app.config['FLASK_APP_FILE'] = 'app.py'
 # configure_uploads(app,photos)
 
+# FLASK MIGRATE - for dealing with Database changes better
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db',MigrateCommand)
+ 
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
 	first_name 	= db.Column(db.String(40), nullable=False)
@@ -210,15 +214,19 @@ admin.add_view(UserView(User, db.session))
 # this import must be after initialization of Flask(__name__)
 from views import *
 if __name__ == '__main__':
-	# parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser()
 
 	# if user types --email at the end of python3 app.py, then it will be set to true
 	# if user doesn't say --email, it will be set to false
 	
 	# parser.add_argument('-e','--email',action='store_true')
 	# parser.add_argument('-v','--verbose',action='store_true')
-	COMMENT = ''
+	# COMMENT = ''
 	# args = parser.parse_args()
+	# write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
+	# if args.verbose:
+	# 	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+	# 	print(' * Verbose:', colored('True','green'))
 
 	# CHANGE THIS LINE TO STOP GETTING EMAILS
 	# args.email = True
@@ -232,6 +240,6 @@ if __name__ == '__main__':
 	# print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 	# print(' * Verbose:', colored(str(args.verbose),'green' if args.email else 'red'))
 	manager.run() # for flask-migrate
-	app.run()
+	# app.run()
 
 	
