@@ -1,5 +1,5 @@
-# DBENV = 'dev'
-DBENV = 'prod'
+DBENV = 'dev'
+# DBENV = 'prod'
 
 
 # UNFINISHED BUSINESS FOR PERSONAL RECORDS
@@ -32,6 +32,7 @@ from flask_admin.base import AdminIndexView, expose
 from flask_script import Manager
 from flask_migrate import MigrateCommand, Migrate
 
+
 def get_admin_auth():
 	return read('args.txt')['admin_auth']
 def write_admin_auth(TF):
@@ -54,14 +55,12 @@ from datetime import datetime
 
 app.jinja_env.globals.update(today=datetime.today)
 
-# UPLOAD_FOLDER = '/database/profile_pics'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 if DBENV == 'dev':
 	# development mode
 	app.debug = True
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 	app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+
 else:
 	# production mode
 	app.debug = False
@@ -75,9 +74,12 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
+
+# UPLOAD_FOLDER = '/database/'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # photos = UploadSet('photos',IMAGES)
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
-app.config['FLASK_APP_FILE'] = 'app.py'
+# app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
+# app.config['FLASK_APP_FILE'] = 'app.py'
 # configure_uploads(app,photos)
 
 class User(db.Model, UserMixin):
@@ -117,6 +119,9 @@ class User(db.Model, UserMixin):
 
 
 app.jinja_env.globals.update(User=User)
+app.jinja_env.cache = {}
+# hopefully this will bring better loading speeds 
+# https://blog.socratic.org/the-one-weird-trick-that-cut-our-flask-page-load-time-by-70-87145335f679
 
 class Suggestion(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -226,7 +231,7 @@ if __name__ == '__main__':
 	print(' * DBENV: ', colored(DBENV, 'cyan'))
 	# print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 	# print(' * Verbose:', colored(str(args.verbose),'green' if args.email else 'red'))
-	manager.run()
-	# app.run()
+	manager.run() # for flask-migrate
+	app.run()
 
 	

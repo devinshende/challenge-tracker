@@ -47,10 +47,10 @@ def load_security_questions():
 	return SECURITY_QUESTIONS
 
 BRACKETS = [
-	'12 and under male',
-	'12 and under female',
-	'teen/adult male',
-	'teen/adult female'
+	'12 and under boys',
+	'12 and under girls',
+	'teen/adult boys',
+	'teen/adult girls'
 ]
 
 monthsDict = {

@@ -31,14 +31,6 @@ label {
 	<div id="formContent">
 		<br>
 			<form method="POST" enctype="multipart/form-data">
-				<label for="photo" style="margin-bottom: 4px;">Profile Picture:</label>
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
-				<img src="/static/blank_profile.jpg" width="40px"> 
 				<label for="first_name">First Name: </label>
 				<input name="first_name" type="text" value="{{user.first_name}}">
 				<label for="last_name">Last Name: </label>
@@ -60,9 +52,9 @@ label {
 				<br>
 			<!-- BIRTHDAY selector -->
 				Birthday: <br><br>
-				<input id="chosen-date" type="date" name="birthday" min='1970-01-01' max='2020-01-01'>
-				<br>
-					<input type="submit" value="save">
+				<input id="chosen-date" type="date" name="birthday" min='1970-01-01' max='2020-01-01' placeholder='2008-04-19'>
+				<br><br>
+				<input type="submit" value="save">
 				<div id="formFooter">
 					<a href="/{{username}}/profile" style="display:block">cancel</a>   
 				</div>

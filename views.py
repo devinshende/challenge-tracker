@@ -25,21 +25,21 @@ except KeyError:
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+	return send_from_directory(os.path.join(app.root_path, 'static'),
+							   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('404.html'), 404
+	# note that we set the 404 status explicitly
+	return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    return "500 error"+str(error)
+	return "500 error"+str(error)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+	return User.query.get(user_id)
 
 #                          _   _     
 #  _   _ _ __   __ _ _   _| |_| |__  
@@ -134,18 +134,19 @@ def signup():
 			debug('user id is ',id)
 			month = int(monthsDict[v['month']])
 			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
+			debug('birthday is ',birthday)
+			debug()
 			age = datetime.today().year - birthday.year
-			debug(type(birthday))
 			user = User(id=id,
 						first_name=v['first_name'],
-			 			last_name=v['last_name'],
-			 			age=age,
-			 			birthday=birthday, #(db.Datetime) 
-			 			gender=v['gender'],
-			 			username=username,
-			 			password=encode(password),
-			 			security_question_id=security['question'],
-			 			security_question_ans=security['answer'])
+						last_name=v['last_name'],
+						age=age,
+						birthday=birthday, #(db.Datetime) 
+						gender=v['gender'],
+						username=username,
+						password=encode(password),
+						security_question_id=security['question'],
+						security_question_ans=security['answer'])
 			debug('user: ',user)
 			variables['half_user'] = None
 			write('vars.txt', variables)
@@ -170,13 +171,7 @@ def login():
 		password = decode(user.password)
 		first_name = user.first_name
 		if entered_password == password:
-			# successful login
-			# vars.txt is used to ensure the user did properly authenticate/sign up instead of using a url hack
-			# remove this and use flask-login instead
 			login_user(user)
-			variables = read('vars.txt')
-			# variables['logged_in'] = True
-			write('vars.txt',variables)
 			debug('you are logged in')
 			return redirect('/'+ username)
 		if entered_password != password and entered_password:
@@ -214,7 +209,6 @@ def leaderboard():
 			user id
 		]
 		'''
-
 		if checked:
 			brackets = get_brackets(data, selected_challenge_type)
 			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
@@ -500,12 +494,16 @@ def edit_profile(username):
 		gender 		 = request.form.get( 'gender'     )
 		birthday_str = request.form.get( 'birthday'   )
 		if birthday_str:
-			birthday = datetime. strptime(birthday_str, '%Y-%m-%d')
+			try:
+				birthday = datetime.strptime(birthday_str, '%Y-%m-%d')
+			except ValueError:
+				flash('Please reenter your birthday in the format \'yyyy-mm-dd\'')
+				return redirect('/'+username+'/profile')
 			age = datetime.today().year - birthday.year
 			user.birthday = birthday
 			debug(f'birthday is {birthday}')
 		if not gender:
-			gender = user.gender
+			gender 
 		user.first_name = first_name
 		user.last_name 	= last_name
 		user.gender 	= gender
