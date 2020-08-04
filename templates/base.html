@@ -3,11 +3,12 @@
 <head>
 	<title>{% block title %} {% endblock %}</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<!--  General styling -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
-
+<!-- Widescreen specific styling -->
 	<link rel="stylesheet" media="(max-width: 600px)" href="{{ url_for('static', filename='css/mobile.css') }}">
-
+<!-- Mobile spevific styling -->
 	<link rel="stylesheet" media="(min-width: 601px)" href="{{ url_for('static', filename='css/widescreen.css') }}">
 	
 </head>
@@ -23,10 +24,12 @@
 	        {% for message in messages %}
 	        <div id="error"><strong>{{message}}</strong></div>
 	        {% endfor %}
-	        <br id="above_img">
+	        <br>
 	      {% endif %}
 	    {% endwith %}
-	<a href="{% block imghref %}{% endblock %}" width=100%><img class='logo' src="../../static/ninjapark-logo.jpg"></a>
+		<a href="{% block imghref %}{% endblock %}" width=100%>
+			<img class='logo' src="../../static/ninjapark-logo.png">
+		</a>
 	<br>
     {% block content %}{% endblock %}
   </body>

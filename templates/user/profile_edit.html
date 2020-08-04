@@ -15,8 +15,15 @@ label {
 .bdaypart {
 	margin-left: 10px;
 }
-.birthday div {
-	display: inline;
+#delete {
+	color: #BF1D2D;
+	font-size: 1em;
+	text-decoration: none;
+}
+#danger {
+	padding: 10px;
+	background: rgba(0,0,0,.9);
+	border-radius: 10px;
 }
 
 </style>
@@ -44,58 +51,18 @@ label {
 				<br>
 				<br>
 			<!-- BIRTHDAY selector -->
-			<div class="birthday">
 				Birthday: <br><br>
-				<!-- Feb 3 2001 -->
-				<div>
-					<span class="bdaypart">Month</span>
-					<select name='month' id='monthddl'>
-					{% for month,num in months.items() %}
-						{% if num == user.birthday.month %}
-							<option class="option" value='{{num}}' selected>{{month}}</option>
-						{% endif %}
-						{% if num != user.birthday.month %}
-							<option class="option" value='{{num}}'>{{month}}</option>
-						{% endif %}
-					{% endfor %}
-					</select>
-				</div>
-				<div>
-					<span class="bdaypart">Day</span>
-					<select name='day' id='dayddl'>
- 					{% for day in range (1,32) %}
-						{% if day == user.birthday.day %}
-							<option class="option" value='{{day}}' selected>{{day}}</option>
-						{% endif %}
-						{% if day != user.birthday.day %}
-							<option class="option" value='{{day}}'>{{day}}</option>
-						{% endif %}
-					{% endfor %}
-					</select>
-				</div>
-				<div>
-					<span class="bdaypart">Year</span>
-					<select name='year' id='blah'>
-					{% for year in range(today().year-4,1974,-1) %}
-						{% if year == user.birthday.year %}
-							<option class="option" value='{{year}}' selected>{{year}}</option>
-						{% endif %}
-						{% if year != user.birthday.year %}
-							<option class="option" value='{{year}}'>{{year}}</option>
-						{% endif %}
-					{% endfor %}	
-					<option class="option" value='1990'>1990</option>
-					</select>
-				</div>
-			</div>
-			<br>
-				<input type="file" name="photo">
-				<br>
-					<input type="submit" value="save">
+				<input id="chosen-date" type="date" name="birthday" min='1970-01-01' max='2020-01-01' placeholder='2008-04-19'>
+				<br><br>
+				<input type="submit" value="save">
 				<div id="formFooter">
 					<a href="/{{username}}/profile" style="display:block">cancel</a>   
 				</div>
 			</form>
+	</div>
+	<br>
+	<div id="danger">
+		<strong><a id="delete" href="/{{username}}/profile/delete_account">Delete Account</a></strong>
 	</div>
 </div>
 

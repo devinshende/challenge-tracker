@@ -1,91 +1,91 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Admin login</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} Admin Home {% endblock %}
+{% block top %}Admin{% endblock %}
+{% block imghref %}/{% endblock %}
+{% block content %}
 <style type="text/css">
-	body {
-		margin: 0;
-	}
-	input[type="password"] {
-		font-size: 30px; 
-		margin: 30px;
-		padding: 10px;
-	}
-	input[type='submit'] {
-		font-size: 20px;
-		padding: 10px;
-		margin: 10px 0;
-		background-color: #222;
-		color: #eee;
-	}
-	nav {
-		float: left;
-		background-color: #5DBCD2;
-		width: 100%;
-		display: block;
-		padding: 20px;
-		margin-bottom: 10px;
-	}
-	nav * {
-		color: white;
-		font-size: 20px;
-		margin: 10px 40px;
-		text-decoration: none;
-		font-family: sans-serif;
-	}
-	.content {
-		font-size: 15px;
-		margin: 10px;
-	}
-
-	#above_img {
-		line-height:100px;
-	}	
-	#error {
-		background: #e86f6f;
-		font-size: 20px;
-		padding: 10px;
-		width: 80%;
-		display: block;
-		text-align:center;
-		margin: 0 auto;
-		border-radius: 20px;
-		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-		box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-	}
+#form {
+	margin: 10px;
+}
+#form input[type="submit"] {
+	margin-top: 20px;
+}
+#logout {
+	margin:0 25%;
+	width:50%;
+	text-align: center;
+}
+.btncontainer {
+	width:220px;
+	color: white;
+	display: block; 
+	position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+	padding: 0; /*padding for the notification*/
+}
+.button {
+	text-decoration: none;
+	font-size: 30px;
+	width: 200px;
+	height: 100%;
+	padding: 10px;
+	margin: 20px auto;
+	text-align: center;
+	display: block;
+	/* ninja park red from logo - #BF1D2D  */
+	color: white;
+	background-color: black;
+	/*background-color: #1d8ece;*/
+	border-radius: 15px;
+	position: relative;
+}
+#notification {
+	background-color: #fa3e3e;
+	border-radius: 50%;
+	height:30px;
+	width: 30px;
+	text-align: center;
+	color: white;
+	font-size: 25px;
+	position:absolute;
+	top:-10px;
+	left:-10px;
+	z-index:10; /*bring it in front of button. 10 for good measure*/
+}
 </style>
+<!-- login page -->
 	{% if not auth %}
-	<br>
-	{% with messages = get_flashed_messages() %}
-		{% if messages %}
-			{% for message in messages %}
-				<div id="error"><strong>{{message}}</strong></div>
-			{% endfor %}
-				<br id="above_img">
-		{% endif %}
-	{% endwith %}
-	<form method="POST">
-		<input type="password" name="password" placeholder="password">
+	<div class="container">
+		<div class="wrapper fadeInDown">
+			<div id="formContent">
+			<br>
+			<form id="form" method="POST">
+				<label for="question">Enter Admin Password:</label>
+				<input type="password" name="password" placeholder="password">
+				<br>
+				<input type="submit" class="fadeIn fourth" value="Login" id="submit">
+			</form>
+		</div>
+	</div>
 	</form>
+<!-- home page -->
 	{% else %}
-	<div class="content">
-	<nav>
-		<a href="/admin/user">Users</a>
-		<a href="/siteadmin" style="margin-left: 20px;">Site admin - challenge suggestions and more</a>
-	</nav>	
-		<br>
-		<p>hello logged in admin</p>
+	<div class="container">
+		<div class="btncontainer">
+			{% if n_suggested_chs != 0 %}
+				<span id="notification">{{n_suggested_chs}}</span>
+			{% endif %}
+			<a class="button" href="/siteadmin/challenges">Suggested Challenges</a>
+		</div>
+		<a class="btn" href="/siteadmin/securityq">Security Questions</a>
+		<a class="btn" href="/siteadmin/img">Profile Pics</a>
+		<a class="btn" href="/admin/user">Users</a>
 		<form method="POST">
-			<input type="submit" name="logout" value="logout">
+			<input id='logout' type="submit" name="logout" value="logout">
 		</form>
-		<a href="/">site home</a>
 		<br>
 		<br>
-		<br>
-		<p>we need ability to accept user suggested challenges</p>
 	</div>
 	{% endif %}
 </body>
 </html>
+{% endblock %}

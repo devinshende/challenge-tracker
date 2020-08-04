@@ -5,26 +5,16 @@
 {% block imghref %}/{{username}}{% endblock %}
 {% block content %}
 <style type="text/css">
-	#formContent{
-		padding:20px;
-		box-shadow: 10px grey;
-		width:60%;
-	}
-	.profpreview {
+	/*.profpreview {
 		width: 75px;
 		height: 75px;
 		border: 2px solid #777;
 		border-radius: 15%;
-		/* positive for width is right, positive for height is down */
-		/* first item is w-offset, then w-offset, then blur, spread, and color */
-	  	/*box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);*/
-		/* -webkit for safari support */
-		/*-webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);*/
-	}
-/*	table {
-		margin: 0 auto;
-		text-align: right;
-		border-spacing: 10px 5px;
+		 positive for width is right, positive for height is down 
+		 first item is w-offset, then w-offset, then blur, spread, and color
+	  	box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);
+		 -webkit for safari support 
+		-webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.3);
 	}*/
 	table tr td:nth-of-type(even) {
 		/*margin-left: 20px;*/
@@ -34,11 +24,28 @@
 	table tr td:nth-of-type(odd) {
 		font-weight: bold;
 	}
+	#icon {
+		width: 80px;
+		margin-bottom: 30px;
+	}
+	table {
+		/*copy pasted styles from class "formContent" */
+		-webkit-border-radius: 10px 10px 10px 10px;
+		border-radius: 10px 10px 10px 10px;
+		background: #fff;
+		padding: 30px;
+		width: 90%;
+		max-width: 450px;
+		position: relative;
+		padding: 0px;
+		-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+		text-align: center;
+	}
 </style>
 <div class="wrapper">
-	<div id="formContent">
-		<img class="profpreview" src="{{user.get_profile_pic()}}">
 		<br>
+		<!-- <img id="icon" src="../static/editicon.png">  -->
 		<table>
 			<tr>
 				<td>First Name</td>
@@ -61,7 +68,6 @@
 				<td>{{to_name_case(user.gender)}}</td>
 			</tr>
 		</table>
-	</div>
 </div>
 <a href="/{{username}}/profile/edit" class="btn">Edit Profile</a>
 

@@ -47,10 +47,10 @@ def load_security_questions():
 	return SECURITY_QUESTIONS
 
 BRACKETS = [
-	'12 and under male',
-	'12 and under female',
-	'teen/adult male',
-	'teen/adult female'
+	'12 and under boys',
+	'12 and under girls',
+	'teen/adult boys',
+	'teen/adult girls'
 ]
 
 monthsDict = {
@@ -67,6 +67,16 @@ class Password(object):
 
 ADMIN_PASSWORD = Password('+5PmZmMJFJ499')
 
-challenge_dict = load_challenge_dict()
 SECURITY_QUESTIONS = load_security_questions()
+
+TC_COLORS = [
+	"grey",
+	"red",
+	"green",
+	"yellow",
+	"blue",
+	"magenta",
+	"cyan",
+	"white"
+]
 

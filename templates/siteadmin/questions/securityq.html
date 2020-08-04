@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Security Questions Admin {% endblock %}
 {% block top %}Admin{% endblock %}
-{% block imghref %}/siteadmin{% endblock %}
+{% block imghref %}/admin/{% endblock %}
 {% block content %}
 <div class="container">
 	<br>
@@ -19,7 +19,6 @@
 				{% endfor %}
 		</tbody>
 	</table>
-	<br>
 	<br>
 	<a class="btn" href="/siteadmin/securityq/add">Add a question</a>
 	<a class="btn" href="/siteadmin/securityq/remove">Remove a question</a>

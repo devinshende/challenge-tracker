@@ -1,6 +1,12 @@
 DBENV = 'dev'
 # DBENV = 'prod'
 
+# UNFINISHED BUSINESS FOR PERSONAL RECORDS
+'''
+styling of table and layout
+handle bad input from users for the score field in form
+'''
+
 # libraries
 from flask import Flask, render_template, request, redirect, url_for, flash
 from termcolor import colored
@@ -8,10 +14,11 @@ from datetime import date
 import ast
 import os
 import argparse
+from pyfiglet import figlet_format
 # my imports
 from mylib.cipher import encode, decode
 from constants import SECURITY_QUESTIONS, PROF_PICS_PATH, ADMIN_PASSWORD
-from challenges import Entry
+from challenges import *
 from utils import *
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
@@ -21,16 +28,10 @@ from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import BaseModelView, typefmt
 from flask_admin.base import AdminIndexView, expose
-from flask_heroku import Heroku
-from flask_uploads import UploadSet, configure_uploads, IMAGES
 from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import MigrateCommand, Migrate
 
-# UNFINISHED BUSINESS FOR PERSONAL RECORDS
-'''
-styling of table and layout
-handle bad input from users for the score field in form
-'''
+
 def get_admin_auth():
 	return read('args.txt')['admin_auth']
 def write_admin_auth(TF):
@@ -48,18 +49,17 @@ app.jinja_env.globals.update(get_best=get_best)
 app.jinja_env.globals.update(get_challenge_type=get_challenge_type)
 app.jinja_env.globals.update(to_name_case=to_name_case)
 app.jinja_env.globals.update(len=len)
+app.jinja_env.globals.update(ChallengeTypes=ChallengeTypes)
 from datetime import datetime
 
 app.jinja_env.globals.update(today=datetime.today)
-
-# UPLOAD_FOLDER = '/database/profile_pics'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 if DBENV == 'dev':
 	# development mode
 	app.debug = True
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 	app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+
 else:
 	# production mode
 	app.debug = False
@@ -73,9 +73,13 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
-photos = UploadSet('photos',IMAGES)
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
-configure_uploads(app,photos)
+
+# UPLOAD_FOLDER = '/database/'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# photos = UploadSet('photos',IMAGES)
+# app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pics'
+# app.config['FLASK_APP_FILE'] = 'app.py'
+# configure_uploads(app,photos)
 
 # FLASK MIGRATE - for dealing with Database changes better
 migrate = Migrate(app, db)
@@ -84,13 +88,14 @@ manager.add_command('db',MigrateCommand)
  
 class User(db.Model, UserMixin):
 	id 			= db.Column(db.Integer, primary_key=True)
-	first_name 	= db.Column(db.String(20), nullable=False)
-	last_name 	= db.Column(db.String(20), nullable=False)
+	first_name 	= db.Column(db.String(40), nullable=False)
+	last_name 	= db.Column(db.String(40), nullable=False)
 	age 		= db.Column(db.Integer, nullable=False)
 	birthday	= db.Column(db.DateTime, nullable=False)
-	gender 		= db.Column(db.String(6), nullable=False)
+	gender 		= db.Column(db.String(15), nullable=False)
 	username 	= db.Column(db.String(20), unique=True, nullable=False)
 	password 	= db.Column(db.String(40), nullable=False)
+	profile 	= db.Column(db.String(20), default='1')
 	security_question_id = db.Column(db.String(100), nullable=False)
 	security_question_ans = db.Column(db.String(50), nullable=False)
 	challenges 	= db.Column(db.PickleType, default={})
@@ -99,12 +104,13 @@ class User(db.Model, UserMixin):
 		return '<User %r>' % self.username
 
 	def get_profile_pic(self):
+		path = None
 		filename = str(self.id) + '.jpg'
 		if filename in os.listdir(PROF_PICS_PATH):
-			path = os.path.join('../..',PROF_PICS_PATH,filename)
-		else:
+			if DBENV != 'dev':
+				path = os.path.join('../..',PROF_PICS_PATH,filename)
+		if not path:
 			path = '../../static/blank_profile.jpg'
-		print(f'profile pic source is {repr(path)}')
 		return path
 
 	def format_bday(self):
@@ -117,6 +123,9 @@ class User(db.Model, UserMixin):
 
 
 app.jinja_env.globals.update(User=User)
+app.jinja_env.cache = {}
+# hopefully this will bring better loading speeds 
+# https://blog.socratic.org/the-one-weird-trick-that-cut-our-flask-page-load-time-by-70-87145335f679
 
 class Suggestion(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -135,12 +144,19 @@ MY_DEFAULT_FORMATTERS.update({
 		date: date_format
 	})
 
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
+
+
 class UserView(ModelView):
 	column_display_pk = True # controls whether id is (not) hidden
 	column_searchable_list = ('first_name','last_name')
 	column_exclude_list = ('password','security_question_ans')
 	column_type_formatters = MY_DEFAULT_FORMATTERS # formats bday
-	
+	can_delete = False
+	can_create = False
+
 	def is_accessible(self):
 		# only shows home page when set to False
 		# shows normal admin page with full access when set to True
@@ -171,15 +187,18 @@ class MyHomeView(AdminIndexView):
 			# they are entering the password
 			entered_password = request.form.get('password')
 			if entered_password == ADMIN_PASSWORD.decoded:
+				# let them in. The password entered is correct
 				print('you are authenticated!')
 				write_admin_auth(True)
-				return self.render('admin/myhome.html',auth=get_admin_auth())
-			return "password: \"" + str(request.form.get('password')) + "\"\n is incorrect" + \
-			"<br><hr><a href='/admin'>try again</a>"
+				return self.render('admin/myhome.html',auth=True, n_suggested_chs=len(Suggestion.query.all()))
+			# don't let them in: the password entered is incorrect
+			flash(f"password: \"{request.form.get('password')}\" is incorrect")
+			return self.render('admin/myhome.html',auth=False)
 		else:
 			if get_admin_auth():
-				# normal home page
-				return render_template('admin/myhome.html',auth=get_admin_auth())
+				# they are authenticated but did not just submit the login form. Let them in
+				return render_template('admin/myhome.html',auth=True, n_suggested_chs=len(Suggestion.query.all()))
+		# admin login screen
 		return self.render('admin/myhome.html',auth=get_admin_auth())
 
 admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
@@ -187,25 +206,40 @@ admin = Admin(app, index_view=MyHomeView(), template_mode='bootstrap3')
 
 # admin = Admin(app, template_mode='bootstrap3') # template mode is styling
 admin.add_view(UserView(User, db.session))
-admin.add_view(MyModelView(Suggestion, db.session))
-# admin.add_view(MyModelView(Challenge, db.session))
-#something with @action to accept challenges
+# Unnecessary with site admin being a thing
+# admin.add_view(MyModelView(Suggestion, db.session))
 
-heroku = Heroku(app)
+# heroku = Heroku(app)
 
 # this import must be after initialization of Flask(__name__)
 from views import *
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
+
 	# if user types --email at the end of python3 app.py, then it will be set to true
 	# if user doesn't say --email, it will be set to false
-	parser.add_argument('-e','--email',action='store_true')
-	parser.add_argument('-v','--verbose',action='store_true')
-	COMMENT = ''
-	args = parser.parse_args()
-	write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
-	if args.verbose:
-		print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
-		print(' * Verbose:', colored('True','green'))
+	
+	# parser.add_argument('-e','--email',action='store_true')
+	# parser.add_argument('-v','--verbose',action='store_true')
+	# COMMENT = ''
+	# args = parser.parse_args()
+	# write('args.txt',{'email':args.email,'verbose':args.verbose,'admin_auth':False})
+	# if args.verbose:
+	# 	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+	# 	print(' * Verbose:', colored('True','green'))
+
+	# CHANGE THIS LINE TO STOP GETTING EMAILS
+	# args.email = True
+
+	# write('args.txt',{'email':args.email,'verbose':True,'admin_auth':False})
+	# fonts: bulbhead, slant, computer
+	# http://www.figlet.org/examples.html
+	print(figlet_format('NW Ninja Park',font="slant"))
+	print(figlet_format('challenge tracker'))
+	print(' * DBENV: ', colored(DBENV, 'cyan'))
+	# print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
+	# print(' * Verbose:', colored(str(args.verbose),'green' if args.email else 'red'))
+	manager.run() # for flask-migrate
 	# app.run()
-	manager.run()
+
+	

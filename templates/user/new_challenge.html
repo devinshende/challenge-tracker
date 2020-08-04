@@ -13,11 +13,11 @@
 	    		<label for="type">Challenge Type: </label>
 	    		<select name="type" required>
 	    			<option disabled selected value="">Please Select One</option>
-	    			<option>Time</option>
-	    			<option>Laps</option>
-	    			<option>Repetitions</option>
+	    			<option value="{{ChallengeTypes.time}}">Time</option>
+	    			<option value="{{ChallengeTypes.laps}}">Laps</option>
+	    			<option value="{{ChallengeTypes.reps}}">Repetitions</option>
 	    		</select>
-	      		<input type="text" id="challenge" class="fadeIn third" name="challenge" placeholder="Name of Challenge" required>
+	      		<input type="text" id="challenge" class="fadeIn third" name="challenge_name" placeholder="Name of Challenge" required>
 	      		<input type="submit" class="fadeIn fourth" value="Submit">
 	    	</form>
 	  	</div>

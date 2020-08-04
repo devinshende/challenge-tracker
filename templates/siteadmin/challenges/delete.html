@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %} Accept Suggestion {% endblock %}
-{% block top %}Accept a Suggestion{% endblock %}
-{% block imghref %}/siteadmin{% endblock %}
+{% block title %} Delete Suggestion {% endblock %}
+{% block top %}Delete a Suggestion{% endblock %}
+{% block imghref %}/siteadmin/challenges{% endblock %}
 {% block content %}
 	<style type="text/css">
 		#form {
@@ -17,7 +17,7 @@
 		<div id="formContent">
 		<br>
 		<form id="form" method="POST">
-			<label for="suggestion">Accept: </label>
+			<label for="suggestion">Delete: </label>
 			<select name="suggestion" required="required" class="fadeIn second" id="select">
 				<option value="" hidden>Select Suggestion</option>
 				{% for ch_s in json %}
@@ -26,12 +26,12 @@
 			</select>
 			<br>
 			<input type="submit" class="fadeIn fourth" value="Submit" id="submit">
-		</form>
+		</form>		          
 	</div>
 	{% else %}
 		<div class="container">
 			<br>
-			<p class="nothing">No suggested challenges</p>
+			<p class="no_content">No suggested challenges</p>
 		</div>
 	{% endif %}
 </div>

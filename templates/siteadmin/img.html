@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %} Profile Pics {% endblock %}
+{% block top %}Profile Pics {%endblock%}
+{% block imghref %}/admin{%endblock%}
+{% block content %}
+<!-- <meta content="width=device-width, initial-scale=1" name="viewport" />
+ -->
+<style type="text/css">
+#grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-row-gap: 20px;
+	grid-column-gap: 20px;
+}
+@media screen and (min-width: 1300px) {
+  #grid {
+  	grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  #grid {
+  	grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+#grid div p {
+	text-align: center;
+	margin:0;
+	font-size: 1em;
+}
+.profile {
+	padding: 0;
+	width: 100%;
+	border-radius: 15%;
+	border: none;
+	cursor: pointer;
+	margin: 1px;
+}
+.profile:hover {
+  box-shadow: 0 0 4px 3px rgba(0, 140, 186, 0.5);
+}
+</style>
+
+<div class="container" id="grid"> 
+	{% for user in users %}
+	<div>
+		<a href="/siteadmin/{{user.username}}"><img class="profile" src="{{user.get_profile_pic()}}"></a>
+		<p>{{user.username}}</p>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

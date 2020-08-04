@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Admin view user {% endblock %}
+{% block top %} {{user.first_name}} {{user.last_name}} {%endblock%}
+{% block imghref %}/siteadmin/img{%endblock%}
+{% block content %}
+<style type="text/css">
+	h2 {
+		margin-bottom: 3px;
+	}
+</style>
+
+<div class="container" id="grid"> 
+	<h2>Birthday</h2>
+	<p>{{user.format_bday()}}</p>
+
+	<h2>Gender</h2>
+	<p>{{user.gender}}</p>
+
+	<h2>Challenges</h2>
+	{% if ch %}
+		<table>
+		<thead>
+			<tr class="table-head">
+				<th class="column1">Challenge</th>
+				<th class="column2">Score</th>
+				<th class="column3">Comment</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for challenge in ch.keys()%}
+				<tr>
+					<td class="column1">{{challenge}}</td>
+					<td class="column2">
+						{{get_best(ch[challenge],get_challenge_type(challenge)).score}} 
+						{%if get_challenge_type(challenge) == ChallengeTypes.time %}secs{% endif %} 
+						{% if get_challenge_type(challenge) != ChallengeTypes.time%}{{get_challenge_type(challenge)}}{% endif %}</td>
+					<td class="column3">{{get_best(ch[challenge],get_challenge_type(challenge)).comment}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<p>No challenges entered yet</p>
+	{% endif %}
+
+	<br>
+	<br>
+	<br>
+	<br>
+</div>
+{% endblock %}
