@@ -203,7 +203,9 @@ def leaderboard():
 		'''
 		[
 			placement (1st 2nd 3rd),
+			profile pic,
 			full name of user,
+			user's profile picture,
 			score of challenge,
 			comment about challenge,
 			user id
@@ -436,21 +438,23 @@ def userleaderboard(username):
 		checked = request.form.get('bracketswitch')
 		selected_challenge_type = get_challenge_type(selected_challenge)
 		data = []
-		for user in all_users:
+		for the_user in all_users:
 			user_challenges = json_to_objects(user.challenges)
 			if selected_challenge in user_challenges.keys():
 				entry = get_best(user_challenges[selected_challenge], selected_challenge_type)
 				data.append(
-					[user.get_profile_pic(),
-					get_full_name(user.id),
+					[the_user.get_profile_pic(),
+					get_full_name(the_user.id),
 					entry.score,
 					entry.comment,
-					user.id]
+					the_user.id]
 				)
+				
 		# `data` is a list containing lists that have †he same five things
 		'''
 		[
 			placement (1st 2nd 3rd),
+			profile pic,
 			full name of user,
 			user's profile picture,
 			score of challenge,

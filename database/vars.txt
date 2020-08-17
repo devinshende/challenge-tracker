@@ -1,1 +1,1 @@
-{'logged_in': False, 'half_user': None}
+{'logged_in': False, 'half_user': None, 'forgot_username': None}
