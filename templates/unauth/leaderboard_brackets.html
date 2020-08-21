@@ -55,6 +55,9 @@
 			{% endif%}
 		{% endfor %}
  {% endif %}
+ 	{% if not data %}
+	<div class="container"><p class="no_content">There are no competitors for that challenge</p></div>
+	{% endif %}
 	{% if not tables %}
 	<p class="no_content" id="none">There are no competitors for that challenge</p>
 	{% endif %}

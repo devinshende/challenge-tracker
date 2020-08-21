@@ -6,7 +6,6 @@ from mylib.cipher import encode, decode
 from mylib.mail import send_email_to_somebody
 from constants import *
 from challenges import Entry
-from pprint import pprint
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
