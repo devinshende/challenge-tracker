@@ -173,16 +173,20 @@ def sort_data(data, selected_challenge_type):
 	if selected_challenge_type in [ChallengeTypes.reps, ChallengeTypes.laps]:
 		# sort it so highest score is first in `data`
 		# sort it lowest first then reverse list
-		sorted_data = sorted(data, key=lambda x:x[1])[::-1]
+		sorted_data = sorted(
+			data, key=lambda x:x[0],
+			reverse=True
+		)
 	elif selected_challenge_type  == ChallengeTypes.time:
 		# sort so lowest score is first in the `data`
-		sorted_data = sorted(data, key=lambda x:x[1])
+		sorted_data = sorted(data, key=lambda x:x[0])
 	return add_places(sorted_data)
 	
 	# `sorted_data` is a sorted list containing lists that have †he same 5 things
 	'''
 	[
 		placement -- to be inserted here
+		profile pic,
 		full name of user,
 		score of challenge,
 		comment about challenge,
