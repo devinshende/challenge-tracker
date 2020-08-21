@@ -29,6 +29,7 @@ IMPORTANT: all test functions MUST begin with 'test' or else unittest does not p
 
 # import all the testing files
 from unauth import UnauthRoutesTesting
+from utilfunctions import HelperFunctionsTesting
 
 if __name__ == '__main__':
 	unittest.main()
