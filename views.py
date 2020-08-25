@@ -45,7 +45,7 @@ def load_user(user_id):
 #  _   _ _ __   __ _ _   _| |_| |__  
 # | | | | '_ \ / _` | | | | __| '_ \ 
 # | |_| | | | | (_| | |_| | |_| | | |
-#  \__,_|_| |_|\__,_|\__,_|\__|_| |_|  
+#  \__,_|_| |_|\__,_|\__,_|\__|_| |_|
 
 @app.route('/')
 def landing_page():
@@ -64,6 +64,7 @@ def signup():
 		users = User.query.all()
 		variables = read('vars.txt')
 		first_name = request.form.get('first_name')
+		gender = request.form.get('gender')
 		if first_name:
 			# signup1
 			first_name = request.form.get('first_name')
@@ -72,18 +73,25 @@ def signup():
 				return redirect('/signup')
 			if limit_input_size(name=last_name, max_size=20):
 				return redirect('/signup')
-			yr = request.form.get('year')
-			month = request.form.get('month')
-			day = request.form.get('day')
-			gender = request.form.get('gender')
+			# yr = request.form.get('year')
+			# month = request.form.get('month')
+			# day = request.form.get('day')
+			birthday_str = request.form.get( 'birthday'   )
+			try:
+				birthday = datetime.strptime(birthday_str, '%Y-%m-%d')
+			except ValueError:
+				flash('Please reenter your birthday in the format \'yyyy-mm-dd\'')
+				return render_template('unauth/signup.html',first_name=first_name, last_name=last_name, gender=gender)
+			if birthday.year > datetime.now().year - 3:
+				flash('Check the year again on your birthday')
+				return render_template('unauth/signup.html',first_name=first_name, last_name=last_name, gender=gender)
+			# age = datetime.today().year - birthday.year
+			# user.birthday = birthday
 			signup1 = {
 				'first_name':to_name_case(first_name),
 				'last_name':to_name_case(last_name),
-				# 'age':age,
 				'gender':gender,
-				'year':yr,
-				'month':month,
-				'day':day
+				'birthday':birthday
 			}
 			users_lst = list(users)[:-1] # everything but last one
 			for user in users_lst:
@@ -91,10 +99,7 @@ def signup():
 				and user.last_name == to_name_case(last_name):
 					flash('You have already registered for an account')
 					return render_template("unauth/signup.html", months=months)
-			debug('date: ',month,day,yr)
-			if month == 'month' or day == 'day' or yr == 'year':
-				flash('Please fill out birthday')
-				return render_template("unauth/signup.html", first_name=first_name, last_name=last_name, gender=gender, months=months, month=month, day=day, year=yr)
+			debug('date: ',birthday.date)
 			variables['half_user'] = signup1
 			write('vars.txt',variables)
 			return render_template('unauth/signup2.html', security_questions=SECURITY_QUESTIONS)
@@ -113,7 +118,6 @@ def signup():
 			if limit_input_size(name=answer, max_size=50, item="answer"):
 				debug(f'username is {username}')
 				return render_template('unauth/signup2.html', username=username, password=password, confirm_password=confirm_password, security_questions=SECURITY_QUESTIONS, security_question=security_question)
-
 			security = {'question':security_question,'answer':encode(answer)}
 			users_lst = list(users)[:-1] # all but current one which is only partly signed up.
 			for user in users_lst:
@@ -129,11 +133,8 @@ def signup():
 				if max_uid < u.id:
 					max_uid = u.id 
 			id = max_uid + 1
-			
-			
 			debug('user id is ',id)
-			month = int(monthsDict[v['month']])
-			birthday = datetime(year=int(v['year']), month=month, day=int(v['day']))
+			birthday = v['birthday']
 			debug('birthday is ',birthday)
 			debug()
 			age = datetime.today().year - birthday.year
