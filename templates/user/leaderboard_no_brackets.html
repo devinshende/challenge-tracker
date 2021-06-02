@@ -110,7 +110,7 @@
 				{% for item in data %}
 						
 						<!-- if user in table is equal to logged in user, then make the background light blue, else just leave it be. -->
-						{% if item[2] == user.first_name + ' ' + user.last_name %} 
+						{% if item[1] == user.first_name + ' ' + user.last_name %} 
 							<tr style="background: lightblue;">
 						{% else %}
 							<tr>

@@ -228,10 +228,18 @@ if __name__ == '__main__':
 	# 	print(' * Send emails:',colored(str(args.email),'green' if args.email else 'red'))
 	# 	print(' * Verbose:', colored('True','green'))
 
-	# CHANGE THIS LINE TO STOP GETTING EMAILS
+	# # CHANGE THIS LINE TO STOP GETTING EMAILS
 	# args.email = True
+	if DBENV == 'dev':
+		response = input(colored("do you want verbose mode enabled? (y for yes, enter for no):\n",'cyan'))
+		if response == "y":
+			write('args.txt',{'email':False,'verbose':True,'admin_auth':False})
+			print(' * Verbose:', colored('True','green'))
+		else:
+			write('args.txt',{'email':False,'verbose':False,'admin_auth':False})
+			print(' * Verbose:', colored('False','red'))
 
-	# write('args.txt',{'email':args.email,'verbose':True,'admin_auth':False})
+
 	# fonts: bulbhead, slant, computer
 	# http://www.figlet.org/examples.html
 	print(figlet_format('NW Ninja Park',font="slant"))

@@ -174,19 +174,19 @@ def sort_data(data, selected_challenge_type):
 		# sort it so highest score is first in `data`
 		# sort it lowest first then reverse list
 		sorted_data = sorted(
-			data, key=lambda x:x[0],
+			data, key=lambda x:x[1],
 			reverse=True
 		)
 	elif selected_challenge_type  == ChallengeTypes.time:
 		# sort so lowest score is first in the `data`
-		sorted_data = sorted(data, key=lambda x:x[0])
+		sorted_data = sorted(data, key=lambda x:x[1])
 	return add_places(sorted_data)
 	
 	# `sorted_data` is a sorted list containing lists that have †he same 5 things
 	'''
 	[
-		placement -- to be inserted here
-		profile pic,
+		profile pic, - 			maybe deleted by now? IDk I had to change lambda x:x[2] to 
+								be x:x[1] so pretty sure index 0 (profile pic) is gone now
 		full name of user,
 		score of challenge,
 		comment about challenge,

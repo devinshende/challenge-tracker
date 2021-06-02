@@ -214,6 +214,7 @@ def leaderboard():
 		'''
 		if checked:
 			brackets = get_brackets(data, selected_challenge_type)
+			print('BRACKETS ARE:', brackets)
 			return render_template('unauth/leaderboard_brackets.html', tables=brackets, header=selected_challenge, \
 				challenge_type=to_name_case(selected_challenge_type), \
 				brackets=brackets, bracket_names=BRACKETS)

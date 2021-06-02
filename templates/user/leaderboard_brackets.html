@@ -25,7 +25,7 @@
 				<tbody>
 					{% for item in tables[table_i] %}
 						<!-- if user in table is equal to logged in user, then make the background light blue, else just leave it be. -->
-						{% if item[2] == user.first_name + ' ' + user.last_name %} 
+						{% if item[1] == user.first_name + ' ' + user.last_name %} 
 							<tr style="background: lightblue;">
 						{% else %}
 							<tr>
@@ -36,15 +36,15 @@
 							<!-- profile pic -->
 <!-- 							<td><img src="{{item[1]}}" height="32px" width="32px"></td>
  -->							<!-- name -->
-							<td>{{item[2]}}</td> 
+							<td>{{item[1]}}</td> 
 							<!-- score -->
 							{% if challenge_type.lower() == ChallengeTypes.time %}
-							<td>{{item[3]}} seconds</td>
+							<td>{{item[2]}} seconds</td>
 							{% else %}
-							<td>{{item[3]}}</td>
+							<td>{{item[2]}}</td>
 							{% endif %}
 							<!-- comment -->
-							<td>{{item[4]}}</td>
+							<td>{{item[3]}}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
