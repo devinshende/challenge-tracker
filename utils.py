@@ -7,6 +7,7 @@ from flask import flash
 from pyfiglet import figlet_format
 from termcolor import colored
 
+
 def read(file_name,type='dict'):
 	"returns data from `file_name` in the database"
 	with open(os.path.join('database',file_name), 'r') as file:
@@ -146,8 +147,9 @@ def get_brackets(data, selected_challenge_type):
 
 	for person in data:
 		user_id = person[-1]
-		age = int(User.query.get(user_id).age)
+		age = User.query.get(user_id).age
 		gender = User.query.get(user_id).gender
+		print("\n00000000000000000\n User is: ", person, "\n age is: ", age, "\n00000000000000000\n")
 		if age < 13: #in kid's division
 			if gender == 'male':
 				mkid.append(person)

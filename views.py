@@ -138,6 +138,7 @@ def signup():
 			debug('birthday is ',birthday)
 			debug()
 			age = datetime.today().year - birthday.year
+			print("\n/////////////\n New user is: ", username, "\n User.age is: ", age, "\n////////////////\n")
 			user = User(id=id,
 						first_name=v['first_name'],
 						last_name=v['last_name'],
@@ -477,6 +478,7 @@ def userleaderboard(username):
 @login_required
 def profile(username):
 	user = User.query.filter_by(username=username).first()
+	print( "\n--------------\n coming from profile view, user = ",user, "\n age = ", user.age, "\n--------------\n")
 	return render_template('user/profile.html', user=user, username=username)
 
 @app.route('/<username>/profile/edit', methods=['GET','POST'])
